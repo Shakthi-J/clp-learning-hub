@@ -2,10 +2,15 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const QuizBlock = dynamic(() => import("@/components/QuizBlock"), { ssr: false });
+const AssignmentBlock = dynamic(() => import("@/components/AssignmentBlock"), { ssr: false });
 
 interface LessonPlayerProps {
   lessonId: string;
   enrollmentId: string;
+  patientId: string;
   youtubeVideoId: string | null;
   notes: string | null;
   isCompleted: boolean;
@@ -14,6 +19,9 @@ interface LessonPlayerProps {
   courseSlug: string;
   totalLessons: number;
   currentIndex: number;
+  quiz: { id: string; title: string; questions: any[] } | null;
+  assignment: { id: string; title: string; prompt: string } | null;
+  existingSubmission: any | null;
 }
 
 declare global {
@@ -21,80 +29,53 @@ declare global {
 }
 
 export default function LessonPlayer({
-  lessonId, enrollmentId, youtubeVideoId, notes, isCompleted,
+  lessonId, enrollmentId, patientId, youtubeVideoId, notes, isCompleted,
   prevLesson, nextLesson, courseSlug, totalLessons, currentIndex,
+  quiz, assignment, existingSubmission,
 }: LessonPlayerProps) {
   const router = useRouter();
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [completed, setCompleted] = useState(isCompleted);
   const [marking, setMarking] = useState(false);
-  const [marked, setMarked] = useState(false);
 
-  useEffect(() => {
-    setCompleted(isCompleted);
-    setMarked(false);
-  }, [lessonId, isCompleted]);
+  useEffect(() => { setCompleted(isCompleted); }, [lessonId, isCompleted]);
 
-  // Load YouTube IFrame API
   useEffect(() => {
     if (!youtubeVideoId) return;
-
     const initPlayer = () => {
       if (!containerRef.current) return;
       playerRef.current = new window.YT.Player(containerRef.current, {
         videoId: youtubeVideoId,
         playerVars: { rel: 0, modestbranding: 1 },
-        events: {
-          onStateChange: (event: any) => {
-            // Auto mark complete when video ends
-            if (event.data === window.YT.PlayerState.ENDED) {
-              handleMarkComplete();
-            }
-          },
-        },
+        events: { onStateChange: (event: any) => { if (event.data === window.YT.PlayerState.ENDED) handleMarkComplete(); } },
       });
     };
-
-    if (window.YT && window.YT.Player) {
-      initPlayer();
-    } else {
+    if (window.YT && window.YT.Player) { initPlayer(); }
+    else {
       window.onYouTubeIframeAPIReady = initPlayer;
       if (!document.getElementById("yt-api-script")) {
         const script = document.createElement("script");
-        script.id = "yt-api-script";
-        script.src = "https://www.youtube.com/iframe_api";
+        script.id = "yt-api-script"; script.src = "https://www.youtube.com/iframe_api";
         document.head.appendChild(script);
       }
     }
-
-    return () => {
-      if (playerRef.current?.destroy) playerRef.current.destroy();
-    };
+    return () => { if (playerRef.current?.destroy) playerRef.current.destroy(); };
   }, [youtubeVideoId, lessonId]);
 
   const handleMarkComplete = async () => {
-    if (completed || marking || marked) return;
+    if (completed || marking) return;
     setMarking(true);
-    try {
-      await fetch("/api/progress", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ enrollmentId, lessonId }),
-      });
-      setCompleted(true);
-      setMarked(true);
-      router.refresh();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setMarking(false);
-    }
+    await fetch("/api/progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enrollmentId, lessonId }),
+    });
+    setCompleted(true); setMarking(false); router.refresh();
   };
 
   return (
     <div>
-      {/* Video player */}
       {youtubeVideoId ? (
         <div className="rounded-2xl overflow-hidden mb-6" style={{ aspectRatio: "16/9", background: "#000" }}>
           <div ref={containerRef} className="w-full h-full" />
@@ -105,7 +86,6 @@ export default function LessonPlayer({
         </div>
       )}
 
-      {/* Progress bar */}
       <div className="mb-6">
         <div className="flex justify-between text-xs mb-1" style={{ color: "var(--foreground-muted)" }}>
           <span>Lesson {currentIndex + 1} of {totalLessons}</span>
@@ -116,25 +96,17 @@ export default function LessonPlayer({
         </div>
       </div>
 
-      {/* Actions */}
       <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
         <div className="flex items-center gap-3">
           {prevLesson && (
-            <Link href={`/learn/${courseSlug}/${prevLesson.slug}`}
-              className="px-4 py-2 rounded-xl text-sm font-semibold border"
-              style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
-              ← Previous
-            </Link>
+            <Link href={`/learn/${courseSlug}/${prevLesson.slug}`} className="px-4 py-2 rounded-xl text-sm font-semibold border"
+              style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>← Previous</Link>
           )}
           {nextLesson && (
-            <Link href={`/learn/${courseSlug}/${nextLesson.slug}`}
-              className="px-4 py-2 rounded-xl text-sm font-semibold border"
-              style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
-              Next →
-            </Link>
+            <Link href={`/learn/${courseSlug}/${nextLesson.slug}`} className="px-4 py-2 rounded-xl text-sm font-semibold border"
+              style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>Next →</Link>
           )}
         </div>
-
         <div className="flex items-center gap-3">
           {!completed && (
             <button onClick={handleMarkComplete} disabled={marking}
@@ -144,35 +116,42 @@ export default function LessonPlayer({
           )}
           {completed && (
             <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold" style={{ background: "#e8f5e9", color: "#2e7d32" }}>
-              <span>✓</span>
-              <span>Completed</span>
+              <span>✓</span><span>Completed</span>
             </div>
           )}
           {completed && nextLesson && (
-            <Link href={`/learn/${courseSlug}/${nextLesson.slug}`}
-              className="px-5 py-2 rounded-xl text-white text-sm font-semibold primary-gradient">
+            <Link href={`/learn/${courseSlug}/${nextLesson.slug}`} className="px-5 py-2 rounded-xl text-white text-sm font-semibold primary-gradient">
               Next Lesson →
             </Link>
           )}
           {completed && !nextLesson && (
-            <Link href={`/learn/${courseSlug}`}
-              className="px-5 py-2 rounded-xl text-white text-sm font-semibold primary-gradient">
+            <Link href={`/learn/${courseSlug}`} className="px-5 py-2 rounded-xl text-white text-sm font-semibold primary-gradient">
               Course Complete →
             </Link>
           )}
         </div>
       </div>
 
-      {/* Lesson notes */}
       {notes && (
-        <div className="card p-6">
+        <div className="card p-6 mb-4">
           <h2 className="font-semibold mb-4" style={{ color: "var(--foreground)" }}>Lesson Notes</h2>
-          <div
-            className="prose-content text-sm leading-relaxed"
-            style={{ color: "var(--foreground-secondary)" }}
-            dangerouslySetInnerHTML={{ __html: notes }}
-          />
+          <div className="prose-content text-sm leading-relaxed" style={{ color: "var(--foreground-secondary)" }}
+            dangerouslySetInnerHTML={{ __html: notes }} />
         </div>
+      )}
+
+      {quiz && quiz.questions.length > 0 && (
+        <QuizBlock quizId={quiz.id} title={quiz.title} questions={quiz.questions} patientId={patientId} />
+      )}
+
+      {assignment && (
+        <AssignmentBlock
+          assignmentId={assignment.id}
+          enrollmentId={enrollmentId}
+          title={assignment.title}
+          prompt={assignment.prompt}
+          existingSubmission={existingSubmission}
+        />
       )}
 
       <style>{`

@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
+import QuizBuilder from "@/components/QuizBuilder";
+import AssignmentBuilder from "@/components/AssignmentBuilder";
 
 const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), { ssr: false });
 
@@ -31,10 +33,8 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
   useEffect(() => {
     supabase.from("lessons").select("*").eq("id", lessonId).single().then(({ data }) => {
       if (data) {
-        setTitle(data.title);
-        setSlug(data.slug);
-        setYoutubeId(data.youtube_video_id || "");
-        setNotes(data.notes || "");
+        setTitle(data.title); setSlug(data.slug);
+        setYoutubeId(data.youtube_video_id || ""); setNotes(data.notes || "");
       }
       setLoading(false);
     });
@@ -50,8 +50,7 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
     const data = await res.json();
     setSaving(false);
     if (!res.ok) { setError(data.message || "Failed to save."); return; }
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 3000);
+    setSuccess(true); setTimeout(() => setSuccess(false), 3000);
   };
 
   const videoPreviewId = youtubeId ? extractYoutubeId(youtubeId) : "";
@@ -74,13 +73,13 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
         <div className="card p-6 space-y-5">
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>Lesson Title</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
+            <input type="text" value={title} onChange={e => setTitle(e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl border text-sm"
               style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>URL Slug</label>
-            <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)}
+            <input type="text" value={slug} onChange={e => setSlug(e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl border text-sm"
               style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
           </div>
@@ -88,17 +87,14 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
 
         <div className="card p-6">
           <label className="block text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>YouTube Video</label>
-          <p className="text-xs mb-3" style={{ color: "var(--foreground-muted)" }}>Paste the full YouTube URL or just the video ID.</p>
-          <input type="text" value={youtubeId} onChange={(e) => setYoutubeId(e.target.value)}
+          <input type="text" value={youtubeId} onChange={e => setYoutubeId(e.target.value)}
             placeholder="https://youtube.com/watch?v=... or video ID"
             className="w-full px-4 py-2.5 rounded-xl border text-sm mb-4"
             style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
           {videoPreviewId && videoPreviewId.length >= 10 && (
             <div className="rounded-xl overflow-hidden" style={{ aspectRatio: "16/9", background: "#000" }}>
-              <iframe src={`https://www.youtube.com/embed/${videoPreviewId}`}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen />
+              <iframe src={`https://www.youtube.com/embed/${videoPreviewId}`} className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
             </div>
           )}
         </div>
@@ -117,9 +113,20 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
             className="px-6 py-2.5 rounded-xl text-white text-sm font-semibold primary-gradient disabled:opacity-60">
             {saving ? "Saving..." : "Save Changes"}
           </button>
-          <Link href={`/admin/courses/${courseId}/lessons`} className="px-6 py-2.5 rounded-xl text-sm font-semibold border" style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
+          <Link href={`/admin/courses/${courseId}/lessons`} className="px-6 py-2.5 rounded-xl text-sm font-semibold border"
+            style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
             Back to Lessons
           </Link>
+        </div>
+
+        {/* Quiz and Assignment builders */}
+        <div className="border-t pt-6" style={{ borderColor: "var(--border)" }}>
+          <h2 className="font-semibold mb-1" style={{ color: "var(--foreground)" }}>Lesson Activities</h2>
+          <p className="text-xs mb-4" style={{ color: "var(--foreground-muted)" }}>
+            Add a quiz and/or assignment for this lesson. Patients will see these after the video and notes.
+          </p>
+          <QuizBuilder lessonId={lessonId} label="Lesson" />
+          <AssignmentBuilder lessonId={lessonId} />
         </div>
       </div>
     </div>
