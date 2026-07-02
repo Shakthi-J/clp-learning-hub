@@ -7,7 +7,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
   const { courseSlug } = await params;
   const supabase = await createClient();
   const { data: course } = await supabase.from("courses")
-    .select(`id, slug, title, description, category, thumbnail_url, modules (id, title, order, lessons (id, title, order))`)
+  .select(`id, slug, title, description, category, thumbnail_url, modules (id, title, order, lessons!lessons_module_id_fkey (id, title, order))`)
     .eq("slug", courseSlug).eq("published", true).single();
   if (!course) notFound();
   const { data: { user } } = await supabase.auth.getUser();
