@@ -6,9 +6,18 @@ import EnrollButton from "./EnrollButton";
 export default async function CourseDetailPage({ params }: { params: Promise<{ courseSlug: string }> }) {
   const { courseSlug } = await params;
   const supabase = await createClient();
-  const { data: course } = await supabase.from("courses")
-  .select(`id, slug, title, description, category, thumbnail_url, modules (id, title, order, lessons!lessons_module_id_fkey (id, title, order))`)
-    .eq("slug", courseSlug).eq("published", true).single();
+  const { data: course } = await supabase
+    .from("courses")
+    .select(`
+      id, slug, title, description, category, thumbnail_url,
+      modules (
+        id, title, order,
+        lessons!lessons_module_id_fkey (id, title, order)
+      )
+    `)
+    .eq("slug", courseSlug)
+    .eq("published", true)
+    .single();
   if (!course) notFound();
   const { data: { user } } = await supabase.auth.getUser();
   const modules = ((course.modules as any[]) || []).sort((a, b) => a.order - b.order);

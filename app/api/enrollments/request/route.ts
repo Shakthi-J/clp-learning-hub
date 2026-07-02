@@ -13,7 +13,13 @@ export async function POST(request: Request) {
     const { data: active } = await supabase.from("enrollments").select("id").eq("patient_id", patient.id).eq("status", "active");
     if (active && active.length > 0) return NextResponse.json({ code: "ACTIVE_ENROLLMENT", message: "Complete your current course before requesting a new one." }, { status: 409 });
   }
-  const { data: existing } = await supabase.from("enrollment_requests").select("id").eq("patient_id", patient.id).eq("course_id", courseId).in("status", ["requested", "approved"]).single();
+  const { data: existing } = await supabase
+    .from("enrollment_requests")
+    .select("id")
+    .eq("patient_id", patient.id)
+    .eq("course_id", courseId)
+    .in("status", ["requested"])
+    .single();
   if (existing) return NextResponse.json({ message: "You already have a request for this course." }, { status: 409 });
   const { error } = await supabase.from("enrollment_requests").insert({ patient_id: patient.id, course_id: courseId, status: "requested" });
   if (error) return NextResponse.json({ message: "Failed to create request" }, { status: 500 });

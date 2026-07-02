@@ -1,5 +1,20 @@
 import Link from "next/link";
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+import { createClient } from "@/lib/supabase/server";
+
+export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let patient = null;
+  if (user) {
+    const { data } = await supabase
+      .from("patients")
+      .select("name, email, role")
+      .eq("auth_user_id", user.id)
+      .single();
+    patient = data;
+  }
+
   return (
     <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <nav className="sticky top-0 z-50 border-b" style={{ background: "var(--card)", borderColor: "var(--border)", boxShadow: "var(--shadow-sm)" }}>
@@ -11,7 +26,32 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <div className="flex items-center gap-6">
             <Link href="/courses" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>Courses</Link>
             <Link href="/about" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>About</Link>
-            <Link href="/login" className="text-sm px-4 py-2 rounded-lg" style={{ color: "var(--primary)", background: "var(--primary-light)" }}>Sign In</Link>
+
+            {patient ? (
+              <Link
+                href={patient.role === "admin" ? "/admin" : "/my-learning"}
+                className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg"
+                style={{ background: "var(--primary-light)", color: "var(--primary)" }}
+              >
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                  style={{ background: "var(--primary)" }}
+                >
+                  {(patient.name || patient.email || "U")[0].toUpperCase()}
+                </div>
+                <span className="font-medium">
+                  {patient.name ? patient.name.split(" ")[0] : patient.email?.split("@")[0]}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm px-4 py-2 rounded-lg"
+                style={{ color: "var(--primary)", background: "var(--primary-light)" }}
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </nav>
