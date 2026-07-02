@@ -1,0 +1,146 @@
+"use client";
+import { use, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { createClient } from "@/lib/supabase/client";
+
+const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), { ssr: false });
+
+export default function NewLessonPage({ params }: { params: Promise<{ courseId: string }> }) {
+  const { courseId } = use(params);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const moduleId = searchParams.get("moduleId") || "";
+  const supabase = createClient();
+
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [youtubeId, setYoutubeId] = useState("");
+  const [notes, setNotes] = useState("");
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [moduleTitle, setModuleTitle] = useState("");
+
+  const generateSlug = (text: string) =>
+    text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  const extractYoutubeId = (input: string) => {
+    const urlMatch = input.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (urlMatch) return urlMatch[1];
+    if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+    return input;
+  };
+
+  useEffect(() => {
+    if (moduleId) {
+      supabase.from("modules").select("title").eq("id", moduleId).single()
+        .then(({ data }) => { if (data) setModuleTitle(data.title); });
+    }
+  }, [moduleId]);
+
+  const handleTitleChange = (val: string) => {
+    setTitle(val);
+    if (!slugManuallyEdited) setSlug(generateSlug(val));
+  };
+
+  const handleCreate = async () => {
+    if (!title || !slug || !moduleId) return;
+    setLoading(true);
+    setError("");
+    const res = await fetch("/api/lessons", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ moduleId, title, slug, youtube_video_id: extractYoutubeId(youtubeId), notes }),
+    });
+    const data = await res.json();
+    setLoading(false);
+    if (!res.ok) { setError(data.message || "Failed to create lesson."); return; }
+    router.push(`/admin/courses/${courseId}/lessons`);
+    router.refresh();
+  };
+
+  const videoPreviewId = youtubeId ? extractYoutubeId(youtubeId) : "";
+
+  return (
+    <div className="p-8 max-w-3xl">
+      <div className="flex items-center gap-3 mb-8">
+        <Link href="/admin/courses" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>← Courses</Link>
+        <span style={{ color: "var(--foreground-muted)" }}>/</span>
+        <Link href={`/admin/courses/${courseId}/lessons`} className="text-sm" style={{ color: "var(--foreground-secondary)" }}>Lessons</Link>
+        <span style={{ color: "var(--foreground-muted)" }}>/</span>
+        <span className="text-sm font-medium" style={{ color: "var(--foreground)" }}>New Lesson</span>
+      </div>
+
+      {moduleTitle && (
+        <div className="mb-4 text-sm px-3 py-2 rounded-lg" style={{ background: "var(--primary-light)", color: "var(--primary)" }}>
+          Adding to module: <strong>{moduleTitle}</strong>
+        </div>
+      )}
+
+      <h1 className="text-2xl font-bold mb-8" style={{ color: "var(--foreground)" }}>Add New Lesson</h1>
+
+      <div className="space-y-6">
+        <div className="card p-6 space-y-5">
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>Lesson Title *</label>
+            <input type="text" value={title} onChange={(e) => handleTitleChange(e.target.value)}
+              placeholder="e.g. What is the Gut Microbiome?"
+              className="w-full px-4 py-2.5 rounded-xl border text-sm"
+              style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>URL Slug</label>
+            <input type="text" value={slug} onChange={(e) => { setSlugManuallyEdited(true); setSlug(generateSlug(e.target.value)); }}
+              placeholder="what-is-gut-microbiome"
+              className="w-full px-4 py-2.5 rounded-xl border text-sm"
+              style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
+          </div>
+        </div>
+
+        <div className="card p-6">
+          <label className="block text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>YouTube Video</label>
+          <p className="text-xs mb-3" style={{ color: "var(--foreground-muted)" }}>
+            Paste the full YouTube URL or just the video ID. Video must be Unlisted on YouTube.
+          </p>
+          <input type="text" value={youtubeId} onChange={(e) => setYoutubeId(e.target.value)}
+            placeholder="https://youtube.com/watch?v=... or dQw4w9WgXcQ"
+            className="w-full px-4 py-2.5 rounded-xl border text-sm mb-4"
+            style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
+          {videoPreviewId && videoPreviewId.length >= 10 && (
+            <div>
+              <p className="text-xs font-medium mb-2" style={{ color: "var(--foreground-secondary)" }}>Preview:</p>
+              <div className="rounded-xl overflow-hidden" style={{ aspectRatio: "16/9", background: "#000" }}>
+                <iframe src={`https://www.youtube.com/embed/${videoPreviewId}`}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="card p-6">
+          <label className="block text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>Lesson Notes</label>
+          <p className="text-xs mb-3" style={{ color: "var(--foreground-muted)" }}>
+            Use the toolbar to format content. Patients see this below the video.
+          </p>
+          <RichTextEditor value={notes} onChange={setNotes} placeholder="Type your lesson notes here. Use the toolbar above to add headings, bullet points, and more..." />
+        </div>
+
+        {error && <p className="text-xs" style={{ color: "var(--danger)" }}>{error}</p>}
+
+        <div className="flex items-center gap-3">
+          <button onClick={handleCreate} disabled={loading || !title || !slug || !moduleId}
+            className="px-6 py-2.5 rounded-xl text-white text-sm font-semibold primary-gradient disabled:opacity-60 disabled:cursor-not-allowed">
+            {loading ? "Saving..." : "Save Lesson"}
+          </button>
+          <Link href={`/admin/courses/${courseId}/lessons`} className="px-6 py-2.5 rounded-xl text-sm font-semibold border" style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
+            Cancel
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}

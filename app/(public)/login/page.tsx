@@ -1,0 +1,66 @@
+"use client";
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
+export default function LoginPage() {
+  const supabase = createClient();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const handleLogin = async () => {
+    if (!email || !password) return;
+    setLoading(true); setError("");
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+
+    if (error) { setError("Incorrect email or password. Please try again."); return; }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: patient } = await supabase
+      .from("patients")
+      .select("role")
+      .eq("auth_user_id", user.id)
+      .single();
+
+    if (patient?.role === "admin") {
+      window.location.href = "/admin";
+    } else {
+      window.location.href = "/my-learning";
+    }
+  };
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg mx-auto mb-3" style={{ background: "var(--primary)" }}>CL</div>
+          <h1 className="text-xl font-bold" style={{ color: "var(--foreground)" }}>CLP Learning Hub</h1>
+          <p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>Sign in to your account</p>
+        </div>
+        <div className="card p-6">
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>Email address</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              placeholder="your@email.com" className="w-full px-4 py-2.5 rounded-xl border text-sm"
+              style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              placeholder="••••••••" className="w-full px-4 py-2.5 rounded-xl border text-sm"
+              style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
+          </div>
+          {error && <p className="text-xs mb-3" style={{ color: "var(--danger)" }}>{error}</p>}
+          <button onClick={handleLogin} disabled={loading || !email || !password}
+            className="w-full py-2.5 rounded-xl text-white font-semibold text-sm primary-gradient disabled:opacity-60 disabled:cursor-not-allowed">
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+        </div>
+        <p className="text-center text-xs mt-6" style={{ color: "var(--foreground-muted)" }}>Don&apos;t have credentials? Contact your CLP care team.</p>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,60 @@
+import { createClient } from "@/lib/supabase/server";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import EnrollButton from "./EnrollButton";
+
+export default async function CourseDetailPage({ params }: { params: Promise<{ courseSlug: string }> }) {
+  const { courseSlug } = await params;
+  const supabase = await createClient();
+  const { data: course } = await supabase.from("courses")
+    .select(`id, slug, title, description, category, thumbnail_url, modules (id, title, order, lessons (id, title, order))`)
+    .eq("slug", courseSlug).eq("published", true).single();
+  if (!course) notFound();
+  const { data: { user } } = await supabase.auth.getUser();
+  const modules = ((course.modules as any[]) || []).sort((a, b) => a.order - b.order);
+  const totalLessons = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
+  return (
+    <div className="max-w-4xl mx-auto px-6 py-14">
+      <Link href="/courses" className="text-sm mb-8 inline-flex items-center gap-1" style={{ color: "var(--foreground-secondary)" }}>← Back to Courses</Link>
+      <div className="card p-8 mb-8">
+        <div className="flex items-start justify-between gap-6 flex-wrap">
+          <div className="flex-1">
+            {course.category && <span className="text-xs font-semibold px-2 py-1 rounded-full" style={{ background: "var(--primary-light)", color: "var(--primary)" }}>{course.category}</span>}
+            <h1 className="text-2xl font-bold mt-3 mb-3" style={{ color: "var(--foreground)" }}>{course.title}</h1>
+            <p style={{ color: "var(--foreground-secondary)" }}>{course.description}</p>
+            <div className="mt-4 text-sm" style={{ color: "var(--foreground-muted)" }}>{modules.length} module{modules.length !== 1 ? "s" : ""} · {totalLessons} lesson{totalLessons !== 1 ? "s" : ""}</div>
+          </div>
+          <div className="flex-shrink-0 w-full md:w-auto"><EnrollButton courseId={course.id} isLoggedIn={!!user} /></div>
+        </div>
+      </div>
+      {modules.length > 0 && (
+        <div>
+          <h2 className="text-lg font-semibold mb-4" style={{ color: "var(--foreground)" }}>What you will learn</h2>
+          <div className="space-y-3">
+            {modules.map((mod, i) => {
+              const lessons = (mod.lessons || []).sort((a: any, b: any) => a.order - b.order);
+              return (
+                <div key={mod.id} className="card">
+                  <div className="p-4 flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: "var(--primary-light)", color: "var(--primary)" }}>{i + 1}</div>
+                    <span className="font-medium" style={{ color: "var(--foreground)" }}>{mod.title}</span>
+                    <span className="ml-auto text-xs" style={{ color: "var(--foreground-muted)" }}>{lessons.length} lesson{lessons.length !== 1 ? "s" : ""}</span>
+                  </div>
+                  {lessons.length > 0 && (
+                    <div className="border-t px-4 py-3 space-y-2" style={{ borderColor: "var(--border-light)" }}>
+                      {lessons.map((lesson: any) => (
+                        <div key={lesson.id} className="flex items-center gap-2 text-sm" style={{ color: "var(--foreground-secondary)" }}>
+                          <span>▶</span><span>{lesson.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
