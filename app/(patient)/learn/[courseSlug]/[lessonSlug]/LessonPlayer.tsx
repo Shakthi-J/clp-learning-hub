@@ -4,6 +4,8 @@ import { ArrowLeft, ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import LessonProgress from "@/components/motion/LessonProgress";
+import CourseCompleteDialog from "@/components/motion/CourseCompleteDialog";
 
 const QuizBlock = dynamic(() => import("@/components/QuizBlock"), { ssr: false });
 const AssignmentBlock = dynamic(() => import("@/components/AssignmentBlock"), { ssr: false });
@@ -39,6 +41,8 @@ export default function LessonPlayer({
   const containerRef = useRef<HTMLDivElement>(null);
   const [completed, setCompleted] = useState(isCompleted);
   const [marking, setMarking] = useState(false);
+  const [courseDone, setCourseDone] = useState(false);
+  const [certificateId, setCertificateId] = useState<string | null>(null);
 
   useEffect(() => { setCompleted(isCompleted); }, [lessonId, isCompleted]);
 
@@ -67,12 +71,22 @@ export default function LessonPlayer({
   const handleMarkComplete = async () => {
     if (completed || marking) return;
     setMarking(true);
-    await fetch("/api/progress", {
+    const res = await fetch("/api/progress", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ enrollmentId, lessonId }),
     });
-    setCompleted(true); setMarking(false); router.refresh();
+    const data = await res.json().catch(() => ({}));
+    setCompleted(true);
+    setMarking(false);
+
+    // The API marks the enrollment complete and issues the certificate when the
+    // last lesson lands, so this is the only moment we can announce it.
+    if (data?.totalLessons > 0 && data.totalCompleted >= data.totalLessons) {
+      setCertificateId(data.certificateId ?? null);
+      setCourseDone(true);
+    }
+    router.refresh();
   };
 
   return (
@@ -87,15 +101,7 @@ export default function LessonPlayer({
         </div>
       )}
 
-      <div className="mb-6">
-        <div className="flex justify-between text-xs mb-1" style={{ color: "var(--foreground-muted)" }}>
-          <span>Lesson {currentIndex + 1} of {totalLessons}</span>
-          {completed && <span style={{ color: "var(--success)" }}>Completed</span>}
-        </div>
-        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
-          <div className="h-full rounded-full" style={{ width: `${((currentIndex + (completed ? 1 : 0)) / totalLessons) * 100}%`, background: "var(--primary)", transition: "width 0.4s ease" }} />
-        </div>
-      </div>
+      <LessonProgress currentIndex={currentIndex} totalLessons={totalLessons} completed={completed} />
 
       <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
         <div className="flex items-center gap-3">
@@ -166,6 +172,12 @@ export default function LessonPlayer({
         .prose-content em { font-style: italic; }
         .prose-content hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
       `}</style>
+      <CourseCompleteDialog
+        open={courseDone}
+        certificateId={certificateId}
+        courseSlug={courseSlug}
+        onClose={() => setCourseDone(false)}
+      />
     </div>
   );
 }

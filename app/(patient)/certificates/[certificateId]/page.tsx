@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import CertificateDocument from "@/components/CertificateDocument";
+import CertificateReveal from "@/components/motion/CertificateReveal";
 import PrintCertificateButton from "@/components/PrintCertificateButton";
 import CopyVerifyLink from "./CopyVerifyLink";
 
@@ -42,15 +43,17 @@ export default async function CertificatePage({ params }: { params: Promise<{ ce
         </div>
       </div>
 
-      <CertificateDocument
-        certificate={{
-          certificateNumber: certificate.certificate_number,
-          issuedAt: certificate.issued_at,
-          recipientName: patient?.name || patient?.email || "Patient",
-          courseTitle: enrollment?.courses?.title ?? "Course",
-          courseCategory: enrollment?.courses?.category,
-        }}
-      />
+      <CertificateReveal>
+        <CertificateDocument
+          certificate={{
+            certificateNumber: certificate.certificate_number,
+            issuedAt: certificate.issued_at,
+            recipientName: patient?.name || patient?.email || "Patient",
+            courseTitle: enrollment?.courses?.title ?? "Course",
+            courseCategory: enrollment?.courses?.category,
+          }}
+        />
+      </CertificateReveal>
 
       <p className="text-xs text-center mt-4 print-hidden" style={{ color: "var(--foreground-muted)" }}>
         Anyone can confirm this certificate at{" "}
