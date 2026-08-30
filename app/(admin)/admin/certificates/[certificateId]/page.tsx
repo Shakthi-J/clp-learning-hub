@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/ssr";
 import CertificateDocument from "@/components/CertificateDocument";
+import { getCertificateTemplate } from "@/lib/certificateTemplate.server";
 import PrintCertificateButton from "@/components/PrintCertificateButton";
 import CopyVerifyLink from "@/app/(patient)/certificates/[certificateId]/CopyVerifyLink";
 
@@ -15,6 +16,7 @@ export default async function AdminCertificatePage({
 }) {
   const { certificateId } = await params;
   const supabase = await createClient();
+  const template = await getCertificateTemplate();
 
   const { data: certificate } = await supabase
     .from("certificates")
@@ -66,6 +68,7 @@ export default async function AdminCertificatePage({
           courseTitle: enrollment?.courses?.title ?? "Course",
           courseCategory: enrollment?.courses?.category,
         }}
+        template={template}
       />
 
       <p className="text-xs text-center mt-4 print-hidden" style={{ color: "var(--foreground-muted)" }}>

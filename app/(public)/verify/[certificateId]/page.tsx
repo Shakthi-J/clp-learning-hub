@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import { SealCheck, WarningCircle } from "@phosphor-icons/react/ssr";
 import CertificateDocument from "@/components/CertificateDocument";
+import { getCertificateTemplate } from "@/lib/certificateTemplate.server";
 
 export const metadata = { title: "Verify Certificate" };
 
@@ -13,6 +14,7 @@ export default async function VerifyCertificatePage({
 
   // Public page: read with the service role, but surface only the fields that
   // belong on a certificate — recipient name, course, date, number.
+  const template = await getCertificateTemplate();
   const admin = await createAdminClient();
   const { data: certificate } = await admin
     .from("certificates")
@@ -57,6 +59,7 @@ export default async function VerifyCertificatePage({
               courseTitle: enrollment?.courses?.title ?? "Course",
               courseCategory: enrollment?.courses?.category,
             }}
+            template={template}
           />
         </>
       ) : (

@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import CertificateDocument from "@/components/CertificateDocument";
+import { getCertificateTemplate } from "@/lib/certificateTemplate.server";
 import CertificateReveal from "@/components/motion/CertificateReveal";
 import PrintCertificateButton from "@/components/PrintCertificateButton";
 import CopyVerifyLink from "./CopyVerifyLink";
@@ -12,6 +13,7 @@ export const metadata = { title: "Certificate" };
 export default async function CertificatePage({ params }: { params: Promise<{ certificateId: string }> }) {
   const { certificateId } = await params;
   const supabase = await createClient();
+  const template = await getCertificateTemplate();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -52,6 +54,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ ce
             courseTitle: enrollment?.courses?.title ?? "Course",
             courseCategory: enrollment?.courses?.category,
           }}
+          template={template}
         />
       </CertificateReveal>
 
