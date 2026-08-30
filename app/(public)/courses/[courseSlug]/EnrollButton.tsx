@@ -59,7 +59,7 @@ export default function EnrollButton({ courseId, isLoggedIn }: { courseId: strin
     <div className="flex flex-col gap-3">
       {/* Confirmation popup */}
       {showConfirm && (
-        <div className="rounded-xl border p-4" style={{ borderColor: "var(--warning)", background: "#fff7ed" }}>
+        <div className="rounded-xl border p-4" style={{ borderColor: "var(--warning)", background: "var(--warning-light)" }}>
           <p className="text-sm font-semibold mb-1" style={{ color: "var(--warning)" }}>
             You have already completed this course
           </p>
@@ -95,7 +95,7 @@ export default function EnrollButton({ courseId, isLoggedIn }: { courseId: strin
         </button>
       )}
 
-      {message && (
+      {message && !showConfirm && (
         <p className="text-xs text-center px-2"
           style={{ color: message.type === "success" ? "var(--success)" : message.type === "info" ? "var(--warning)" : "var(--danger)" }}>
           {message.text}
