@@ -1,12 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { categoryPillStyle, categoryColor } from "@/lib/categoryColor";
 export const metadata = { title: "My Learning" };
 export default async function MyLearningPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const { data: patient } = await supabase.from("patients").select("id, name, access_type").eq("auth_user_id", user!.id).single();
   const { data: enrollments } = await supabase.from("enrollments")
-    .select(`id, status, enrolled_at, courses (slug, title, category), lesson_progress (completed)`)
+    .select(`id, status, enrolled_at,
+             courses (slug, title, category, modules (id, lessons!lessons_module_id_fkey (id))),
+             lesson_progress (completed)`)
     .eq("patient_id", patient?.id).order("enrolled_at", { ascending: false });
   return (
     <div className="p-8 max-w-4xl">
@@ -16,7 +19,7 @@ export default async function MyLearningPage() {
       </div>
       {patient?.access_type && (
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-8"
-          style={{ background: patient.access_type === "all_access" ? "var(--primary-light)" : "var(--beige-light)", color: patient.access_type === "all_access" ? "var(--primary)" : "var(--foreground-secondary)" }}>
+          style={{ background: patient.access_type === "all_access" ? "var(--accent-indigo-light)" : "var(--card-secondary)", color: patient.access_type === "all_access" ? "var(--accent-indigo)" : "var(--foreground-secondary)" }}>
           {patient.access_type === "all_access" ? "All Access" : "Single Course"}
         </div>
       )}
@@ -27,24 +30,28 @@ export default async function MyLearningPage() {
             const course = enrollment.courses as any;
             const progress = enrollment.lesson_progress as any[];
             const completed = progress?.filter((p) => p.completed).length || 0;
-            const total = progress?.length || 0;
+            // Total comes from the course itself: lesson_progress rows only exist
+            // once a lesson has been started, so counting them shows "0 of 0".
+            const total = ((course?.modules as any[]) || []).reduce(
+              (acc: number, m: any) => acc + (m.lessons?.length || 0), 0
+            );
             const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
             return (
               <div key={enrollment.id} className="card p-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex-1">
-                    {course?.category && <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "var(--primary-light)", color: "var(--primary)" }}>{course.category}</span>}
+                    {course?.category && <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={categoryPillStyle(course.category)}>{course.category}</span>}
                     <h3 className="font-semibold mt-2 mb-3" style={{ color: "var(--foreground)" }}>{course?.title}</h3>
                     <div className="mb-2">
                       <div className="flex justify-between text-xs mb-1" style={{ color: "var(--foreground-muted)" }}><span>{completed} of {total} lessons</span><span>{pct}%</span></div>
-                      <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--primary-light)" }}>
-                        <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "var(--primary)" }} />
+                      <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--border-light)" }}>
+                        <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: categoryColor(course?.category) }} />
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <span className="text-xs font-semibold px-2 py-1 rounded-full"
-                      style={enrollment.status === "completed" ? { background: "#e8f5e9", color: "#2e7d32" } : { background: "var(--beige-light)", color: "var(--foreground-secondary)" }}>
+                      style={enrollment.status === "completed" ? { background: "var(--success-light)", color: "var(--success)" } : { background: "var(--beige-light)", color: "var(--foreground-secondary)" }}>
                       {enrollment.status === "completed" ? "Completed" : "In Progress"}
                     </span>
                     {enrollment.status === "active" && course?.slug && (
