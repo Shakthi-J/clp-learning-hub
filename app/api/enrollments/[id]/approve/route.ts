@@ -13,6 +13,17 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!req) return NextResponse.json({ message: "Not found" }, { status: 404 });
   if (req.status !== "requested") return NextResponse.json({ message: "Already reviewed" }, { status: 409 });
   await supabase.from("enrollment_requests").update({ status: action === "approve" ? "approved" : "rejected", reviewed_at: new Date().toISOString(), reviewed_by: admin.id }).eq("id", id);
-  if (action === "approve") await supabase.from("enrollments").insert({ patient_id: req.patient_id, course_id: req.course_id, status: "active" });
+  if (action === "approve") {
+    // Approving twice, or approving while an enrollment is already running,
+    // must not produce a second active row.
+    const { data: existing } = await supabase.from("enrollments")
+      .select("id").eq("patient_id", req.patient_id).eq("course_id", req.course_id)
+      .eq("status", "active").maybeSingle();
+    if (!existing) {
+      const { error } = await supabase.from("enrollments")
+        .insert({ patient_id: req.patient_id, course_id: req.course_id, status: "active" });
+      if (error) return NextResponse.json({ message: error.message }, { status: 500 });
+    }
+  }
   return NextResponse.json({ success: true });
 }

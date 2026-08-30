@@ -20,8 +20,16 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
 
   if (!course) notFound();
 
+  // Oldest active enrollment - the same row 006 keeps when it dedupes, so code
+  // and migration agree on which one wins and no progress is stranded.
+  // .single() previously threw outright if a duplicate existed, which silently
+  // redirected the learner away from every lesson in the course.
   const { data: enrollment } = await supabase.from("enrollments")
-    .select("id, status").eq("patient_id", patient?.id).eq("course_id", course.id).eq("status", "active").single();
+    .select("id, status")
+    .eq("patient_id", patient?.id).eq("course_id", course.id).eq("status", "active")
+    .order("enrolled_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
 
   if (!enrollment) redirect("/my-learning");
 
