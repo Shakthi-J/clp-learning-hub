@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { PencilSimple, Key, X } from "@phosphor-icons/react";
+import CourseAccessPicker from "@/components/CourseAccessPicker";
 
 export type Person = {
   id: string;
@@ -18,9 +19,13 @@ export type Person = {
 export default function PersonRow({
   person,
   onChanged,
+  actorRole,
+  actorId,
 }: {
   person: Person;
   onChanged: () => void;
+  actorRole: string;
+  actorId: string;
 }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(person.name ?? "");
@@ -115,10 +120,16 @@ export default function PersonRow({
               style={
                 person.access_type === "all_access"
                   ? { background: "var(--accent-indigo-light)", color: "var(--accent-indigo)" }
-                  : { background: "var(--card-secondary)", color: "var(--foreground-secondary)" }
+                  : person.access_type === "selected_courses"
+                    ? { background: "var(--accent-blue-light)", color: "var(--accent-blue)" }
+                    : { background: "var(--card-secondary)", color: "var(--foreground-secondary)" }
               }
             >
-              {person.access_type === "all_access" ? "All Access" : "Single Course"}
+              {person.access_type === "all_access"
+                ? "All Access"
+                : person.access_type === "selected_courses"
+                  ? "Selected Courses"
+                  : "Single Course"}
             </span>
           )}
           <span className="text-xs hidden sm:inline" style={{ color: "var(--foreground-muted)" }}>
@@ -165,6 +176,7 @@ export default function PersonRow({
                     <select value={accessType} onChange={(e) => setAccessType(e.target.value)}
                       className="w-full px-3 py-2 rounded-lg border text-sm" style={inputStyle}>
                       <option value="single_course">Single Course</option>
+                      <option value="selected_courses">Selected Courses</option>
                       <option value="all_access">All Access</option>
                     </select>
                   </div>
@@ -174,6 +186,22 @@ export default function PersonRow({
                   style={{ background: "var(--primary)", color: "var(--on-primary)" }}>
                   {busy ? "Saving…" : "Save changes"}
                 </button>
+
+                {role === "patient" && accessType === "selected_courses" && (
+                  <div className="pt-4" style={{ borderTop: "1px solid var(--border-light)" }}>
+                    <label className="block text-xs font-medium mb-2" style={{ color: "var(--foreground)" }}>
+                      Courses for this learner
+                    </label>
+                    <p className="text-[11px] mb-2.5" style={{ color: "var(--foreground-muted)" }}>
+                      {accessType !== person.access_type
+                        ? "Save the tier change first, then pick their courses."
+                        : "Assigning a course enrols them straight away."}
+                    </p>
+                    {accessType === person.access_type && (
+                      <CourseAccessPicker patientId={person.id} actorRole={actorRole} actorId={actorId} />
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3 md:border-l md:pl-5" style={{ borderColor: "var(--border)" }}>

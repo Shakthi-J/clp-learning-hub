@@ -16,6 +16,7 @@ export default function AdminPeoplePage() {
   const [role, setRole] = useState("patient");
   const [accessType, setAccessType] = useState("single_course");
 
+  const [actor, setActor] = useState<{ id: string; role: string } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
@@ -31,7 +32,16 @@ export default function AdminPeoplePage() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchPeople(); }, []);
+  useEffect(() => {
+    fetchPeople();
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from("patients").select("id, role").eq("auth_user_id", user.id).maybeSingle();
+      if (data) setActor({ id: data.id, role: data.role });
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleCreate = async () => {
     if (!name || !email || !password) return;
@@ -121,6 +131,7 @@ export default function AdminPeoplePage() {
                 <select value={accessType} onChange={(e) => setAccessType(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border text-sm" style={inputStyle}>
                   <option value="single_course">Single Course</option>
+                  <option value="selected_courses">Selected Courses</option>
                   <option value="all_access">All Access</option>
                 </select>
               </div>
@@ -159,7 +170,7 @@ export default function AdminPeoplePage() {
           </p>
           <div className="space-y-3 stagger">
             {people.map((person) => (
-              <PersonRow key={person.id} person={person} onChanged={fetchPeople} />
+              <PersonRow key={person.id} person={person} onChanged={fetchPeople} actorRole={actor?.role ?? "admin"} actorId={actor?.id ?? ""} />
             ))}
           </div>
         </>
