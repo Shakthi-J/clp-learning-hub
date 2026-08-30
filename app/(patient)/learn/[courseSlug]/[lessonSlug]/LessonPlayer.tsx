@@ -25,6 +25,8 @@ interface LessonPlayerProps {
   quiz: { id: string; title: string; questions: any[] } | null;
   assignment: { id: string; title: string; prompt: string } | null;
   existingSubmission: any | null;
+  /** The course is already finished; this is a re-read, not a first pass. */
+  isReviewing?: boolean;
 }
 
 declare global {
@@ -34,7 +36,7 @@ declare global {
 export default function LessonPlayer({
   lessonId, enrollmentId, patientId, youtubeVideoId, notes, isCompleted,
   prevLesson, nextLesson, courseSlug, totalLessons, currentIndex,
-  quiz, assignment, existingSubmission,
+  quiz, assignment, existingSubmission, isReviewing = false,
 }: LessonPlayerProps) {
   const router = useRouter();
   const playerRef = useRef<any>(null);
@@ -82,7 +84,7 @@ export default function LessonPlayer({
 
     // The API marks the enrollment complete and issues the certificate when the
     // last lesson lands, so this is the only moment we can announce it.
-    if (data?.totalLessons > 0 && data.totalCompleted >= data.totalLessons) {
+    if (!isReviewing && data?.totalLessons > 0 && data.totalCompleted >= data.totalLessons) {
       setCertificateId(data.certificateId ?? null);
       setCourseDone(true);
     }
@@ -91,6 +93,15 @@ export default function LessonPlayer({
 
   return (
     <div>
+      {isReviewing && (
+        <div
+          className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl mb-4 text-sm"
+          style={{ background: "var(--success-light)", color: "var(--success)" }}
+        >
+          <CheckCircle size={16} weight="fill" className="flex-shrink-0" />
+          <span>You have completed this course. Revisit any lesson as often as you like.</span>
+        </div>
+      )}
       {youtubeVideoId ? (
         <div className="rounded-2xl overflow-hidden mb-6" style={{ aspectRatio: "16/9", background: "#000" }}>
           <div ref={containerRef} className="w-full h-full" />

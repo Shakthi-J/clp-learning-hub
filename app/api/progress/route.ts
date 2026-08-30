@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     .from("patients").select("id").eq("auth_user_id", user.id).single();
 
   const { data: enrollment } = await supabase
-    .from("enrollments").select("id, course_id")
+    .from("enrollments").select("id, course_id, status")
     .eq("id", enrollmentId).eq("patient_id", patient?.id).single();
 
   if (!enrollment) return NextResponse.json({ message: "Enrollment not found" }, { status: 404 });
@@ -44,8 +44,9 @@ export async function POST(request: Request) {
   const totalCompleted = completedLessons?.length ?? 0;
 
   // If all lessons done, mark enrollment as completed and issue the certificate
+  // Re-reading a finished course must not rewrite completed_at or re-issue.
   let certificateId: string | null = null;
-  if (totalLessons > 0 && totalCompleted >= totalLessons) {
+  if (enrollment.status !== "completed" && totalLessons > 0 && totalCompleted >= totalLessons) {
     await supabase.from("enrollments").update({
       status: "completed",
       completed_at: new Date().toISOString(),

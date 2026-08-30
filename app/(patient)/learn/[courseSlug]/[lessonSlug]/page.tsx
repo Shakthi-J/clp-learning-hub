@@ -20,18 +20,20 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
 
   if (!course) notFound();
 
-  // Oldest active enrollment - the same row 006 keeps when it dedupes, so code
-  // and migration agree on which one wins and no progress is stranded.
-  // .single() previously threw outright if a duplicate existed, which silently
-  // redirected the learner away from every lesson in the course.
-  const { data: enrollment } = await supabase.from("enrollments")
+  // Active or completed: finishing a course must not lock a learner out of the
+  // material they worked through. An active enrollment wins when both exist, so
+  // progress keeps landing on the one still in flight.
+  const { data: enrollments } = await supabase.from("enrollments")
     .select("id, status")
-    .eq("patient_id", patient?.id).eq("course_id", course.id).eq("status", "active")
-    .order("enrolled_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
+    .eq("patient_id", patient?.id).eq("course_id", course.id)
+    .in("status", ["active", "completed"])
+    .order("enrolled_at", { ascending: true });
+
+  const enrollment =
+    (enrollments || []).find((e) => e.status === "active") ?? (enrollments || [])[0] ?? null;
 
   if (!enrollment) redirect("/my-learning");
+  const isReviewing = enrollment.status === "completed";
 
   const modules = ((course.modules as any[]) || []).sort((a, b) => a.order - b.order);
   const allLessons: any[] = [];
@@ -100,6 +102,7 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
         quiz={quiz ? { id: quiz.id, title: quiz.title, questions: (quiz.quiz_questions as any[]) || [] } : null}
         assignment={assignment ? { id: assignment.id, title: assignment.title, prompt: assignment.prompt } : null}
         existingSubmission={existingSubmission}
+        isReviewing={isReviewing}
       />
 
       <div className="mt-8">

@@ -19,17 +19,20 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
 
   if (!course) notFound();
 
-  // Oldest active enrollment, matching the lesson page and migration 006.
-  // .single() throws when it matches zero rows too, so a learner with no active
-  // enrollment produced an error rather than a clean redirect.
-  const { data: enrollment } = await supabase.from("enrollments")
+  // Active or completed: finishing a course must not lock a learner out of the
+  // material they worked through. An active enrollment wins when both exist, so
+  // progress keeps landing on the one still in flight.
+  const { data: enrollments } = await supabase.from("enrollments")
     .select("id, status")
-    .eq("patient_id", patient?.id).eq("course_id", course.id).eq("status", "active")
-    .order("enrolled_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
+    .eq("patient_id", patient?.id).eq("course_id", course.id)
+    .in("status", ["active", "completed"])
+    .order("enrolled_at", { ascending: true });
+
+  const enrollment =
+    (enrollments || []).find((e) => e.status === "active") ?? (enrollments || [])[0] ?? null;
 
   if (!enrollment) redirect("/my-learning");
+  const isReviewing = enrollment.status === "completed";
 
   const { data: progress } = await supabase.from("lesson_progress")
     .select("lesson_id, completed").eq("enrollment_id", enrollment.id);
@@ -69,6 +72,15 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
   return (
     <div className="p-8 max-w-3xl">
       <Link href="/my-learning" className="text-sm mb-6 inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> My Learning</Link>
+      {isReviewing && (
+        <div
+          className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl mb-6 text-sm"
+          style={{ background: "var(--success-light)", color: "var(--success)" }}
+        >
+          <Check size={16} weight="bold" className="flex-shrink-0" />
+          <span>Course complete. Everything stays open - revisit any lesson whenever you need it.</span>
+        </div>
+      )}
       <div className="card p-6 mb-6">
         <h1 className="text-2xl font-bold mb-4" style={{ color: "var(--foreground)" }}>{course.title}</h1>
         <div className="mb-2">
@@ -77,13 +89,13 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
             <span>{pct}%</span>
           </div>
           <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--primary-light)" }}>
-            <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "var(--primary)" }} />
+            <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: isReviewing ? "var(--success)" : "var(--primary)" }} />
           </div>
         </div>
         {firstIncomplete && (
           <Link href={`/learn/${courseSlug}/${firstIncomplete.slug}`}
             className="inline-block mt-4 px-5 py-2.5 rounded-xl text-white text-sm font-semibold primary-gradient">
-            <span className="inline-flex items-center gap-1.5">{completedCount === 0 ? "Start course" : "Continue"}<ArrowRight size={14} weight="bold" /></span>
+            <span className="inline-flex items-center gap-1.5">{isReviewing ? "Review course" : completedCount === 0 ? "Start course" : "Continue"}<ArrowRight size={14} weight="bold" /></span>
           </Link>
         )}
         {pct === 100 && <div className="mt-4 px-4 py-3 rounded-xl text-sm font-semibold" style={{ background: "var(--success-light)", color: "var(--success)" }}>Course Complete! Well done.</div>}

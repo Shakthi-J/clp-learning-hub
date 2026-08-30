@@ -94,7 +94,7 @@ export default async function MyLearningPage() {
           {course?.slug && (
             <div className="flex-shrink-0 self-center">
               <ButtonLink
-                href={isDone ? `/courses/${course.slug}` : `/learn/${course.slug}`}
+                href={`/learn/${course.slug}`}
                 variant={isDone ? "secondary" : "primary"}
                 size="sm"
                 iconRight={<ArrowRight size={13} weight="bold" className="transition-transform duration-200 group-hover:translate-x-0.5" />}
