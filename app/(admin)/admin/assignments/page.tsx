@@ -70,7 +70,9 @@ export default function AdminAssignmentsPage() {
         : submissions.length === 0 ? (
           <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
             <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--warning-light)", color: "var(--warning)" }}><ClipboardText size={22} weight="duotone" /></div>
-            <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No {filter.replace("_", " ")} submissions</h3>
+            <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>
+              {filter === "submitted" ? "Nothing to grade" : filter === "approved" ? "No approved submissions" : "No submissions needing revision"}
+            </h3>
           </div>
         ) : (
           <div className="space-y-4">

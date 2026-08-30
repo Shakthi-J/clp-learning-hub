@@ -58,12 +58,14 @@ export default async function AdminEnrollmentsPage({
         >
           <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--warning-light)", color: "var(--warning)" }}><ClipboardText size={22} weight="duotone" /></div>
           <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>
-            No {filter} requests
+            {filter === "requested" ? "Nothing to review" : filter === "approved" ? "No approved requests" : "No rejected requests"}
           </h3>
           <p className="text-sm" style={{ color: "var(--foreground-secondary)" }}>
             {filter === "requested"
-              ? "All caught up — no pending requests."
-              : `No ${filter} requests to show.`}
+              ? "All caught up - every enrollment request has been reviewed."
+              : filter === "approved"
+                ? "Approved requests will appear here once you accept one."
+                : "Rejected requests will appear here."}
           </p>
         </div>
       ) : (

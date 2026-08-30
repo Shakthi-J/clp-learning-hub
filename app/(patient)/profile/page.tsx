@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight } from "@phosphor-icons/react/ssr";
-import { BookOpen, CheckCircle, PlayCircle, Certificate } from "@phosphor-icons/react/ssr";
+import { ArrowRight, BookOpen, CheckCircle, PlayCircle, Certificate } from "@phosphor-icons/react/ssr";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ProfileForm from "./ProfileForm";
