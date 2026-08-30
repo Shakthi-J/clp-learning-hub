@@ -1,11 +1,13 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import LessonPlayer from "./LessonPlayer";
+import LessonDiscussion from "@/components/LessonDiscussion";
 
 export default async function LessonPage({ params }: { params: Promise<{ courseSlug: string; lessonSlug: string }> }) {
   const { courseSlug, lessonSlug } = await params;
   const supabase = await createClient();
+  const adminSupabase = await createAdminClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -39,26 +41,30 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
 
   const { data: progress } = await supabase.from("lesson_progress")
     .select("lesson_id, completed").eq("enrollment_id", enrollment.id);
-  const completedIds = new Set((progress || []).filter(p => p.completed).map(p => p.lesson_id));
+  const completedIds = new Set((progress || []).filter((p: any) => p.completed).map((p: any) => p.lesson_id));
   const isCompleted = completedIds.has(lesson.id);
 
-  // Fetch quiz for this lesson
-  const { data: quiz } = await supabase.from("quizzes")
+  const { data: quiz } = await adminSupabase.from("quizzes")
     .select("id, title, quiz_questions(id, question, options, correct_answer)")
     .eq("lesson_id", lesson.id).maybeSingle();
 
-  // Fetch assignment for this lesson
-  const { data: assignment } = await supabase.from("assignments")
+  const { data: assignment } = await adminSupabase.from("assignments")
     .select("id, title, prompt").eq("lesson_id", lesson.id).maybeSingle();
 
-  // Fetch existing assignment submission
   let existingSubmission = null;
   if (assignment) {
-    const { data: sub } = await supabase.from("assignment_submissions")
+    const { data: sub } = await adminSupabase.from("assignment_submissions")
       .select("id, response, status, feedback, submitted_at")
       .eq("patient_id", patient?.id).eq("assignment_id", assignment.id).maybeSingle();
     existingSubmission = sub;
   }
+
+  const { data: comments } = await adminSupabase
+    .from("lesson_comments")
+    .select("id, body, created_at, parent_id, patient_id, patients (name, role)")
+    .eq("lesson_id", lesson.id)
+    .is("deleted_at", null)
+    .order("created_at", { ascending: true });
 
   return (
     <div className="p-6 max-w-4xl">
@@ -87,6 +93,15 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
         assignment={assignment ? { id: assignment.id, title: assignment.title, prompt: assignment.prompt } : null}
         existingSubmission={existingSubmission}
       />
+
+      <div className="mt-8">
+        <LessonDiscussion
+          lessonId={lesson.id}
+          comments={(comments as any[]) || []}
+          currentPatientId={patient?.id || ""}
+          canModerate={false}
+        />
+      </div>
     </div>
   );
 }

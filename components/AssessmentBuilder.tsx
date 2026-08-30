@@ -78,7 +78,7 @@ export default function AssessmentBuilder({ moduleId, moduleTitle }: AssessmentB
         <span>🎯</span>
         <h4 className="font-semibold text-sm" style={{ color: "var(--foreground)" }}>Module Quiz</h4>
         {assessment && (
-          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#fff7ed", color: "var(--warning)" }}>
+          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--warning-light)", color: "var(--warning)" }}>
             Pass {assessment.pass_threshold}% · {questions.length} question{questions.length !== 1 ? "s" : ""}
           </span>
         )}

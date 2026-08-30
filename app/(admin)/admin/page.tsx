@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import StatCard from "@/components/StatCard";
 export const metadata = { title: "Admin Dashboard" };
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -9,21 +10,17 @@ export default async function AdminDashboardPage() {
     supabase.from("enrollments").select("*", { count: "exact", head: true }).eq("status", "active"),
   ]);
   const stats = [
-    { label: "Published Courses", value: totalCourses ?? 0, icon: "📚" },
-    { label: "Total Patients", value: totalPatients ?? 0, icon: "👥" },
-    { label: "Pending Requests", value: pendingRequests ?? 0, icon: "📋", highlight: (pendingRequests ?? 0) > 0 },
-    { label: "Active Enrollments", value: activeEnrollments ?? 0, icon: "🎓" },
+    { label: "Published Courses", value: totalCourses ?? 0, icon: "📚", accent: "blue" as const },
+    { label: "Total Patients", value: totalPatients ?? 0, icon: "👥", accent: "purple" as const },
+    { label: "Pending Requests", value: pendingRequests ?? 0, icon: "📋", accent: "warning" as const, highlight: (pendingRequests ?? 0) > 0 },
+    { label: "Active Enrollments", value: activeEnrollments ?? 0, icon: "🎓", accent: "teal" as const },
   ];
   return (
     <div className="p-8 max-w-5xl">
       <div className="mb-8"><h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>Dashboard</h1><p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>CLP Learning Hub overview</p></div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         {stats.map((stat) => (
-          <div key={stat.label} className="card p-5" style={stat.highlight ? { borderColor: "var(--warning)", background: "#fff7ed" } : {}}>
-            <div className="text-2xl mb-2">{stat.icon}</div>
-            <div className="text-2xl font-bold" style={{ color: stat.highlight ? "var(--warning)" : "var(--foreground)" }}>{stat.value}</div>
-            <div className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>{stat.label}</div>
-          </div>
+          <StatCard key={stat.label} label={stat.label} value={stat.value} icon={stat.icon} accent={stat.accent} highlight={stat.highlight} />
         ))}
       </div>
       <div>

@@ -115,7 +115,7 @@ export default function LessonPlayer({
             </button>
           )}
           {completed && (
-            <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold" style={{ background: "#e8f5e9", color: "#2e7d32" }}>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold" style={{ background: "var(--success-light)", color: "var(--success)" }}>
               <span>✓</span><span>Completed</span>
             </div>
           )}

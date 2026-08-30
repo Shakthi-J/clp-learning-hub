@@ -117,7 +117,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
                       <span className="text-sm font-medium truncate" style={{ color: "var(--foreground)" }}>{lesson.title}</span>
                       {lesson.youtube_video_id && (
                         <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
-                          style={{ background: "#fef2f2", color: "#dc2626" }}>▶ Video</span>
+                          style={{ background: "var(--danger-light)", color: "var(--danger)" }}>▶ Video</span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">

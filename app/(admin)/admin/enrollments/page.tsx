@@ -126,8 +126,8 @@ export default async function AdminEnrollmentsPage({
                     className="text-xs font-semibold px-3 py-1.5 rounded-full flex-shrink-0"
                     style={
                       filter === "approved"
-                        ? { background: "#e8f5e9", color: "#2e7d32" }
-                        : { background: "#fef2f2", color: "#dc2626" }
+                        ? { background: "var(--success-light)", color: "var(--success)" }
+                        : { background: "var(--danger-light)", color: "var(--danger)" }
                     }
                   >
                     {filter === "approved" ? "Approved" : "Rejected"}

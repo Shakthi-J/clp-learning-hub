@@ -62,7 +62,7 @@ export default function AssessmentBlock({
         <span className="text-lg">🎯</span>
         <h3 className="font-semibold" style={{ color: "var(--foreground)" }}>{title}</h3>
         <span className="text-xs px-2 py-0.5 rounded-full ml-auto font-semibold"
-          style={{ background: "#fff7ed", color: "var(--warning)" }}>
+          style={{ background: "var(--warning-light)", color: "var(--warning)" }}>
           Assessment · Pass {passThreshold}%
         </span>
       </div>
@@ -74,11 +74,11 @@ export default function AssessmentBlock({
       {!taking && displayResult && (
         <div>
           <div className="rounded-xl p-5 mb-5 text-center"
-            style={{ background: displayResult.passed ? "#e8f5e9" : "#fef2f2" }}>
-            <p className="text-3xl font-bold mb-1" style={{ color: displayResult.passed ? "#2e7d32" : "#dc2626" }}>
+            style={{ background: displayResult.passed ? "var(--success-light)" : "var(--danger-light)" }}>
+            <p className="text-3xl font-bold mb-1" style={{ color: displayResult.passed ? "var(--primary)" : "var(--danger)" }}>
               {displayResult.pct}%
             </p>
-            <p className="font-semibold mb-1" style={{ color: displayResult.passed ? "#2e7d32" : "#dc2626" }}>
+            <p className="font-semibold mb-1" style={{ color: displayResult.passed ? "var(--primary)" : "var(--danger)" }}>
               {displayResult.passed ? "Passed! Well done." : `Not passed yet. You need ${passThreshold}% to pass.`}
             </p>
             <p className="text-sm" style={{ color: "var(--foreground-secondary)" }}>

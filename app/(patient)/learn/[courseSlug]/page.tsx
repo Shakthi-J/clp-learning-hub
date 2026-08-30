@@ -78,7 +78,7 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
             {completedCount === 0 ? "Start Course →" : "Continue →"}
           </Link>
         )}
-        {pct === 100 && <div className="mt-4 px-4 py-3 rounded-xl text-sm font-semibold" style={{ background: "#e8f5e9", color: "#2e7d32" }}>Course Complete! Well done.</div>}
+        {pct === 100 && <div className="mt-4 px-4 py-3 rounded-xl text-sm font-semibold" style={{ background: "var(--success-light)", color: "var(--success)" }}>Course Complete! Well done.</div>}
       </div>
 
       <div className="space-y-3">
@@ -104,7 +104,7 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
                     className="flex items-center gap-3 px-5 py-3 border-b last:border-b-0 transition-colors"
                     style={{ borderColor: "var(--border-light)", background: done ? "rgba(46,125,50,0.04)" : "transparent" }}>
                     <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs"
-                      style={{ background: done ? "#e8f5e9" : "var(--beige-light)", color: done ? "#2e7d32" : "var(--foreground-muted)" }}>
+                      style={{ background: done ? "var(--success-light)" : "var(--beige-light)", color: done ? "var(--success)" : "var(--foreground-muted)" }}>
                       {done ? "✓" : li + 1}
                     </div>
                     <span className="text-sm flex-1" style={{ color: done ? "var(--foreground-secondary)" : "var(--foreground)" }}>{lesson.title}</span>

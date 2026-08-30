@@ -85,8 +85,8 @@ export default function AdminAssignmentsPage() {
                     </p>
                   </div>
                   <span className="text-xs font-semibold px-2 py-1 rounded-full"
-                    style={sub.status === "approved" ? { background: "#e8f5e9", color: "#2e7d32" }
-                      : sub.status === "needs_revision" ? { background: "#fef2f2", color: "#dc2626" }
+                    style={sub.status === "approved" ? { background: "var(--success-light)", color: "var(--success)" }
+                      : sub.status === "needs_revision" ? { background: "var(--danger-light)", color: "var(--danger)" }
                       : { background: "var(--beige-light)", color: "var(--foreground-secondary)" }}>
                     {sub.status.replace("_", " ")}
                   </span>
@@ -102,7 +102,7 @@ export default function AdminAssignmentsPage() {
                 </div>
 
                 {sub.feedback && (
-                  <div className="rounded-xl p-3 mb-3" style={{ background: "#fff7ed", border: "1px solid #fed7aa" }}>
+                  <div className="rounded-xl p-3 mb-3" style={{ background: "var(--warning-light)", border: "1px solid var(--warning-light)" }}>
                     <p className="text-xs font-semibold mb-1" style={{ color: "var(--warning)" }}>Previous feedback:</p>
                     <p className="text-sm" style={{ color: "var(--foreground)" }}>{sub.feedback}</p>
                   </div>

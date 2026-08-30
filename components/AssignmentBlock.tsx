@@ -41,8 +41,8 @@ export default function AssignmentBlock({
   };
 
   const statusStyle = (status: string) => {
-    if (status === "approved") return { background: "#e8f5e9", color: "#2e7d32" };
-    if (status === "needs_revision") return { background: "#fef2f2", color: "#dc2626" };
+    if (status === "approved") return { background: "var(--success-light)", color: "var(--success)" };
+    if (status === "needs_revision") return { background: "var(--danger-light)", color: "var(--danger)" };
     return { background: "var(--beige-light)", color: "var(--foreground-secondary)" };
   };
 
@@ -80,7 +80,7 @@ export default function AssignmentBlock({
             <p className="text-sm whitespace-pre-wrap" style={{ color: "var(--foreground)" }}>{submission.response}</p>
           </div>
           {submission.feedback && (
-            <div className="rounded-xl p-4 mb-3" style={{ background: "#fff7ed", border: "1px solid #fed7aa" }}>
+            <div className="rounded-xl p-4 mb-3" style={{ background: "var(--warning-light)", border: "1px solid var(--warning-light)" }}>
               <p className="text-xs font-semibold mb-1" style={{ color: "var(--warning)" }}>Feedback from CLP team:</p>
               <p className="text-sm" style={{ color: "var(--foreground)" }}>{submission.feedback}</p>
             </div>

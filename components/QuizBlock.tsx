@@ -55,9 +55,9 @@ export default function QuizBlock({ quizId, title, questions, patientId }: QuizB
 
       {submitted ? (
         <div>
-          <div className="rounded-xl p-4 mb-4 text-center" style={{ background: pct >= 70 ? "#e8f5e9" : "#fef2f2" }}>
-            <p className="text-2xl font-bold mb-1" style={{ color: pct >= 70 ? "#2e7d32" : "#dc2626" }}>{pct}%</p>
-            <p className="text-sm font-semibold" style={{ color: pct >= 70 ? "#2e7d32" : "#dc2626" }}>
+          <div className="rounded-xl p-4 mb-4 text-center" style={{ background: pct >= 70 ? "var(--success-light)" : "var(--danger-light)" }}>
+            <p className="text-2xl font-bold mb-1" style={{ color: pct >= 70 ? "var(--primary)" : "var(--danger)" }}>{pct}%</p>
+            <p className="text-sm font-semibold" style={{ color: pct >= 70 ? "var(--primary)" : "var(--danger)" }}>
               {score} of {questions.length} correct — {pct >= 70 ? "Great job!" : "Keep practicing!"}
             </p>
           </div>
@@ -71,9 +71,9 @@ export default function QuizBlock({ quizId, title, questions, patientId }: QuizB
                   return (
                     <div key={opt} className="px-3 py-2 rounded-lg text-sm flex items-center gap-2"
                       style={{
-                        background: isCorrect ? "#e8f5e9" : isSelected && !isCorrect ? "#fef2f2" : "var(--card-secondary)",
-                        color: isCorrect ? "#2e7d32" : isSelected && !isCorrect ? "#dc2626" : "var(--foreground-secondary)",
-                        border: `1px solid ${isCorrect ? "#a5d6a7" : isSelected && !isCorrect ? "#ffcdd2" : "var(--border)"}`,
+                        background: isCorrect ? "var(--success-light)" : isSelected && !isCorrect ? "var(--danger-light)" : "var(--card-secondary)",
+                        color: isCorrect ? "var(--primary)" : isSelected && !isCorrect ? "var(--danger)" : "var(--foreground-secondary)",
+                        border: `1px solid ${isCorrect ? "var(--secondary)" : isSelected && !isCorrect ? "var(--danger-light)" : "var(--border)"}`,
                       }}>
                       {isCorrect ? "✓" : isSelected && !isCorrect ? "✗" : "○"} {opt}
                     </div>

@@ -1,31 +1,75 @@
 @import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Light theme - white/neutral base with a multi-colour accent system.
+   Never hardcode hex in components; always reference these variables.
+   --------------------------------------------------------------------------- */
 :root {
-  --background: #f8f4ea; --card: #fffdf8; --card-secondary: #f3f8ef;
+  --background: #f8fafc; --card: #ffffff; --card-secondary: #f1f5f9;
+
   --primary: #2e7d32; --primary-hover: #256a29; --primary-light: #dcefd7;
   --secondary: #a8d5a2; --secondary-light: #eef8eb;
-  --beige: #e8dfc9; --beige-light: #f4eee1;
-  --foreground: #1f2937; --foreground-secondary: #6b7280; --foreground-muted: #9ca3af;
-  --success: #2e7d32; --warning: #d97706; --danger: #dc2626;
-  --border: #e8dfc9; --border-light: #f0ebe0;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.03); --shadow-md: 0 4px 12px rgba(0,0,0,0.05); --shadow-lg: 0 12px 24px rgba(0,0,0,0.08);
+
+  /* Neutral aliases. `beige` names are kept so existing markup keeps working. */
+  --beige: #e2e8f0; --beige-light: #f1f5f9;
+
+  --foreground: #0f172a; --foreground-secondary: #64748b; --foreground-muted: #94a3b8;
+
+  --success: #16a34a; --success-light: #dcfce7;
+  --warning: #d97706; --warning-light: #fef3c7;
+  --danger:  #dc2626; --danger-light:  #fee2e2;
+  --info:    #0284c7; --info-light:    #e0f2fe;
+
+  /* Accent hues for categories, roles and badges. */
+  --accent-blue: #2563eb;   --accent-blue-light: #dbeafe;
+  --accent-purple: #7c3aed; --accent-purple-light: #ede9fe;
+  --accent-teal: #0d9488;   --accent-teal-light: #ccfbf1;
+  --accent-rose: #e11d48;   --accent-rose-light: #ffe4e6;
+  --accent-amber: #d97706;  --accent-amber-light: #fef3c7;
+  --accent-indigo: #4f46e5; --accent-indigo-light: #e0e7ff;
+
+  --border: #e2e8f0; --border-light: #f1f5f9;
+  --scrollbar: #cbd5e1; --scrollbar-hover: #94a3b8;
+
+  --shadow-sm: 0 1px 2px rgba(15,23,42,0.04); --shadow-md: 0 4px 12px rgba(15,23,42,0.06); --shadow-lg: 0 12px 24px rgba(15,23,42,0.10);
   --radius-sm: 10px; --radius-md: 14px; --radius-lg: 18px; --radius-xl: 24px;
 }
+
 .dark {
-  --background: #101712; --card: #162019; --card-secondary: #1d2920;
-  --primary: #66bb6a; --primary-hover: #81c784; --primary-light: #204529;
-  --secondary: #81c784; --secondary-light: #28402e;
-  --beige: #475046; --beige-light: #556056;
-  --foreground: #f3f4f6; --foreground-secondary: #d1d5db; --foreground-muted: #9ca3af;
-  --border: #2f3b31; --border-light: #3b483d;
-  --success: #4caf50; --warning: #f59e0b; --danger: #ef4444;
+  --background: #0f172a; --card: #1e293b; --card-secondary: #263449;
+
+  --primary: #4ade80; --primary-hover: #86efac; --primary-light: #14532d;
+  --secondary: #86efac; --secondary-light: #14532d;
+
+  --beige: #334155; --beige-light: #263449;
+
+  --foreground: #f1f5f9; --foreground-secondary: #cbd5e1; --foreground-muted: #94a3b8;
+
+  --success: #4ade80; --success-light: #14532d;
+  --warning: #fbbf24; --warning-light: #451a03;
+  --danger:  #f87171; --danger-light:  #450a0a;
+  --info:    #38bdf8; --info-light:    #082f49;
+
+  --accent-blue: #60a5fa;   --accent-blue-light: #1e3a8a;
+  --accent-purple: #a78bfa; --accent-purple-light: #2e1065;
+  --accent-teal: #2dd4bf;   --accent-teal-light: #134e4a;
+  --accent-rose: #fb7185;   --accent-rose-light: #4c0519;
+  --accent-amber: #fbbf24;  --accent-amber-light: #451a03;
+  --accent-indigo: #818cf8; --accent-indigo-light: #1e1b4b;
+
+  --border: #334155; --border-light: #475569;
+  --scrollbar: #475569; --scrollbar-hover: #64748b;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.30); --shadow-md: 0 4px 12px rgba(0,0,0,0.35); --shadow-lg: 0 12px 24px rgba(0,0,0,0.45);
 }
+
 @theme inline {
   --color-background: var(--background); --color-card: var(--card); --color-card-secondary: var(--card-secondary);
   --color-primary: var(--primary); --color-primary-hover: var(--primary-hover); --color-primary-light: var(--primary-light);
   --color-secondary: var(--secondary); --color-secondary-light: var(--secondary-light);
   --color-beige: var(--beige); --color-beige-light: var(--beige-light);
   --color-foreground: var(--foreground); --color-foreground-secondary: var(--foreground-secondary); --color-foreground-muted: var(--foreground-muted);
-  --color-success: var(--success); --color-warning: var(--warning); --color-danger: var(--danger);
+  --color-success: var(--success); --color-warning: var(--warning); --color-danger: var(--danger); --color-info: var(--info);
   --color-border: var(--border); --color-border-light: var(--border-light);
 }
 * { box-sizing: border-box; }
@@ -33,18 +77,42 @@ html { scroll-behavior: smooth; }
 body { background: var(--background); color: var(--foreground); min-height: 100vh; font-family: Inter, ui-sans-serif, system-ui, sans-serif; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cfd8c5; border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: #a8d5a2; }
-::selection { background: rgba(46,125,50,0.18); color: var(--foreground); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
+::selection { background: color-mix(in srgb, var(--primary) 20%, transparent); color: var(--foreground); }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
 .card-hover { transition: all 0.25s ease; }
 .card-hover:hover { border-color: var(--secondary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.clinical-gradient { background: linear-gradient(135deg, #dcefd7 0%, #f8f4ea 100%); }
-.primary-gradient { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); }
+.clinical-gradient { background: linear-gradient(135deg, var(--primary-light) 0%, var(--card-secondary) 100%); }
+.primary-gradient { background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 70%, white) 100%); }
 .sidebar-surface { background: var(--card); border-right: 1px solid var(--border); }
 .section-surface { background: var(--card-secondary); }
-.success-pill { background: #e8f5e9; color: #2e7d32; }
-.warning-pill { background: #fff7ed; color: #d97706; }
-.danger-pill { background: #fef2f2; color: #dc2626; }
+.success-pill { background: var(--success-light); color: var(--success); }
+.warning-pill { background: var(--warning-light); color: var(--warning); }
+.danger-pill { background: var(--danger-light); color: var(--danger); }
 button, a { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
 button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--secondary); outline-offset: 2px; }
+
+/* Certificate printing — the certificate is the only thing on the page. */
+@media print {
+  @page { size: A4 landscape; margin: 12mm; }
+  body { background: #fff; }
+  .print-hidden, aside, nav, footer { display: none !important; }
+  main { overflow: visible !important; }
+  .print-area { padding: 0 !important; max-width: none !important; }
+  #certificate-document {
+    box-shadow: none !important;
+    border-color: #e8dfc9 !important;
+    break-inside: avoid;
+  }
+}
+
+.info-pill { background: var(--info-light); color: var(--info); }
+
+/* Accent pills, used for categories and role badges. */
+.accent-blue-pill   { background: var(--accent-blue-light);   color: var(--accent-blue); }
+.accent-purple-pill { background: var(--accent-purple-light); color: var(--accent-purple); }
+.accent-teal-pill   { background: var(--accent-teal-light);   color: var(--accent-teal); }
+.accent-rose-pill   { background: var(--accent-rose-light);   color: var(--accent-rose); }
+.accent-amber-pill  { background: var(--accent-amber-light);  color: var(--accent-amber); }
+.accent-indigo-pill { background: var(--accent-indigo-light); color: var(--accent-indigo); }
