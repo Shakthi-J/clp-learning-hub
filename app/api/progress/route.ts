@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { issueCertificate } from "@/lib/certificates";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -42,13 +43,24 @@ export async function POST(request: Request) {
   const totalLessons = allLessons?.length ?? 0;
   const totalCompleted = completedLessons?.length ?? 0;
 
-  // If all lessons done, mark enrollment as completed
+  // If all lessons done, mark enrollment as completed and issue the certificate
+  let certificateId: string | null = null;
   if (totalLessons > 0 && totalCompleted >= totalLessons) {
     await supabase.from("enrollments").update({
       status: "completed",
       completed_at: new Date().toISOString(),
     }).eq("id", enrollmentId);
+
+    try {
+      const admin = await createAdminClient();
+      const cert = await issueCertificate(admin, enrollmentId);
+      certificateId = cert?.id ?? null;
+    } catch (err) {
+      // Never fail progress tracking because certificate issuing hiccuped —
+      // the patient can still mint it from /certificates.
+      console.error("Certificate issue failed", err);
+    }
   }
 
-  return NextResponse.json({ success: true, totalLessons, totalCompleted });
+  return NextResponse.json({ success: true, totalLessons, totalCompleted, certificateId });
 }
