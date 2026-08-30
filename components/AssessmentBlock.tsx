@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Target, CheckCircle } from "@phosphor-icons/react";
 
 interface Question {
   id: string;
@@ -59,7 +60,7 @@ export default function AssessmentBlock({
   return (
     <div className="card p-6 mt-6" style={{ border: "2px solid var(--secondary)" }}>
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-lg">🎯</span>
+        <Target size={18} weight="duotone" />
         <h3 className="font-semibold" style={{ color: "var(--foreground)" }}>{title}</h3>
         <span className="text-xs px-2 py-0.5 rounded-full ml-auto font-semibold"
           style={{ background: "var(--warning-light)", color: "var(--warning)" }}>
@@ -101,7 +102,7 @@ export default function AssessmentBlock({
           {displayResult.passed && (
             <div className="text-center">
               <p className="text-sm font-semibold" style={{ color: "var(--success)" }}>
-                ✓ Module unlocked — you can continue to the next module
+                <span className="inline-flex items-center gap-1.5"><CheckCircle size={14} weight="fill" /> Module unlocked - you can continue to the next module</span>
               </p>
             </div>
           )}

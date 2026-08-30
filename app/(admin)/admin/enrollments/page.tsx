@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { ClipboardText } from "@phosphor-icons/react/ssr";
 import EnrollmentActions from "./EnrollmentActions";
 
 export const metadata = { title: "Enrollments" };
@@ -55,7 +56,7 @@ export default async function AdminEnrollmentsPage({
           className="text-center py-16 rounded-2xl border"
           style={{ borderColor: "var(--border)", background: "var(--card)" }}
         >
-          <span className="text-4xl block mb-3">📋</span>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--warning-light)", color: "var(--warning)" }}><ClipboardText size={22} weight="duotone" /></div>
           <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>
             No {filter} requests
           </h3>
@@ -73,8 +74,8 @@ export default async function AdminEnrollmentsPage({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                      style={{ background: "var(--primary)" }}
+                      className="w-7 h-7 rounded-full flex items-center justify-center  text-xs font-bold flex-shrink-0"
+                      style={{ background: "var(--primary)", color: "var(--on-primary)" }}
                     >
                       {(req.patients?.name || req.patients?.email || "P")[0].toUpperCase()}
                     </div>

@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { ArrowRight } from "@phosphor-icons/react/ssr";
+import { BookOpen, CheckCircle, PlayCircle, Certificate } from "@phosphor-icons/react/ssr";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ProfileForm from "./ProfileForm";
@@ -36,10 +38,10 @@ export default async function ProfilePage() {
     .in("enrollment_id", rows.map((e) => e.id).length ? rows.map((e) => e.id) : ["00000000-0000-0000-0000-000000000000"]);
 
   const stats = [
-    { label: "Active Courses", value: active, icon: "📘", accent: "blue" as const },
-    { label: "Completed", value: completed, icon: "✅", accent: "teal" as const },
-    { label: "Lessons Finished", value: lessonsDone, icon: "▶️", accent: "purple" as const },
-    { label: "Certificates", value: certificateCount ?? 0, icon: "🏆", accent: "amber" as const },
+    { label: "Active Courses", value: active, icon: <BookOpen size={18} weight="duotone" />, accent: "blue" as const },
+    { label: "Completed", value: completed, icon: <CheckCircle size={18} weight="duotone" />, accent: "teal" as const },
+    { label: "Lessons Finished", value: lessonsDone, icon: <PlayCircle size={18} weight="duotone" />, accent: "purple" as const },
+    { label: "Certificates", value: certificateCount ?? 0, icon: <Certificate size={18} weight="duotone" />, accent: "amber" as const },
   ];
 
   return (
@@ -54,8 +56,8 @@ export default async function ProfilePage() {
       <div className="card p-6 mb-6">
         <div className="flex items-center gap-4 mb-6">
           <div
-            className="w-14 h-14 rounded-full flex items-center justify-center text-white text-lg font-bold flex-shrink-0"
-            style={{ background: "var(--primary)" }}
+            className="w-14 h-14 rounded-full flex items-center justify-center  text-lg font-bold flex-shrink-0"
+            style={{ background: "var(--primary)", color: "var(--on-primary)" }}
           >
             {(patient?.name || patient?.email || "P")[0].toUpperCase()}
           </div>
@@ -88,7 +90,7 @@ export default async function ProfilePage() {
         <ProfileForm currentName={patient?.name || ""} />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 stagger">
         {stats.map((stat) => (
           <StatCard key={stat.label} label={stat.label} value={stat.value} icon={stat.icon} accent={stat.accent} />
         ))}
@@ -108,10 +110,10 @@ export default async function ProfilePage() {
 
       <div className="mt-6 flex gap-3 flex-wrap">
         <Link href="/my-learning" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
-          My Learning →
+          <span className="inline-flex items-center gap-1.5">My Learning <ArrowRight size={13} weight="bold" /></span>
         </Link>
         <Link href="/certificates" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
-          Certificates →
+          <span className="inline-flex items-center gap-1.5">Certificates <ArrowRight size={13} weight="bold" /></span>
         </Link>
       </div>
     </div>

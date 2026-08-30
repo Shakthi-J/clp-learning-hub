@@ -58,8 +58,8 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")} label="1. List" title="Numbered List" />
         <div className="w-px h-5 mx-1" style={{ background: "var(--border)" }} />
         <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} active={false} label="— Line" title="Divider" />
-        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} active={false} label="↩ Undo" title="Undo" />
-        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} active={false} label="↪ Redo" title="Redo" />
+        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} active={false} label="Undo" title="Undo" />
+        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} active={false} label="Redo" title="Redo" />
       </div>
       <div className="relative" style={{ background: "var(--background)", minHeight: "200px" }}>
         {editor.isEmpty && placeholder && (

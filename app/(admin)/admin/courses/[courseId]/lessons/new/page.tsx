@@ -1,5 +1,6 @@
 "use client";
 import { use, useState, useEffect } from "react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -66,7 +67,7 @@ export default function NewLessonPage({ params }: { params: Promise<{ courseId: 
   return (
     <div className="p-8 max-w-3xl">
       <div className="flex items-center gap-3 mb-8">
-        <Link href="/admin/courses" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>← Courses</Link>
+        <Link href="/admin/courses" className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>
         <Link href={`/admin/courses/${courseId}/lessons`} className="text-sm" style={{ color: "var(--foreground-secondary)" }}>Lessons</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { ClipboardText } from "@phosphor-icons/react";
 
 interface AssignmentBlockProps {
   assignmentId: string;
@@ -47,7 +48,7 @@ export default function AssignmentBlock({
   };
 
   const statusLabel = (status: string) => {
-    if (status === "approved") return "✓ Approved";
+    if (status === "approved") return "Approved";
     if (status === "needs_revision") return "Needs Revision";
     return "Under Review";
   };
@@ -55,7 +56,7 @@ export default function AssignmentBlock({
   return (
     <div className="card p-6 mt-6">
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-lg">📋</span>
+        <ClipboardText size={18} weight="duotone" />
         <h3 className="font-semibold" style={{ color: "var(--foreground)" }}>{title}</h3>
         <span className="text-xs px-2 py-0.5 rounded-full ml-auto"
           style={{ background: "var(--secondary-light)", color: "var(--primary)" }}>

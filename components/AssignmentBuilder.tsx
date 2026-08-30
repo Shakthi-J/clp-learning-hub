@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { ClipboardText } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 
 interface AssignmentBuilderProps {
@@ -49,7 +50,7 @@ export default function AssignmentBuilder({ lessonId }: AssignmentBuilderProps) 
   return (
     <div className="card p-5 mt-4">
       <div className="flex items-center gap-2 mb-4">
-        <span>📋</span>
+        <ClipboardText size={16} weight="duotone" />
         <h4 className="font-semibold text-sm" style={{ color: "var(--foreground)" }}>Lesson Assignment</h4>
         {assignment && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--secondary-light)", color: "var(--primary)" }}>Active</span>}
       </div>

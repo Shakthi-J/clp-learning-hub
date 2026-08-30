@@ -1,15 +1,19 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Suspense } from "react";
+import { MagnifyingGlass, BookOpen, Stack, PlayCircle, ArrowRight } from "@phosphor-icons/react/ssr";
 import CourseFilters from "./CourseFilters";
 import { categoryPillStyle, accentFor } from "@/lib/categoryColor";
 import { Stars } from "@/components/StarRating";
+import PageHeader from "@/components/ui/PageHeader";
+import EmptyState from "@/components/ui/EmptyState";
+import { ButtonLink } from "@/components/ui/Button";
 
 export const metadata = { title: "Courses" };
 
 const PAGE_SIZE = 12;
 
-/** PostgREST `.or()` treats , ( ) as syntax — strip them out of user input. */
+/** PostgREST `.or()` treats , ( ) as syntax - strip them out of user input. */
 function sanitizeQuery(value: string) {
   return value.replace(/[,()*]/g, " ").trim().slice(0, 80);
 }
@@ -68,76 +72,99 @@ export default async function CoursesPage({
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-14">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2" style={{ color: "var(--foreground)" }}>Course Catalog</h1>
-        <p style={{ color: "var(--foreground-secondary)" }}>
-          Browse all available courses. Request enrollment to get started.
-        </p>
-      </div>
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-12 md:py-16">
+      <PageHeader
+        eyebrow="Catalog"
+        title="Courses built by your care team"
+        description="Every course here is written and reviewed by CLP clinicians. Request enrollment and your care team will approve it."
+      />
 
       <Suspense fallback={<div className="mb-8 h-24" />}>
         <CourseFilters categories={categories as string[]} />
       </Suspense>
 
       {total > 0 && (
-        <p className="text-sm mb-4" style={{ color: "var(--foreground-muted)" }}>
-          {total} course{total !== 1 ? "s" : ""}
-          {hasFilters ? " match your filters" : ""}
+        <p className="text-sm mb-5" style={{ color: "var(--foreground-muted)" }}>
+          <span className="font-mono font-medium" style={{ color: "var(--foreground-secondary)" }}>{total}</span>
+          {" "}course{total !== 1 ? "s" : ""}{hasFilters ? " matching" : " available"}
         </p>
       )}
 
       {courses && courses.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger">
             {courses.map((course: any) => {
               const modules = (course.modules as any[]) || [];
               const lessonCount = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
+              const accent = accentFor(course.category);
+
               return (
                 <Link
                   key={course.id}
                   href={`/courses/${course.slug}`}
-                  className="card card-hover block overflow-hidden"
+                  className="card card-hover group block overflow-hidden"
                 >
                   <div
-                    className="h-40 flex items-center justify-center"
-                    style={{ background: `linear-gradient(135deg, var(--accent-${accentFor(course.category)}-light) 0%, var(--card-secondary) 100%)` }}
+                    className="h-36 flex items-center justify-center relative overflow-hidden"
+                    style={{ background: `linear-gradient(135deg, var(--accent-${accent}-light) 0%, var(--card-secondary) 100%)` }}
                   >
                     {course.thumbnail_url ? (
-                      <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
+                      <img src={course.thumbnail_url} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-4xl">📚</span>
+                      <BookOpen size={28} weight="duotone" style={{ color: `var(--accent-${accent})`, opacity: 0.75 }} />
                     )}
                   </div>
+
                   <div className="p-5">
                     {course.category && (
                       <span
-                        className="text-xs font-semibold px-2 py-1 rounded-full"
+                        className="inline-flex text-[11px] font-semibold px-2 py-1 rounded-full leading-none"
                         style={categoryPillStyle(course.category)}
                       >
                         {course.category}
                       </span>
                     )}
-                    <h2 className="font-semibold mt-3 mb-2" style={{ color: "var(--foreground)" }}>
+
+                    <h2
+                      className="font-semibold mt-3 mb-1.5 tracking-tight leading-snug"
+                      style={{ color: "var(--foreground)" }}
+                    >
                       {course.title}
                     </h2>
-                    <p className="text-sm line-clamp-2" style={{ color: "var(--foreground-secondary)" }}>
+                    <p className="text-sm line-clamp-2 leading-relaxed" style={{ color: "var(--foreground-secondary)" }}>
                       {course.description}
                     </p>
+
                     {(course.review_count ?? 0) > 0 && (
                       <div className="mt-3 flex items-center gap-1.5 text-xs">
                         <Stars value={Number(course.avg_rating) || 0} size={13} />
-                        <span className="font-semibold" style={{ color: "var(--foreground)" }}>
+                        <span className="font-mono font-medium" style={{ color: "var(--foreground)" }}>
                           {(Number(course.avg_rating) || 0).toFixed(1)}
                         </span>
                         <span style={{ color: "var(--foreground-muted)" }}>({course.review_count})</span>
                       </div>
                     )}
-                    <div className="mt-4 flex items-center justify-between text-xs">
-                      <span style={{ color: "var(--foreground-muted)" }}>
-                        {modules.length} module{modules.length !== 1 ? "s" : ""} · {lessonCount} lesson{lessonCount !== 1 ? "s" : ""}
+
+                    <div
+                      className="mt-4 pt-4 flex items-center justify-between text-xs"
+                      style={{ borderTop: "1px solid var(--border-light)" }}
+                    >
+                      <span className="inline-flex items-center gap-3" style={{ color: "var(--foreground-muted)" }}>
+                        <span className="inline-flex items-center gap-1">
+                          <Stack size={14} />
+                          <span className="font-mono">{modules.length}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <PlayCircle size={14} />
+                          <span className="font-mono">{lessonCount}</span>
+                        </span>
                       </span>
-                      <span className="font-semibold" style={{ color: "var(--primary)" }}>View →</span>
+                      <span
+                        className="inline-flex items-center gap-1 font-semibold transition-transform duration-200 group-hover:translate-x-0.5"
+                        style={{ color: "var(--primary)" }}
+                      >
+                        View <ArrowRight size={13} weight="bold" />
+                      </span>
                     </div>
                   </div>
                 </Link>
@@ -146,55 +173,37 @@ export default async function CoursesPage({
           </div>
 
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-10">
+            <nav className="flex items-center justify-center gap-2 mt-12" aria-label="Pagination">
               {currentPage > 1 && (
-                <Link
-                  href={pageHref(currentPage - 1)}
-                  className="text-sm font-semibold px-4 py-2 rounded-xl border"
-                  style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground-secondary)" }}
-                >
-                  ← Previous
-                </Link>
+                <ButtonLink href={pageHref(currentPage - 1)} variant="secondary" size="sm">
+                  Previous
+                </ButtonLink>
               )}
-              <span className="text-sm px-3" style={{ color: "var(--foreground-muted)" }}>
-                Page {currentPage} of {totalPages}
+              <span className="text-xs px-3 font-mono" style={{ color: "var(--foreground-muted)" }}>
+                {currentPage} / {totalPages}
               </span>
               {currentPage < totalPages && (
-                <Link
-                  href={pageHref(currentPage + 1)}
-                  className="text-sm font-semibold px-4 py-2 rounded-xl border"
-                  style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground-secondary)" }}
-                >
-                  Next →
-                </Link>
+                <ButtonLink href={pageHref(currentPage + 1)} variant="secondary" size="sm">
+                  Next
+                </ButtonLink>
               )}
-            </div>
+            </nav>
           )}
         </>
+      ) : hasFilters ? (
+        <EmptyState
+          icon={<MagnifyingGlass size={22} weight="duotone" />}
+          title="Nothing matched that search"
+          description="Try a broader term, or clear the filters to see the full catalog."
+          action={<ButtonLink href="/courses" variant="secondary" size="sm">Show all courses</ButtonLink>}
+          tone="var(--accent-blue)"
+        />
       ) : (
-        <div
-          className="text-center py-20 rounded-2xl border"
-          style={{ borderColor: "var(--border)", background: "var(--card)" }}
-        >
-          <span className="text-4xl mb-4 block">{hasFilters ? "🔍" : "📚"}</span>
-          {hasFilters ? (
-            <>
-              <p className="mb-1" style={{ color: "var(--foreground-secondary)" }}>
-                No courses match your search.
-              </p>
-              <p className="text-sm mb-6" style={{ color: "var(--foreground-muted)" }}>
-                Try a different term or clear the filters.
-              </p>
-              <Link href="/courses" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
-                Show all courses →
-              </Link>
-            </>
-          ) : (
-            <p style={{ color: "var(--foreground-secondary)" }}>
-              Courses are being prepared. Check back soon.
-            </p>
-          )}
-        </div>
+        <EmptyState
+          icon={<BookOpen size={22} weight="duotone" />}
+          title="Courses are on the way"
+          description="Your care team is preparing the first courses. They'll appear here as soon as they're published."
+        />
       )}
     </div>
   );

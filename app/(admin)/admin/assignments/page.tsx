@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { ClipboardText } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 
 type Submission = {
@@ -68,7 +69,7 @@ export default function AdminAssignmentsPage() {
       {loading ? <div className="text-sm" style={{ color: "var(--foreground-muted)" }}>Loading...</div>
         : submissions.length === 0 ? (
           <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-            <span className="text-4xl block mb-3">📋</span>
+            <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--warning-light)", color: "var(--warning)" }}><ClipboardText size={22} weight="duotone" /></div>
             <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No {filter.replace("_", " ")} submissions</h3>
           </div>
         ) : (

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Notebook, Check, X, Circle } from "@phosphor-icons/react";
 
 interface Question {
   id: string;
@@ -46,7 +47,7 @@ export default function QuizBlock({ quizId, title, questions, patientId }: QuizB
   return (
     <div className="card p-6 mt-6">
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-lg">📝</span>
+        <Notebook size={18} weight="duotone" />
         <h3 className="font-semibold" style={{ color: "var(--foreground)" }}>{title}</h3>
         <span className="text-xs px-2 py-0.5 rounded-full ml-auto" style={{ background: "var(--primary-light)", color: "var(--primary)" }}>
           {questions.length} question{questions.length !== 1 ? "s" : ""}
@@ -75,7 +76,7 @@ export default function QuizBlock({ quizId, title, questions, patientId }: QuizB
                         color: isCorrect ? "var(--primary)" : isSelected && !isCorrect ? "var(--danger)" : "var(--foreground-secondary)",
                         border: `1px solid ${isCorrect ? "var(--secondary)" : isSelected && !isCorrect ? "var(--danger-light)" : "var(--border)"}`,
                       }}>
-                      {isCorrect ? "✓" : isSelected && !isCorrect ? "✗" : "○"} {opt}
+                      <span className="inline-flex items-center gap-2">{isCorrect ? <Check size={14} weight="bold" className="flex-shrink-0" /> : isSelected && !isCorrect ? <X size={14} weight="bold" className="flex-shrink-0" /> : <Circle size={14} className="flex-shrink-0" />}{opt}</span>
                     </div>
                   );
                 })}

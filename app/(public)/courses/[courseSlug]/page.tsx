@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { ArrowLeft, PlayCircle } from "@phosphor-icons/react/ssr";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import EnrollButton from "./EnrollButton";
@@ -52,7 +53,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
   const totalLessons = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">
-      <Link href="/courses" className="text-sm mb-8 inline-flex items-center gap-1" style={{ color: "var(--foreground-secondary)" }}>← Back to Courses</Link>
+      <Link href="/courses" className="text-sm mb-8 inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> All courses</Link>
       <div className="card p-8 mb-8">
         <div className="flex items-start justify-between gap-6 flex-wrap">
           <div className="flex-1">
@@ -90,7 +91,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
                     <div className="border-t px-4 py-3 space-y-2" style={{ borderColor: "var(--border-light)" }}>
                       {lessons.map((lesson: any) => (
                         <div key={lesson.id} className="flex items-center gap-2 text-sm" style={{ color: "var(--foreground-secondary)" }}>
-                          <span>▶</span><span>{lesson.title}</span>
+                          <PlayCircle size={15} style={{ color: "var(--foreground-muted)" }} /><span>{lesson.title}</span>
                         </div>
                       ))}
                     </div>

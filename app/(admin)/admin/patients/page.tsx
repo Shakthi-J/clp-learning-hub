@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Users } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 type Patient = { id: string; name: string; email: string; access_type: string; role: string; created_at: string };
 export default function AdminPatientsPage() {
@@ -62,7 +63,7 @@ export default function AdminPatientsPage() {
       )}
       {loading ? <div className="text-sm" style={{ color: "var(--foreground-muted)" }}>Loading...</div> : patients.length === 0 ? (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-          <span className="text-4xl block mb-3">👥</span><h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No patients yet</h3>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--accent-purple-light)", color: "var(--accent-purple)" }}><Users size={22} weight="duotone" /></div><h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No patients yet</h3>
           <p className="text-sm" style={{ color: "var(--foreground-secondary)" }}>Click &quot;Add Patient&quot; to create the first account.</p>
         </div>
       ) : (

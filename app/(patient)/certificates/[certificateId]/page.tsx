@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import CertificateDocument from "@/components/CertificateDocument";
@@ -33,7 +34,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ ce
     <div className="p-8 max-w-4xl print-area">
       <div className="mb-6 flex items-center justify-between gap-4 flex-wrap print-hidden">
         <Link href="/certificates" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
-          ← All Certificates
+          <span className="inline-flex items-center gap-1.5"><ArrowLeft size={14} weight="bold" /> All certificates</span>
         </Link>
         <div className="flex items-center gap-2">
           <CopyVerifyLink url={verifyUrl} />

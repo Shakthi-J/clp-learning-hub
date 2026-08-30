@@ -80,8 +80,8 @@ export default function ProfileForm({ currentName }: { currentName: string }) {
           <button
             onClick={saveName}
             disabled={savingName || !name.trim() || name === currentName}
-            className="text-sm font-semibold px-4 py-2.5 rounded-xl text-white disabled:opacity-60"
-            style={{ background: "var(--primary)" }}
+            className="text-sm font-semibold px-4 py-2.5 rounded-xl  disabled:opacity-60"
+            style={{ background: "var(--primary)", color: "var(--on-primary)" }}
           >
             {savingName ? "Saving…" : "Save"}
           </button>

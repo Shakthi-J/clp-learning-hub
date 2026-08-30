@@ -1,4 +1,5 @@
 import { getActor } from "@/lib/auth";
+import { Users } from "@phosphor-icons/react/ssr";
 import { getManagedCourseIds } from "@/lib/instructor";
 import { createClient } from "@/lib/supabase/server";
 import { categoryColor } from "@/lib/categoryColor";
@@ -94,7 +95,7 @@ export default async function InstructorLearnersPage() {
         </div>
       ) : (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-          <span className="text-4xl block mb-3">👥</span>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--accent-purple-light)", color: "var(--accent-purple)" }}><Users size={22} weight="duotone" /></div>
           <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No learners yet</h3>
           <p className="text-sm max-w-md mx-auto" style={{ color: "var(--foreground-secondary)" }}>
             Learners appear here once an admin approves an enrollment in one of your courses.

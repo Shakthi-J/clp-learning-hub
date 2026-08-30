@@ -38,7 +38,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg mx-auto mb-3" style={{ background: "var(--primary)" }}>CL</div>
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center  font-bold text-lg mx-auto mb-3" style={{ background: "var(--primary)", color: "var(--on-primary)" }}>CL</div>
           <h1 className="text-xl font-bold" style={{ color: "var(--foreground)" }}>CLP Learning Hub</h1>
           <p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>Sign in to your account</p>
         </div>

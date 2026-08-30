@@ -1,4 +1,5 @@
 import { getActor, canManageCourse } from "@/lib/auth";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
@@ -33,7 +34,7 @@ export default async function InstructorCoursePage({ params }: { params: Promise
   return (
     <div className="p-8 max-w-4xl">
       <Link href="/instructor/courses" className="text-sm mb-6 inline-block" style={{ color: "var(--foreground-secondary)" }}>
-        ← My Courses
+        <span className="inline-flex items-center gap-1.5"><ArrowLeft size={14} weight="bold" /> My Courses</span>
       </Link>
 
       <div className="card p-6 mb-8">

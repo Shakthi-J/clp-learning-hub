@@ -1,4 +1,5 @@
 import { getActor } from "@/lib/auth";
+import { BookOpen } from "@phosphor-icons/react/ssr";
 import { getManagedCourses, countLessons } from "@/lib/instructor";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -43,7 +44,7 @@ export default async function InstructorCoursesPage() {
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right">
-                    <Link href={`/instructor/courses/${course.id}`} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>Manage →</Link>
+                    <Link href={`/instructor/courses/${course.id}`} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>Manage</Link>
                   </td>
                 </tr>
               ))}
@@ -52,7 +53,7 @@ export default async function InstructorCoursesPage() {
         </div>
       ) : (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-          <span className="text-4xl block mb-3">📚</span>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--accent-blue-light)", color: "var(--accent-blue)" }}><BookOpen size={22} weight="duotone" /></div>
           <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No courses assigned yet</h3>
           <p className="text-sm max-w-md mx-auto" style={{ color: "var(--foreground-secondary)" }}>
             Ask a CLP admin to assign you a course from the admin Courses page.

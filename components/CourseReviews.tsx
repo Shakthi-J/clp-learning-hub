@@ -87,8 +87,8 @@ export default function CourseReviews({
         {canReview && !open && (
           <button
             onClick={() => setOpen(true)}
-            className="text-sm font-semibold px-4 py-2 rounded-xl text-white"
-            style={{ background: "var(--primary)" }}
+            className="text-sm font-semibold px-4 py-2 rounded-xl "
+            style={{ background: "var(--primary)", color: "var(--on-primary)" }}
           >
             {myReview ? "Edit your review" : "Write a review"}
           </button>
@@ -112,8 +112,8 @@ export default function CourseReviews({
             <button
               onClick={submit}
               disabled={saving}
-              className="text-sm font-semibold px-4 py-2 rounded-xl text-white disabled:opacity-60"
-              style={{ background: "var(--primary)" }}
+              className="text-sm font-semibold px-4 py-2 rounded-xl  disabled:opacity-60"
+              style={{ background: "var(--primary)", color: "var(--on-primary)" }}
             >
               {saving ? "Saving…" : "Post review"}
             </button>
@@ -144,8 +144,8 @@ export default function CourseReviews({
             <div key={review.id} className="card p-5">
               <div className="flex items-center gap-3 mb-2">
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                  style={{ background: "var(--primary)" }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center  text-xs font-bold flex-shrink-0"
+                  style={{ background: "var(--primary)", color: "var(--on-primary)" }}
                 >
                   {(review.patients?.name || "P")[0].toUpperCase()}
                 </div>

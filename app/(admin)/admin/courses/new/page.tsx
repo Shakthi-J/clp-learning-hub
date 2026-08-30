@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -43,7 +44,7 @@ export default function NewCoursePage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="flex items-center gap-3 mb-8">
-        <Link href="/admin/courses" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>← Courses</Link>
+        <Link href="/admin/courses" className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>
         <span className="text-sm font-medium" style={{ color: "var(--foreground)" }}>New Course</span>
       </div>
@@ -96,7 +97,7 @@ export default function NewCoursePage() {
         <div className="flex items-center gap-3 pt-2">
           <button onClick={handleCreate} disabled={loading || !title || !slug}
             className="px-6 py-2.5 rounded-xl text-white text-sm font-semibold primary-gradient disabled:opacity-60 disabled:cursor-not-allowed">
-            {loading ? "Creating..." : "Create Course & Add Lessons →"}
+            {loading ? "Creating..." : <span className="inline-flex items-center gap-1.5">Create course and add lessons <ArrowRight size={14} weight="bold" /></span>}
           </button>
           <Link href="/admin/courses" className="px-6 py-2.5 rounded-xl text-sm font-semibold border" style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
             Cancel

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { ArrowLeft, ArrowRight, Check, PlayCircle } from "@phosphor-icons/react/ssr";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import ModuleAssessmentWrapper from "./ModuleAssessmentWrapper";
@@ -60,7 +61,7 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
 
   return (
     <div className="p-8 max-w-3xl">
-      <Link href="/my-learning" className="text-sm mb-6 inline-block" style={{ color: "var(--foreground-secondary)" }}>← My Learning</Link>
+      <Link href="/my-learning" className="text-sm mb-6 inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> My Learning</Link>
       <div className="card p-6 mb-6">
         <h1 className="text-2xl font-bold mb-4" style={{ color: "var(--foreground)" }}>{course.title}</h1>
         <div className="mb-2">
@@ -75,7 +76,7 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
         {firstIncomplete && (
           <Link href={`/learn/${courseSlug}/${firstIncomplete.slug}`}
             className="inline-block mt-4 px-5 py-2.5 rounded-xl text-white text-sm font-semibold primary-gradient">
-            {completedCount === 0 ? "Start Course →" : "Continue →"}
+            <span className="inline-flex items-center gap-1.5">{completedCount === 0 ? "Start course" : "Continue"}<ArrowRight size={14} weight="bold" /></span>
           </Link>
         )}
         {pct === 100 && <div className="mt-4 px-4 py-3 rounded-xl text-sm font-semibold" style={{ background: "var(--success-light)", color: "var(--success)" }}>Course Complete! Well done.</div>}
@@ -105,10 +106,10 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
                     style={{ borderColor: "var(--border-light)", background: done ? "rgba(46,125,50,0.04)" : "transparent" }}>
                     <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs"
                       style={{ background: done ? "var(--success-light)" : "var(--beige-light)", color: done ? "var(--success)" : "var(--foreground-muted)" }}>
-                      {done ? "✓" : li + 1}
+                      {done ? <Check size={12} weight="bold" /> : li + 1}
                     </div>
                     <span className="text-sm flex-1" style={{ color: done ? "var(--foreground-secondary)" : "var(--foreground)" }}>{lesson.title}</span>
-                    {lesson.youtube_video_id && <span className="text-xs" style={{ color: "var(--foreground-muted)" }}>▶</span>}
+                    {lesson.youtube_video_id && <PlayCircle size={14} style={{ color: "var(--foreground-muted)" }} />}
                   </Link>
                 );
               })}

@@ -157,8 +157,8 @@ export default function LessonDiscussion({
                   <button
                     onClick={() => post(replyBody, comment.id)}
                     disabled={busy || !replyBody.trim()}
-                    className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white disabled:opacity-60"
-                    style={{ background: "var(--primary)" }}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-lg  disabled:opacity-60"
+                    style={{ background: "var(--primary)", color: "var(--on-primary)" }}
                   >
                     {busy ? "Posting…" : "Reply"}
                   </button>
@@ -208,8 +208,8 @@ export default function LessonDiscussion({
         <button
           onClick={() => post(body, null)}
           disabled={busy || !body.trim()}
-          className="mt-3 text-sm font-semibold px-4 py-2 rounded-xl text-white disabled:opacity-60"
-          style={{ background: "var(--primary)" }}
+          className="mt-3 text-sm font-semibold px-4 py-2 rounded-xl  disabled:opacity-60"
+          style={{ background: "var(--primary)", color: "var(--on-primary)" }}
         >
           {busy ? "Posting…" : "Post question"}
         </button>

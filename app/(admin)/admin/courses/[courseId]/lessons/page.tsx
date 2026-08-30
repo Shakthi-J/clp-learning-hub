@@ -1,5 +1,6 @@
 "use client";
 import { use, useState, useEffect } from "react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import AssessmentBuilder from "@/components/AssessmentBuilder";
@@ -58,7 +59,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
   return (
     <div className="p-8 max-w-3xl">
       <div className="flex items-center gap-3 mb-2">
-        <Link href="/admin/courses" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>← Courses</Link>
+        <Link href="/admin/courses" className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>
         <span className="text-sm font-medium truncate" style={{ color: "var(--foreground)" }}>{course?.title}</span>
       </div>
@@ -117,7 +118,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
                       <span className="text-sm font-medium truncate" style={{ color: "var(--foreground)" }}>{lesson.title}</span>
                       {lesson.youtube_video_id && (
                         <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
-                          style={{ background: "var(--danger-light)", color: "var(--danger)" }}>▶ Video</span>
+                          style={{ background: "var(--danger-light)", color: "var(--danger)" }}>Video</span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">

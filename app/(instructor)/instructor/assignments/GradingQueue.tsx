@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { PencilLine } from "@phosphor-icons/react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 type Submission = {
@@ -71,7 +72,7 @@ export default function GradingQueue({
               className="text-xs font-semibold px-3 py-1.5 rounded-full border"
               style={
                 active
-                  ? { background: "var(--primary)", borderColor: "var(--primary)", color: "#fff" }
+                  ? { background: "var(--primary)", borderColor: "var(--primary)", color: "var(--on-primary)" }
                   : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-secondary)" }
               }
             >
@@ -134,8 +135,8 @@ export default function GradingQueue({
                       <button
                         onClick={() => review(submission.id, "approved")}
                         disabled={acting === submission.id}
-                        className="text-sm font-semibold px-4 py-2 rounded-xl text-white disabled:opacity-60"
-                        style={{ background: "var(--primary)" }}
+                        className="text-sm font-semibold px-4 py-2 rounded-xl  disabled:opacity-60"
+                        style={{ background: "var(--primary)", color: "var(--on-primary)" }}
                       >
                         {acting === submission.id ? "Saving…" : "Approve"}
                       </button>
@@ -159,8 +160,8 @@ export default function GradingQueue({
                 ) : (
                   <button
                     onClick={() => { setReviewing(submission.id); setFeedback(""); }}
-                    className="text-sm font-semibold px-4 py-2 rounded-xl text-white"
-                    style={{ background: "var(--primary)" }}
+                    className="text-sm font-semibold px-4 py-2 rounded-xl "
+                    style={{ background: "var(--primary)", color: "var(--on-primary)" }}
                   >
                     Review
                   </button>
@@ -171,7 +172,7 @@ export default function GradingQueue({
         </div>
       ) : (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-          <span className="text-4xl block mb-3">✍️</span>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--warning-light)", color: "var(--warning)" }}><PencilLine size={22} weight="duotone" /></div>
           <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>Nothing here</h3>
           <p className="text-sm max-w-md mx-auto" style={{ color: "var(--foreground-secondary)" }}>
             No submissions with this status in your courses.

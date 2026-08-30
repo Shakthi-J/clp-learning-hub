@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Target } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 
 interface AssessmentBuilderProps {
@@ -75,7 +76,7 @@ export default function AssessmentBuilder({ moduleId, moduleTitle }: AssessmentB
   return (
     <div className="card p-5 mt-4" style={{ border: "1px solid var(--secondary)" }}>
       <div className="flex items-center gap-2 mb-4">
-        <span>🎯</span>
+        <Target size={16} weight="duotone" />
         <h4 className="font-semibold text-sm" style={{ color: "var(--foreground)" }}>Module Quiz</h4>
         {assessment && (
           <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--warning-light)", color: "var(--warning)" }}>

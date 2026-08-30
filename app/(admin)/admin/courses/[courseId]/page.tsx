@@ -1,5 +1,6 @@
 "use client";
 import { use, useState, useEffect } from "react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import QuizBuilder from "@/components/QuizBuilder";
@@ -55,7 +56,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
   return (
     <div className="p-8 max-w-3xl">
       <div className="flex items-center gap-3 mb-2">
-        <Link href="/admin/courses" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>← Courses</Link>
+        <Link href="/admin/courses" className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>
         <span className="text-sm font-medium truncate" style={{ color: "var(--foreground)" }}>{course?.title}</span>
       </div>
@@ -99,7 +100,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="text-xs flex-shrink-0" style={{ color: "var(--foreground-muted)" }}>{li + 1}</span>
                       <span className="text-sm font-medium truncate" style={{ color: "var(--foreground)" }}>{lesson.title}</span>
-                      {lesson.youtube_video_id && <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "var(--danger-light)", color: "var(--danger)" }}>▶ Video</span>}
+                      {lesson.youtube_video_id && <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "var(--danger-light)", color: "var(--danger)" }}>Video</span>}
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <Link href={`/admin/courses/${courseId}/lessons/${lesson.id}`} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>Edit</Link>

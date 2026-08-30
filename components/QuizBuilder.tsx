@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Notebook } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 
 interface Question {
@@ -82,7 +83,7 @@ export default function QuizBuilder({ lessonId, moduleId, label }: QuizBuilderPr
     <div className="card p-5 mt-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span>📝</span>
+          <Notebook size={16} weight="duotone" />
           <h4 className="font-semibold text-sm" style={{ color: "var(--foreground)" }}>{label} Quiz</h4>
           <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--primary-light)", color: "var(--primary)" }}>
             {questions.length} question{questions.length !== 1 ? "s" : ""}

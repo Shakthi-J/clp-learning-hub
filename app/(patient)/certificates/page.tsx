@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { Certificate, ArrowRight } from "@phosphor-icons/react/ssr";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import IssueCertificateButton from "./IssueCertificateButton";
@@ -45,9 +46,9 @@ export default async function CertificatesPage() {
               <div className="flex items-start gap-4 flex-1 min-w-0">
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-                  style={{ background: "var(--primary-light)" }}
+                  style={{ background: "var(--accent-amber-light)" }}
                 >
-                  🏆
+                  <Certificate size={20} weight="duotone" style={{ color: "var(--accent-amber)" }} />
                 </div>
                 <div className="min-w-0">
                   {row.course?.category && (
@@ -76,8 +77,8 @@ export default async function CertificatesPage() {
               {row.certificate ? (
                 <Link
                   href={`/certificates/${row.certificate.id}`}
-                  className="text-sm font-semibold px-4 py-2 rounded-xl text-white flex-shrink-0"
-                  style={{ background: "var(--primary)" }}
+                  className="text-sm font-semibold px-4 py-2 rounded-xl  flex-shrink-0"
+                  style={{ background: "var(--primary)", color: "var(--on-primary)" }}
                 >
                   View Certificate
                 </Link>
@@ -92,7 +93,7 @@ export default async function CertificatesPage() {
           className="text-center py-20 rounded-2xl border"
           style={{ borderColor: "var(--border)", background: "var(--card)" }}
         >
-          <span className="text-4xl mb-4 block">🏆</span>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--accent-amber-light)", color: "var(--accent-amber)" }}><Certificate size={22} weight="duotone" /></div>
           <p className="mb-1" style={{ color: "var(--foreground-secondary)" }}>
             No certificates yet.
           </p>
@@ -100,7 +101,7 @@ export default async function CertificatesPage() {
             Finish every lesson in a course and your certificate appears here automatically.
           </p>
           <Link href="/my-learning" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
-            Back to My Learning →
+            Back to My Learning
           </Link>
         </div>
       )}

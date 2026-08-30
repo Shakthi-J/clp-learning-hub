@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { ArrowLeft, ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -100,11 +101,11 @@ export default function LessonPlayer({
         <div className="flex items-center gap-3">
           {prevLesson && (
             <Link href={`/learn/${courseSlug}/${prevLesson.slug}`} className="px-4 py-2 rounded-xl text-sm font-semibold border"
-              style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>← Previous</Link>
+              style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}><span className="inline-flex items-center gap-1.5"><ArrowLeft size={14} weight="bold" /> Previous</span></Link>
           )}
           {nextLesson && (
             <Link href={`/learn/${courseSlug}/${nextLesson.slug}`} className="px-4 py-2 rounded-xl text-sm font-semibold border"
-              style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>Next →</Link>
+              style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}><span className="inline-flex items-center gap-1.5">Next <ArrowRight size={14} weight="bold" /></span></Link>
           )}
         </div>
         <div className="flex items-center gap-3">
@@ -116,17 +117,17 @@ export default function LessonPlayer({
           )}
           {completed && (
             <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold" style={{ background: "var(--success-light)", color: "var(--success)" }}>
-              <span>✓</span><span>Completed</span>
+              <CheckCircle size={16} weight="fill" /><span>Completed</span>
             </div>
           )}
           {completed && nextLesson && (
             <Link href={`/learn/${courseSlug}/${nextLesson.slug}`} className="px-5 py-2 rounded-xl text-white text-sm font-semibold primary-gradient">
-              Next Lesson →
+              <span className="inline-flex items-center gap-1.5">Next lesson <ArrowRight size={14} weight="bold" /></span>
             </Link>
           )}
           {completed && !nextLesson && (
             <Link href={`/learn/${courseSlug}`} className="px-5 py-2 rounded-xl text-white text-sm font-semibold primary-gradient">
-              Course Complete →
+              <span className="inline-flex items-center gap-1.5">Finish course <ArrowRight size={14} weight="bold" /></span>
             </Link>
           )}
         </div>

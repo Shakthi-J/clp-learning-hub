@@ -1,4 +1,5 @@
 import { getActor } from "@/lib/auth";
+import { BookOpen, Globe, Users, PencilLine, CaretRight } from "@phosphor-icons/react/ssr";
 import { getManagedCourses, getManagedCourseIds, countLessons } from "@/lib/instructor";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -46,10 +47,10 @@ export default async function InstructorDashboardPage() {
   const publishedCount = courses.filter((course) => course.published).length;
 
   const stats = [
-    { label: "My Courses", value: courses.length, icon: "📚", accent: "blue" as const },
-    { label: "Published", value: publishedCount, icon: "🌐", accent: "teal" as const },
-    { label: "Active Learners", value: activeLearners, icon: "👥", accent: "purple" as const },
-    { label: "Awaiting Grading", value: pendingGrading, icon: "✍️", accent: "warning" as const, highlight: pendingGrading > 0 },
+    { label: "My Courses", value: courses.length, icon: <BookOpen size={18} weight="duotone" />, accent: "blue" as const },
+    { label: "Published", value: publishedCount, icon: <Globe size={18} weight="duotone" />, accent: "teal" as const },
+    { label: "Active Learners", value: activeLearners, icon: <Users size={18} weight="duotone" />, accent: "purple" as const },
+    { label: "Awaiting Grading", value: pendingGrading, icon: <PencilLine size={18} weight="duotone" />, accent: "warning" as const, highlight: pendingGrading > 0 },
   ];
 
   return (
@@ -63,7 +64,7 @@ export default async function InstructorDashboardPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 stagger">
         {stats.map((stat) => (
           <StatCard key={stat.label} label={stat.label} value={stat.value} icon={stat.icon} accent={stat.accent} highlight={stat.highlight} />
         ))}
@@ -73,7 +74,7 @@ export default async function InstructorDashboardPage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold" style={{ color: "var(--foreground)" }}>Your Courses</h2>
-            <Link href="/instructor/courses" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>View all →</Link>
+            <Link href="/instructor/courses" className="text-sm font-semibold" style={{ color: "var(--primary)" }}><span className="inline-flex items-center gap-1.5">View all <CaretRight size={13} weight="bold" /></span></Link>
           </div>
           <div className="space-y-3">
             {courses.slice(0, 5).map((course) => (
@@ -93,7 +94,7 @@ export default async function InstructorDashboardPage() {
         </div>
       ) : (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-          <span className="text-4xl block mb-3">📚</span>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--accent-blue-light)", color: "var(--accent-blue)" }}><BookOpen size={22} weight="duotone" /></div>
           <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No courses assigned yet</h3>
           <p className="text-sm max-w-md mx-auto" style={{ color: "var(--foreground-secondary)" }}>
             A CLP admin assigns courses to instructors. Once a course is assigned to you, it appears here.

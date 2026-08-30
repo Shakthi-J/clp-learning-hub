@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { BookOpen } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 import AssignInstructor from "./AssignInstructor";
 
@@ -80,7 +81,7 @@ export default async function AdminCoursesPage() {
         </div>
       ) : (
         <div className="text-center py-20 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-          <span className="text-4xl block mb-3">📚</span>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--accent-blue-light)", color: "var(--accent-blue)" }}><BookOpen size={22} weight="duotone" /></div>
           <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No courses yet</h3>
           <p className="text-sm mb-6" style={{ color: "var(--foreground-secondary)" }}>Create your first course to get started.</p>
           <Link href="/admin/courses/new" className="inline-block px-5 py-2.5 rounded-xl text-white text-sm font-semibold primary-gradient">

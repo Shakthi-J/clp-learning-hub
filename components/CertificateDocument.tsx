@@ -32,8 +32,8 @@ export default function CertificateDocument({ certificate }: { certificate: Cert
 
       <div className="relative flex flex-col items-center gap-1 mb-6">
         <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-base font-bold mb-3"
-          style={{ background: "var(--primary)" }}
+          className="w-12 h-12 rounded-xl flex items-center justify-center  text-base font-bold mb-3"
+          style={{ background: "var(--primary)", color: "var(--on-primary)" }}
         >
           CL
         </div>

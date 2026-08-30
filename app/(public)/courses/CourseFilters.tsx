@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { MagnifyingGlass, X } from "@phosphor-icons/react";
 
 const SORTS = [
   { value: "newest", label: "Newest first" },
@@ -49,18 +50,27 @@ export default function CourseFilters({ categories }: { categories: string[] }) 
     <div className="mb-8 space-y-4" style={{ opacity: isPending ? 0.6 : 1 }}>
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[220px]">
-          <span
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-sm pointer-events-none"
+          <MagnifyingGlass
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
             style={{ color: "var(--foreground-muted)" }}
-          >
-            🔍
-          </span>
+          />
+          {query && (
+            <button
+              onClick={() => setQuery("")}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-0.5"
+              style={{ color: "var(--foreground-muted)" }}
+            >
+              <X size={14} weight="bold" />
+            </button>
+          )}
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search courses…"
             aria-label="Search courses"
-            className="w-full pl-9 pr-3 py-2.5 rounded-xl text-sm border"
+            className="w-full pl-10 pr-9 py-2.5 rounded-xl text-sm border transition-shadow"
             style={{ background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground)" }}
           />
         </div>
@@ -85,7 +95,7 @@ export default function CourseFilters({ categories }: { categories: string[] }) 
             className="text-xs font-semibold px-3 py-1.5 rounded-full border"
             style={
               !activeCategory
-                ? { background: "var(--primary)", borderColor: "var(--primary)", color: "#fff" }
+                ? { background: "var(--primary)", borderColor: "var(--primary)", color: "var(--on-primary)" }
                 : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-secondary)" }
             }
           >
@@ -100,7 +110,7 @@ export default function CourseFilters({ categories }: { categories: string[] }) 
                 className="text-xs font-semibold px-3 py-1.5 rounded-full border"
                 style={
                   active
-                    ? { background: "var(--primary)", borderColor: "var(--primary)", color: "#fff" }
+                    ? { background: "var(--primary)", borderColor: "var(--primary)", color: "var(--on-primary)" }
                     : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-secondary)" }
                 }
               >

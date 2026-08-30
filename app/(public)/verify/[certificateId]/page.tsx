@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/server";
+import { SealCheck, WarningCircle } from "@phosphor-icons/react/ssr";
 import CertificateDocument from "@/components/CertificateDocument";
 
 export const metadata = { title: "Verify Certificate" };
@@ -37,7 +38,7 @@ export default async function VerifyCertificatePage({
             className="flex items-center gap-3 px-4 py-3 rounded-xl mb-6 print-hidden"
             style={{ background: "var(--primary-light)" }}
           >
-            <span className="text-xl">✓</span>
+            <SealCheck size={22} weight="fill" style={{ color: "var(--success)" }} />
             <div>
               <p className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
                 Valid certificate
@@ -63,7 +64,7 @@ export default async function VerifyCertificatePage({
           className="text-center py-20 rounded-2xl border"
           style={{ borderColor: "var(--border)", background: "var(--card)" }}
         >
-          <span className="text-4xl mb-4 block">⚠️</span>
+          <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--warning-light)", color: "var(--warning)" }}><WarningCircle size={22} weight="duotone" /></div>
           <h1 className="text-xl font-bold mb-2" style={{ color: "var(--foreground)" }}>
             Certificate not found
           </h1>

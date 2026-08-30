@@ -20,7 +20,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <nav className="sticky top-0 z-50 border-b" style={{ background: "var(--card)", borderColor: "var(--border)", boxShadow: "var(--shadow-sm)" }}>
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ background: "var(--primary)" }}>CL</div>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center  text-sm font-bold" style={{ background: "var(--primary)", color: "var(--on-primary)" }}>CL</div>
             <span className="font-semibold text-base" style={{ color: "var(--foreground)" }}>CLP Learning Hub</span>
           </Link>
           <div className="flex items-center gap-6">
@@ -34,8 +34,8 @@ export default async function PublicLayout({ children }: { children: React.React
                 style={{ background: "var(--primary-light)", color: "var(--primary)" }}
               >
                 <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                  style={{ background: "var(--primary)" }}
+                  className="w-6 h-6 rounded-full flex items-center justify-center  text-xs font-bold"
+                  style={{ background: "var(--primary)", color: "var(--on-primary)" }}
                 >
                   {(patient.name || patient.email || "U")[0].toUpperCase()}
                 </div>
