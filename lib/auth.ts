@@ -67,3 +67,14 @@ export async function courseIdForLesson(lessonId: string): Promise<string | null
   const modules = data?.modules as any;
   return modules?.course_id ?? null;
 }
+
+/** Resolves the course that owns a module, for permission checks on module writes. */
+export async function courseIdForModule(moduleId: string): Promise<string | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("modules")
+    .select("course_id")
+    .eq("id", moduleId)
+    .maybeSingle();
+  return data?.course_id ?? null;
+}

@@ -95,10 +95,13 @@ export default async function InstructorDashboardPage() {
       ) : (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
           <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--accent-blue-light)", color: "var(--accent-blue)" }}><BookOpen size={22} weight="duotone" /></div>
-          <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No courses assigned yet</h3>
+          <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No courses yet</h3>
           <p className="text-sm max-w-md mx-auto" style={{ color: "var(--foreground-secondary)" }}>
-            A CLP admin assigns courses to instructors. Once a course is assigned to you, it appears here.
+            Create your first course and it appears here, along with its learners and grading queue.
           </p>
+          <Link href="/instructor/courses/new" className="inline-block mt-6 px-5 py-2.5 rounded-xl text-sm font-semibold primary-gradient">
+            Create a course
+          </Link>
         </div>
       )}
     </div>

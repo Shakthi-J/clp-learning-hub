@@ -9,7 +9,7 @@ export default async function AdminCoursesPage() {
   const supabase = await createClient();
   const { data: courses } = await supabase
     .from("courses")
-    .select("id, slug, title, category, published, created_at, instructor_id, modules(id)")
+    .select("id, slug, title, category, published, created_at, instructor_id, created_by, creator:patients!courses_created_by_fkey (name, email), modules(id)")
     .order("created_at", { ascending: false });
 
   const { data: instructors } = await supabase
@@ -53,6 +53,9 @@ export default async function AdminCoursesPage() {
                   <h3 className="font-semibold truncate" style={{ color: "var(--foreground)" }}>{course.title}</h3>
                   <p className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>
                     {modules?.length ?? 0} module{(modules?.length ?? 0) !== 1 ? "s" : ""} · /{course.slug}
+                    {(course as any).creator && (
+                      <> · created by {(course as any).creator.name || (course as any).creator.email}</>
+                    )}
                   </p>
                   <div className="mt-2 flex items-center gap-2">
                     <span className="text-xs" style={{ color: "var(--foreground-muted)" }}>Instructor:</span>

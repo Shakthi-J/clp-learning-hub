@@ -1,5 +1,6 @@
 "use client";
 import { use, useState, useEffect } from "react";
+import { useStaffBasePath } from "@/lib/useStaffBasePath";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -10,6 +11,7 @@ const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), { ss
 
 export default function NewLessonPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
+  const base = useStaffBasePath();
   const router = useRouter();
   const searchParams = useSearchParams();
   const moduleId = searchParams.get("moduleId") || "";
@@ -58,7 +60,7 @@ export default function NewLessonPage({ params }: { params: Promise<{ courseId: 
     const data = await res.json();
     setLoading(false);
     if (!res.ok) { setError(data.message || "Failed to create lesson."); return; }
-    router.push(`/admin/courses/${courseId}/lessons`);
+    router.push(`${base}/courses/${courseId}/lessons`);
     router.refresh();
   };
 
@@ -67,9 +69,9 @@ export default function NewLessonPage({ params }: { params: Promise<{ courseId: 
   return (
     <div className="p-8 max-w-3xl">
       <div className="flex items-center gap-3 mb-8">
-        <Link href="/admin/courses" className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
+        <Link href={`${base}/courses`} className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>
-        <Link href={`/admin/courses/${courseId}/lessons`} className="text-sm" style={{ color: "var(--foreground-secondary)" }}>Lessons</Link>
+        <Link href={`${base}/courses/${courseId}/lessons`} className="text-sm" style={{ color: "var(--foreground-secondary)" }}>Lessons</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>
         <span className="text-sm font-medium" style={{ color: "var(--foreground)" }}>New Lesson</span>
       </div>
@@ -137,7 +139,7 @@ export default function NewLessonPage({ params }: { params: Promise<{ courseId: 
             className="px-6 py-2.5 rounded-xl text-white text-sm font-semibold primary-gradient disabled:opacity-60 disabled:cursor-not-allowed">
             {loading ? "Saving..." : "Save Lesson"}
           </button>
-          <Link href={`/admin/courses/${courseId}/lessons`} className="px-6 py-2.5 rounded-xl text-sm font-semibold border" style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
+          <Link href={`${base}/courses/${courseId}/lessons`} className="px-6 py-2.5 rounded-xl text-sm font-semibold border" style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
             Cancel
           </Link>
         </div>

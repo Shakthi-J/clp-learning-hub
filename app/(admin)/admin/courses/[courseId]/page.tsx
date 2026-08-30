@@ -1,5 +1,6 @@
 "use client";
 import { use, useState, useEffect } from "react";
+import { useStaffBasePath } from "@/lib/useStaffBasePath";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -11,6 +12,7 @@ type Module = { id: string; title: string; order: number; lessons: Lesson[] };
 
 export default function LessonsPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
+  const base = useStaffBasePath();
   const supabase = createClient();
   const [course, setCourse] = useState<any>(null);
   const [modules, setModules] = useState<Module[]>([]);
@@ -56,7 +58,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
   return (
     <div className="p-8 max-w-3xl">
       <div className="flex items-center gap-3 mb-2">
-        <Link href="/admin/courses" className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
+        <Link href={`${base}/courses`} className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>
         <span className="text-sm font-medium truncate" style={{ color: "var(--foreground)" }}>{course?.title}</span>
       </div>
@@ -78,7 +80,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
                 <span className="text-xs" style={{ color: "var(--foreground-muted)" }}>{mod.lessons.length} lesson{mod.lessons.length !== 1 ? "s" : ""}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Link href={`/admin/courses/${courseId}/lessons/new?moduleId=${mod.id}`}
+                <Link href={`${base}/courses/${courseId}/lessons/new?moduleId=${mod.id}`}
                   className="text-xs font-semibold px-3 py-1.5 rounded-lg"
                   style={{ background: "var(--primary-light)", color: "var(--primary)" }}>
                   + Add Lesson
@@ -103,7 +105,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
                       {lesson.youtube_video_id && <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "var(--danger-light)", color: "var(--danger)" }}>Video</span>}
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <Link href={`/admin/courses/${courseId}/lessons/${lesson.id}`} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>Edit</Link>
+                      <Link href={`${base}/courses/${courseId}/lessons/${lesson.id}`} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>Edit</Link>
                       <button onClick={() => handleDeleteLesson(lesson.id)} className="text-xs" style={{ color: "var(--danger)" }}>Delete</button>
                     </div>
                   </div>

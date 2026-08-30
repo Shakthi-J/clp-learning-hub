@@ -13,11 +13,16 @@ export default async function InstructorCoursesPage() {
 
   return (
     <div className="p-8 max-w-5xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>My Courses</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>
-          {courses.length} course{courses.length !== 1 ? "s" : ""} assigned to you
-        </p>
+      <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--foreground)" }}>My Courses</h1>
+          <p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>
+            {courses.length} course{courses.length !== 1 ? "s" : ""} you own
+          </p>
+        </div>
+        <Link href="/instructor/courses/new" className="px-5 py-2.5 rounded-xl text-sm font-semibold primary-gradient">
+          + New course
+        </Link>
       </div>
 
       {courses.length > 0 ? (
@@ -45,7 +50,10 @@ export default async function InstructorCoursesPage() {
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right">
-                    <Link href={`/instructor/courses/${course.id}`} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>Manage</Link>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link href={`/instructor/courses/${course.id}/lessons`} className="text-xs font-semibold" style={{ color: "var(--foreground-secondary)" }}>Lessons</Link>
+                      <Link href={`/instructor/courses/${course.id}`} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>Edit</Link>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -56,10 +64,13 @@ export default async function InstructorCoursesPage() {
       ) : (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
           <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: "var(--accent-blue-light)", color: "var(--accent-blue)" }}><BookOpen size={22} weight="duotone" /></div>
-          <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No courses assigned yet</h3>
-          <p className="text-sm max-w-md mx-auto" style={{ color: "var(--foreground-secondary)" }}>
-            Ask a CLP admin to assign you a course from the admin Courses page.
+          <h3 className="font-semibold mb-2" style={{ color: "var(--foreground)" }}>No courses yet</h3>
+          <p className="text-sm max-w-md mx-auto mb-6" style={{ color: "var(--foreground-secondary)" }}>
+            Create your first course, or ask a CLP admin to assign you an existing one.
           </p>
+          <Link href="/instructor/courses/new" className="inline-block px-5 py-2.5 rounded-xl text-sm font-semibold primary-gradient">
+            Create a course
+          </Link>
         </div>
       )}
     </div>
