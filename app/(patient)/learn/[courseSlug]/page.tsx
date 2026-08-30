@@ -19,8 +19,15 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
 
   if (!course) notFound();
 
+  // Oldest active enrollment, matching the lesson page and migration 006.
+  // .single() throws when it matches zero rows too, so a learner with no active
+  // enrollment produced an error rather than a clean redirect.
   const { data: enrollment } = await supabase.from("enrollments")
-    .select("id, status").eq("patient_id", patient?.id).eq("course_id", course.id).eq("status", "active").single();
+    .select("id, status")
+    .eq("patient_id", patient?.id).eq("course_id", course.id).eq("status", "active")
+    .order("enrolled_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
 
   if (!enrollment) redirect("/my-learning");
 

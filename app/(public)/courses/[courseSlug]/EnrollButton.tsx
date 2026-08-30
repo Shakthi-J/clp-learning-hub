@@ -38,13 +38,17 @@ export default function EnrollButton({ courseId, isLoggedIn }: { courseId: strin
     const { data: patient } = await supabase
       .from("patients").select("id").eq("auth_user_id", user.id).single();
 
+    // A learner can hold more than one completed enrollment for a course, since
+    // the unique index only constrains active rows. .single() threw on that,
+    // which skipped the confirmation and let a duplicate request through.
     const { data: completed } = await supabase
       .from("enrollments")
       .select("id")
       .eq("patient_id", patient?.id)
       .eq("course_id", courseId)
       .eq("status", "completed")
-      .single();
+      .limit(1)
+      .maybeSingle();
 
     if (completed) {
       // Already completed — show confirmation popup
