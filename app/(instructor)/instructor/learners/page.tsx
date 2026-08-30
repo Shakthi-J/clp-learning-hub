@@ -20,7 +20,7 @@ export default async function InstructorLearnersPage() {
         .from("enrollments")
         .select(`id, status, enrolled_at, completed_at,
                  patients!enrollments_patient_id_fkey (name, email),
-                 courses (title, category),
+                 courses (title, category, modules (id, lessons!lessons_module_id_fkey (id))),
                  lesson_progress (completed)`)
         .in("course_id", courseIds)
         .order("enrolled_at", { ascending: false })
@@ -29,7 +29,11 @@ export default async function InstructorLearnersPage() {
   const rows = ((enrollments as any[]) || []).map((enrollment) => {
     const progress = (enrollment.lesson_progress as any[]) || [];
     const completed = progress.filter((p) => p.completed).length;
-    const total = progress.length;
+    // From the course, not the progress rows: those only exist once a lesson has
+    // been started, so an untouched enrollment reported "0/0" instead of "0/2".
+    const total = ((enrollment.courses?.modules as any[]) || []).reduce(
+      (acc: number, m: any) => acc + (m.lessons?.length || 0), 0
+    );
     return {
       id: enrollment.id,
       name: enrollment.patients?.name || "—",
@@ -55,7 +59,8 @@ export default async function InstructorLearnersPage() {
 
       {rows.length > 0 ? (
         <div className="card overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
             <thead>
               <tr className="border-b" style={{ borderColor: "var(--border)", background: "var(--card-secondary)" }}>
                 {["Learner", "Course", "Progress", "Status", "Enrolled"].map((header) => (
@@ -92,6 +97,7 @@ export default async function InstructorLearnersPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       ) : (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>

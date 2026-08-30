@@ -22,7 +22,8 @@ export default async function InstructorCoursesPage() {
 
       {courses.length > 0 ? (
         <div className="card overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
             <thead>
               <tr className="border-b" style={{ borderColor: "var(--border)", background: "var(--card-secondary)" }}>
                 {["Course", "Category", "Content", "Status", ""].map((header) => (
@@ -50,6 +51,7 @@ export default async function InstructorCoursesPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       ) : (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: "var(--border)", background: "var(--card)" }}>

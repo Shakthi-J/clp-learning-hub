@@ -68,7 +68,8 @@ export default function AdminPatientsPage() {
         </div>
       ) : (
         <div className="card overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
             <thead><tr className="border-b" style={{ borderColor: "var(--border)", background: "var(--card-secondary)" }}>
               {["Name","Email","Role","Access","Joined"].map((h) => <th key={h} className="text-left px-5 py-3 font-medium" style={{ color: "var(--foreground-secondary)" }}>{h}</th>)}
             </tr></thead>
@@ -88,6 +89,7 @@ export default function AdminPatientsPage() {
               </tr>
             ))}</tbody>
           </table>
+          </div>
         </div>
       )}
     </div>
