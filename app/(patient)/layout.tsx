@@ -8,6 +8,7 @@ export default async function PatientLayout({ children }: { children: React.Reac
   if (!user) redirect("/login");
   const { data: patient } = await supabase.from("patients").select("name, email, role").eq("auth_user_id", user.id).single();
   if (patient?.role === "admin") redirect("/admin");
+  if (patient?.role === "instructor") redirect("/instructor");
   const navItems = [
     { href: "/my-learning", label: "My Learning", icon: "🎓" },
     { href: "/courses", label: "Browse Courses", icon: "📚" },

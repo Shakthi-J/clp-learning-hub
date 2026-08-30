@@ -30,7 +30,18 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith("/admin")) {
     if (!user) return NextResponse.redirect(new URL("/login", request.url));
     const role = await getRole();
-    if (role !== "admin") return NextResponse.redirect(new URL("/my-learning", request.url));
+    if (role !== "admin") {
+      return NextResponse.redirect(new URL(role === "instructor" ? "/instructor" : "/my-learning", request.url));
+    }
+  }
+
+  if (pathname.startsWith("/instructor")) {
+    if (!user) return NextResponse.redirect(new URL("/login", request.url));
+    const role = await getRole();
+    // Admins can view instructor screens; patients cannot.
+    if (role !== "instructor" && role !== "admin") {
+      return NextResponse.redirect(new URL("/my-learning", request.url));
+    }
   }
 
   const patientRoutes = ["/my-learning", "/learn", "/certificates", "/profile"];
@@ -41,6 +52,7 @@ export async function middleware(request: NextRequest) {
   if ((pathname === "/login" || pathname === "/signup") && user) {
     const role = await getRole();
     if (role === "admin") return NextResponse.redirect(new URL("/admin", request.url));
+    if (role === "instructor") return NextResponse.redirect(new URL("/instructor", request.url));
     return NextResponse.redirect(new URL("/my-learning", request.url));
   }
 

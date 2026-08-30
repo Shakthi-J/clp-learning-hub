@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import AssignInstructor from "./AssignInstructor";
 
 export const metadata = { title: "Courses" };
 
@@ -7,8 +8,14 @@ export default async function AdminCoursesPage() {
   const supabase = await createClient();
   const { data: courses } = await supabase
     .from("courses")
-    .select("id, slug, title, category, published, created_at, modules(id)")
+    .select("id, slug, title, category, published, created_at, instructor_id, modules(id)")
     .order("created_at", { ascending: false });
+
+  const { data: instructors } = await supabase
+    .from("patients")
+    .select("id, name, email")
+    .eq("role", "instructor")
+    .order("name");
 
   return (
     <div className="p-8 max-w-5xl">
@@ -33,7 +40,7 @@ export default async function AdminCoursesPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
-                      style={course.published ? { background: "#e8f5e9", color: "#2e7d32" } : { background: "var(--beige-light)", color: "var(--foreground-muted)" }}>
+                      style={course.published ? { background: "var(--success-light)", color: "var(--success)" } : { background: "var(--beige-light)", color: "var(--foreground-muted)" }}>
                       {course.published ? "Published" : "Draft"}
                     </span>
                     {course.category && (
@@ -46,6 +53,14 @@ export default async function AdminCoursesPage() {
                   <p className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>
                     {modules?.length ?? 0} module{(modules?.length ?? 0) !== 1 ? "s" : ""} · /{course.slug}
                   </p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-xs" style={{ color: "var(--foreground-muted)" }}>Instructor:</span>
+                    <AssignInstructor
+                      courseId={course.id}
+                      instructorId={course.instructor_id ?? null}
+                      instructors={(instructors as any[]) || []}
+                    />
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Link href={`/admin/courses/${course.id}/lessons`}

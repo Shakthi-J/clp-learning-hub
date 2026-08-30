@@ -28,6 +28,8 @@ export default function LoginPage() {
 
     if (patient?.role === "admin") {
       window.location.href = "/admin";
+    } else if (patient?.role === "instructor") {
+      window.location.href = "/instructor";
     } else {
       window.location.href = "/my-learning";
     }
