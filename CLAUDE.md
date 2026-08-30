@@ -30,8 +30,8 @@ There are no payments, no subscriptions, no public signups that bypass staff con
 
 ## Supabase
 
-Project URL: https://vgzxzxpfymhttrxvpjeq.supabase.co
-Anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnenh6eHBmeW1odHRyeHZwamVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMDUyMjEsImV4cCI6MjA5NzY4MTIyMX0.GZ2Scrj0jiPoj-Nknl4fVJyFM2sD0c7Vt1MrG2V4leU
+Project URL: https://nltjgkntylttdzgszjev.supabase.co
+Anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdGpna250eWx0dGR6Z3N6amV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3MjQ5NTksImV4cCI6MjEwMzMwMDk1OX0.6nbiow4zTlZAEZmKZGerhhNpIKuhAuOZQurhN4uJQh4
 
 Service role key: stored in .env.local as SUPABASE_SERVICE_ROLE_KEY
 Never expose to client. Only use in api/ routes and server-only files.
@@ -40,8 +40,8 @@ Never expose to client. Only use in api/ routes and server-only files.
 
 ## Environment Variables (.env.local)
 
-NEXT_PUBLIC_SUPABASE_URL=https://vgzxzxpfymhttrxvpjeq.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnenh6eHBmeW1odHRyeHZwamVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMDUyMjEsImV4cCI6MjA5NzY4MTIyMX0.GZ2Scrj0jiPoj-Nknl4fVJyFM2sD0c7Vt1MrG2V4leU
+NEXT_PUBLIC_SUPABASE_URL=https://nltjgkntylttdzgszjev.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdGpna250eWx0dGR6Z3N6amV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3MjQ5NTksImV4cCI6MjEwMzMwMDk1OX0.6nbiow4zTlZAEZmKZGerhhNpIKuhAuOZQurhN4uJQh4
 SUPABASE_SERVICE_ROLE_KEY=<paste from Supabase dashboard>
 RESEND_API_KEY=<paste from Resend dashboard>
 NEXT_PUBLIC_SITE_URL=https://learn.cliniclivingplus.com
@@ -81,26 +81,42 @@ Do not conflate the two tables.
 
 ---
 
-## Design Tokens (exact from MicrobiomeRx — use verbatim)
+## Design Tokens
 
-Primary green:        #2e7d32
-Primary hover:        #256a29
-Primary light:        #dcefd7
-Secondary:            #a8d5a2
-Background:           #f8f4ea
-Card:                 #fffdf8
-Card secondary:       #f3f8ef
-Beige:                #e8dfc9
-Foreground:           #1f2937
-Foreground secondary: #6b7280
-Foreground muted:     #9ca3af
-Border:               #e8dfc9
-Radius lg:            18px
-Font:                 Inter, ui-sans-serif, system-ui, sans-serif
+White/neutral base with a multi-colour accent system. All tokens live in
+`app/globals.css` (light in `:root`, dark in `.dark`).
 
-Never hardcode hex in components. Always use CSS variables.
+Base
+  Background:           #f8fafc
+  Card:                 #ffffff
+  Card secondary:       #f1f5f9
+  Border:               #e2e8f0
+  Foreground:           #0f172a
+  Foreground secondary: #64748b
+  Foreground muted:     #94a3b8
 
----
+Brand
+  Primary:              #2e7d32
+  Primary hover:        #256a29
+  Primary light:        #dcefd7
+  Secondary:            #a8d5a2
+
+Status (each has a matching -light background token)
+  Success:              #16a34a
+  Warning:              #d97706
+  Danger:               #dc2626
+  Info:                 #0284c7
+
+Accents (each has a matching -light token) - used for categories and badges
+  blue #2563eb · purple #7c3aed · teal #0d9488
+  rose #e11d48 · amber #d97706 · indigo #4f46e5
+
+Radius lg:              18px
+Font:                   Inter, ui-sans-serif, system-ui, sans-serif
+
+Never hardcode hex in components - always use the CSS variables.
+Course categories get a colour automatically via `lib/categoryColor.ts`, which
+hashes the category name to a stable accent hue. Do not assign these by hand.
 
 ## Video Rules
 
