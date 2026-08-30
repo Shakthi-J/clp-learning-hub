@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export type StatAccent =
   | "blue" | "purple" | "teal" | "rose" | "amber" | "indigo"
   | "success" | "warning" | "danger" | "info" | "primary";
@@ -21,7 +23,7 @@ export default function StatCard({
 }: {
   label: string;
   value: number | string;
-  icon: string;
+  icon: ReactNode;
   accent?: StatAccent;
   /** Draws attention to a tile that needs action, e.g. a grading backlog. */
   highlight?: boolean;
@@ -33,19 +35,19 @@ export default function StatCard({
 
   return (
     <div
-      className="card p-5"
+      className="card p-5 transition-shadow duration-200 hover:shadow-[var(--shadow-md)]"
       style={highlight ? { borderColor: solid, background: tint } : {}}
     >
       <div
-        className="w-9 h-9 rounded-xl flex items-center justify-center text-lg mb-3"
-        style={{ background: tint }}
+        className="w-9 h-9 rounded-xl flex items-center justify-center mb-4"
+        style={{ background: tint, color: solid }}
       >
         {icon}
       </div>
-      <div className="text-2xl font-bold" style={{ color: valueColor }}>
+      <div className="text-[26px] font-semibold font-mono tracking-tight leading-none" style={{ color: valueColor }}>
         {value}
       </div>
-      <div className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>
+      <div className="text-xs mt-2" style={{ color: "var(--foreground-muted)" }}>
         {label}
       </div>
     </div>

@@ -7,13 +7,13 @@
 :root {
   --background: #f8fafc; --card: #ffffff; --card-secondary: #f1f5f9;
 
-  --primary: #2e7d32; --primary-hover: #256a29; --primary-light: #dcefd7;
+  --primary: #2e7d32; --primary-hover: #256a29; --primary-light: #dcefd7; --on-primary: #ffffff;
   --secondary: #a8d5a2; --secondary-light: #eef8eb;
 
   /* Neutral aliases. `beige` names are kept so existing markup keeps working. */
   --beige: #e2e8f0; --beige-light: #f1f5f9;
 
-  --foreground: #0f172a; --foreground-secondary: #64748b; --foreground-muted: #94a3b8;
+  --foreground: #0f172a; --foreground-secondary: #475569; --foreground-muted: #64748b;
 
   --success: #16a34a; --success-light: #dcfce7;
   --warning: #d97706; --warning-light: #fef3c7;
@@ -31,14 +31,23 @@
   --border: #e2e8f0; --border-light: #f1f5f9;
   --scrollbar: #cbd5e1; --scrollbar-hover: #94a3b8;
 
-  --shadow-sm: 0 1px 2px rgba(15,23,42,0.04); --shadow-md: 0 4px 12px rgba(15,23,42,0.06); --shadow-lg: 0 12px 24px rgba(15,23,42,0.10);
-  --radius-sm: 10px; --radius-md: 14px; --radius-lg: 18px; --radius-xl: 24px;
+  /* Tinted to the slate background rather than neutral black, and wide-spreading
+     so elevation reads as depth instead of a hard drop. */
+  --shadow-sm: 0 1px 2px rgba(15,23,42,0.04), 0 1px 1px rgba(15,23,42,0.02);
+  --shadow-md: 0 8px 24px -8px rgba(15,23,42,0.10), 0 2px 6px -2px rgba(15,23,42,0.05);
+  --shadow-lg: 0 20px 40px -15px rgba(15,23,42,0.12), 0 4px 12px -4px rgba(15,23,42,0.06);
+  --ring: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
+  --radius-sm: 10px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px;
+
+  /* Motion. One easing curve for the whole app so nothing feels foreign. */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 140ms; --dur: 220ms; --dur-slow: 380ms;
 }
 
 .dark {
   --background: #0f172a; --card: #1e293b; --card-secondary: #263449;
 
-  --primary: #4ade80; --primary-hover: #86efac; --primary-light: #14532d;
+  --primary: #4ade80; --primary-hover: #86efac; --primary-light: #14532d; --on-primary: #052e16;
   --secondary: #86efac; --secondary-light: #14532d;
 
   --beige: #334155; --beige-light: #263449;
@@ -60,7 +69,43 @@
   --border: #334155; --border-light: #475569;
   --scrollbar: #475569; --scrollbar-hover: #64748b;
 
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.30); --shadow-md: 0 4px 12px rgba(0,0,0,0.35); --shadow-lg: 0 12px 24px rgba(0,0,0,0.45);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.30);
+  --shadow-md: 0 8px 24px -8px rgba(0,0,0,0.45);
+  --shadow-lg: 0 20px 40px -15px rgba(0,0,0,0.55);
+  --ring: 0 0 0 3px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+  --background: #0f172a; --card: #1e293b; --card-secondary: #263449;
+
+  --primary: #4ade80; --primary-hover: #86efac; --primary-light: #14532d; --on-primary: #052e16;
+  --secondary: #86efac; --secondary-light: #14532d;
+
+  --beige: #334155; --beige-light: #263449;
+
+  --foreground: #f1f5f9; --foreground-secondary: #cbd5e1; --foreground-muted: #94a3b8;
+
+  --success: #4ade80; --success-light: #14532d;
+  --warning: #fbbf24; --warning-light: #451a03;
+  --danger:  #f87171; --danger-light:  #450a0a;
+  --info:    #38bdf8; --info-light:    #082f49;
+
+  --accent-blue: #60a5fa;   --accent-blue-light: #1e3a8a;
+  --accent-purple: #a78bfa; --accent-purple-light: #2e1065;
+  --accent-teal: #2dd4bf;   --accent-teal-light: #134e4a;
+  --accent-rose: #fb7185;   --accent-rose-light: #4c0519;
+  --accent-amber: #fbbf24;  --accent-amber-light: #451a03;
+  --accent-indigo: #818cf8; --accent-indigo-light: #1e1b4b;
+
+  --border: #334155; --border-light: #475569;
+  --scrollbar: #475569; --scrollbar-hover: #64748b;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.30);
+  --shadow-md: 0 8px 24px -8px rgba(0,0,0,0.45);
+  --shadow-lg: 0 20px 40px -15px rgba(0,0,0,0.55);
+  --ring: 0 0 0 3px color-mix(in srgb, var(--primary) 30%, transparent);
+}
 }
 
 @theme inline {
@@ -71,27 +116,52 @@
   --color-foreground: var(--foreground); --color-foreground-secondary: var(--foreground-secondary); --color-foreground-muted: var(--foreground-muted);
   --color-success: var(--success); --color-warning: var(--warning); --color-danger: var(--danger); --color-info: var(--info);
   --color-border: var(--border); --color-border-light: var(--border-light);
+  --color-on-primary: var(--on-primary);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { background: var(--background); color: var(--foreground); min-height: 100vh; font-family: Inter, ui-sans-serif, system-ui, sans-serif; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--background); color: var(--foreground); min-height: 100dvh;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv11", "ss01"; letter-spacing: -0.011em;
+}
+.font-mono, .tabular { font-family: var(--font-geist-mono), ui-monospace, monospace; font-feature-settings: "tnum"; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
 ::selection { background: color-mix(in srgb, var(--primary) 20%, transparent); color: var(--foreground); }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
-.card-hover { transition: all 0.25s ease; }
-.card-hover:hover { border-color: var(--secondary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.card-flat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.card-hover { transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.card-hover:hover { border-color: color-mix(in srgb, var(--primary) 28%, var(--border)); box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+.card-hover:active { transform: translateY(-1px); }
 .clinical-gradient { background: linear-gradient(135deg, var(--primary-light) 0%, var(--card-secondary) 100%); }
-.primary-gradient { background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 70%, white) 100%); }
+/* Solid, not a fill gradient - gradients on buttons read dated and muddy the
+   contrast ratio against white text. */
+.primary-gradient { background: var(--primary); color: var(--on-primary); box-shadow: var(--shadow-sm); }
+.primary-gradient:hover { background: var(--primary-hover); }
 .sidebar-surface { background: var(--card); border-right: 1px solid var(--border); }
 .section-surface { background: var(--card-secondary); }
 .success-pill { background: var(--success-light); color: var(--success); }
 .warning-pill { background: var(--warning-light); color: var(--warning); }
 .danger-pill { background: var(--danger-light); color: var(--danger); }
 button, a { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
-button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--secondary); outline-offset: 2px; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 2px solid var(--primary); outline-offset: 2px; border-radius: var(--radius-sm);
+}
+input:focus, textarea:focus, select:focus { border-color: var(--primary) !important; box-shadow: var(--ring); }
+
+/* Tactile feedback: interactive things physically depress. */
+button:not(:disabled):active, a[role="button"]:active { transform: translateY(1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+  }
+}
 
 /* Certificate printing — the certificate is the only thing on the page. */
 @media print {
@@ -116,3 +186,34 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .accent-rose-pill   { background: var(--accent-rose-light);   color: var(--accent-rose); }
 .accent-amber-pill  { background: var(--accent-amber-light);  color: var(--accent-amber); }
 .accent-indigo-pill { background: var(--accent-indigo-light); color: var(--accent-indigo); }
+
+/* Entrance choreography. CSS cascade rather than JS so server-rendered lists
+   stagger without shipping a motion runtime for static content. */
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise var(--dur-slow) var(--ease) both; }
+.stagger > * { animation: rise var(--dur-slow) var(--ease) both; }
+.stagger > *:nth-child(1) { animation-delay: 20ms; }
+.stagger > *:nth-child(2) { animation-delay: 60ms; }
+.stagger > *:nth-child(3) { animation-delay: 100ms; }
+.stagger > *:nth-child(4) { animation-delay: 140ms; }
+.stagger > *:nth-child(5) { animation-delay: 180ms; }
+.stagger > *:nth-child(6) { animation-delay: 220ms; }
+.stagger > *:nth-child(n+7) { animation-delay: 260ms; }
+
+/* Skeleton shimmer for loading states. */
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.skeleton { position: relative; overflow: hidden; background: var(--card-secondary); border-radius: var(--radius-sm); }
+.skeleton::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--foreground) 6%, transparent), transparent);
+  animation: shimmer 1.6s infinite;
+}
+
+/* Sidebar navigation states. */
+.nav-item { position: relative; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.nav-item:hover { background: var(--card-secondary); color: var(--foreground); }
+.nav-item[data-active="true"] { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.nav-item[data-active="true"]::before {
+  content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 18px; border-radius: 0 3px 3px 0; background: var(--primary);
+}
