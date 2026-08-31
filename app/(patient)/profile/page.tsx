@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ArrowRight, BookOpen, CheckCircle, PlayCircle, Certificate } from "@phosphor-icons/react/ssr";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import ProfileForm from "./ProfileForm";
+import AccountSettings from "@/components/AccountSettings";
 import StatCard from "@/components/StatCard";
 
 export const metadata = { title: "Profile" };
@@ -86,13 +86,16 @@ export default async function ProfilePage() {
           </div>
         </div>
 
-        <ProfileForm currentName={patient?.name || ""} />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 stagger">
         {stats.map((stat) => (
           <StatCard key={stat.label} label={stat.label} value={stat.value} icon={stat.icon} accent={stat.accent} />
         ))}
+      </div>
+
+      <div className="mb-6">
+        <AccountSettings currentName={patient?.name || ""} />
       </div>
 
       <div className="card p-6">

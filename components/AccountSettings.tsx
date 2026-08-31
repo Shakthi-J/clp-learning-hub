@@ -2,8 +2,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import ThemeToggle from "./ThemeToggle";
 
-export default function ProfileForm({ currentName }: { currentName: string }) {
+/**
+ * The settings every signed-in person has, whatever their role: display name,
+ * password, and colour theme. Role-specific content lives on the page around it.
+ */
+export default function AccountSettings({
+  currentName,
+  /** Instructors credited on their own courses may still rename themselves. */
+  nameHelp,
+}: {
+  currentName: string;
+  nameHelp?: string;
+}) {
   const router = useRouter();
   const supabase = createClient();
 
@@ -15,6 +27,12 @@ export default function ProfileForm({ currentName }: { currentName: string }) {
   const [confirm, setConfirm] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+
+  const inputStyle = {
+    borderColor: "var(--border)",
+    background: "var(--background)",
+    color: "var(--foreground)",
+  };
 
   const saveName = async () => {
     setSavingName(true);
@@ -45,7 +63,8 @@ export default function ProfileForm({ currentName }: { currentName: string }) {
     }
     setSavingPassword(true);
     setPasswordMessage(null);
-    // Supabase updates the password for the currently signed-in session.
+    // Supabase changes the password for the signed-in session, so the plaintext
+    // never reaches our server.
     const { error } = await supabase.auth.updateUser({ password });
     setSavingPassword(false);
     if (error) {
@@ -57,15 +76,19 @@ export default function ProfileForm({ currentName }: { currentName: string }) {
     setPasswordMessage({ type: "ok", text: "Password changed." });
   };
 
-  const inputStyle = {
-    borderColor: "var(--border)",
-    background: "var(--background)",
-    color: "var(--foreground)",
-  };
-
   return (
-    <div className="space-y-6 pt-6 border-t" style={{ borderColor: "var(--border-light)" }}>
-      <div>
+    <div className="space-y-6">
+      <div className="card p-6">
+        <h2 className="font-semibold mb-1" style={{ color: "var(--foreground)" }}>Appearance</h2>
+        <p className="text-sm mb-4" style={{ color: "var(--foreground-secondary)" }}>
+          System follows your device setting and changes with it.
+        </p>
+        <ThemeToggle />
+      </div>
+
+      <div className="card p-6">
+        <h2 className="font-semibold mb-4" style={{ color: "var(--foreground)" }}>Your details</h2>
+
         <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
           Display name
         </label>
@@ -80,12 +103,15 @@ export default function ProfileForm({ currentName }: { currentName: string }) {
           <button
             onClick={saveName}
             disabled={savingName || !name.trim() || name === currentName}
-            className="text-sm font-semibold px-4 py-2.5 rounded-xl  disabled:opacity-60"
+            className="text-sm font-semibold px-4 py-2.5 rounded-xl disabled:opacity-60"
             style={{ background: "var(--primary)", color: "var(--on-primary)" }}
           >
             {savingName ? "Saving…" : "Save"}
           </button>
         </div>
+        {nameHelp && (
+          <p className="text-[11px] mt-1.5" style={{ color: "var(--foreground-muted)" }}>{nameHelp}</p>
+        )}
         {nameMessage && (
           <p className="text-xs mt-2" style={{ color: nameMessage.type === "ok" ? "var(--success)" : "var(--danger)" }}>
             {nameMessage.text}
@@ -93,10 +119,8 @@ export default function ProfileForm({ currentName }: { currentName: string }) {
         )}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-          Change password
-        </label>
+      <div className="card p-6">
+        <h2 className="font-semibold mb-4" style={{ color: "var(--foreground)" }}>Password</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <input
             type="password"

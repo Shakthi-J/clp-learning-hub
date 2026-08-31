@@ -16,6 +16,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/assignments", label: "Grading", icon: "grading" },
     { href: "/admin/certificates", label: "Certificates", icon: "certificates" },
     { href: "/admin/patients", label: "People", icon: "people" },
+    { href: "/admin/profile", label: "Profile", icon: "profile" },
   ];
   return (
     <div className="min-h-screen flex" style={{ background: "var(--background)" }}>
