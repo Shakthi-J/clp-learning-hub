@@ -18,6 +18,7 @@ export default function AdminPeoplePage() {
 
   const [actor, setActor] = useState<{ id: string; role: string } | null>(null);
   const [authored, setAuthored] = useState<Record<string, number>>({});
+  const [roleFilter, setRoleFilter] = useState<"all" | "patient" | "instructor">("all");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
@@ -78,6 +79,15 @@ export default function AdminPeoplePage() {
 
   const inputStyle = { borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" };
   const instructors = people.filter((p) => p.role === "instructor").length;
+  const learners = people.length - instructors;
+
+  const visible = roleFilter === "all" ? people : people.filter((p) => p.role === roleFilter);
+
+  const FILTERS: { value: typeof roleFilter; label: string; count: number }[] = [
+    { value: "all", label: "Everyone", count: people.length },
+    { value: "patient", label: "Learners", count: learners },
+    { value: "instructor", label: "Instructors", count: instructors },
+  ];
 
   return (
     <div className="p-8 max-w-5xl">
@@ -173,15 +183,39 @@ export default function AdminPeoplePage() {
         </div>
       ) : (
         <>
-          <p className="text-sm mb-4" style={{ color: "var(--foreground-muted)" }}>
-            <span className="font-mono">{people.length}</span> account{people.length !== 1 ? "s" : ""}
-            {instructors > 0 && <> · <span className="font-mono">{instructors}</span> instructor{instructors !== 1 ? "s" : ""}</>}
-          </p>
+          <div className="flex items-center gap-2 flex-wrap mb-5">
+            {FILTERS.map((f) => {
+              const active = roleFilter === f.value;
+              return (
+                <button
+                  key={f.value}
+                  onClick={() => setRoleFilter(f.value)}
+                  aria-pressed={active}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-full border inline-flex items-center gap-1.5"
+                  style={
+                    active
+                      ? { background: "var(--primary)", borderColor: "var(--primary)", color: "var(--on-primary)" }
+                      : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-secondary)" }
+                  }
+                >
+                  {f.label}
+                  <span className="font-mono" style={{ opacity: 0.7 }}>{f.count}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {visible.length === 0 ? (
+            <p className="text-sm py-8 text-center" style={{ color: "var(--foreground-muted)" }}>
+              No {roleFilter === "instructor" ? "instructors" : "learners"} yet.
+            </p>
+          ) : (
           <div className="space-y-3 stagger">
-            {people.map((person) => (
+            {visible.map((person) => (
               <PersonRow key={person.id} person={person} onChanged={fetchPeople} actorRole={actor?.role ?? "admin"} actorId={actor?.id ?? ""} authoredCourses={authored[person.id] ?? 0} />
             ))}
           </div>
+          )}
         </>
       )}
     </div>
