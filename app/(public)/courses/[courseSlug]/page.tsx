@@ -12,17 +12,36 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
   const supabase = await createClient();
   const { data: course } = await supabase
     .from("courses")
-    .select(`
-      id, slug, title, description, category, thumbnail_url, avg_rating, review_count,
-      modules (
-        id, title, order,
-        lessons!lessons_module_id_fkey (id, title, order)
-      )
-    `)
+    .select("id, slug, title, description, category, thumbnail_url, avg_rating, review_count")
     .eq("slug", courseSlug)
     .eq("published", true)
-    .single();
+    .maybeSingle();
   if (!course) notFound();
+
+  // Curriculum comes from public_curriculum, which exposes titles and ordering
+  // only. Reading the lessons table here would hand the YouTube id to anyone
+  // who opens the page, enrolled or not.
+  const { data: curriculum } = await supabase
+    .from("public_curriculum")
+    .select("module_id, module_title, module_order, lesson_id, lesson_title, lesson_order")
+    .eq("course_id", course.id)
+    .order("module_order")
+    .order("lesson_order");
+
+  const moduleMap = new Map<string, any>();
+  for (const row of (curriculum as any[]) || []) {
+    if (!moduleMap.has(row.module_id)) {
+      moduleMap.set(row.module_id, {
+        id: row.module_id, title: row.module_title, order: row.module_order, lessons: [],
+      });
+    }
+    if (row.lesson_id) {
+      moduleMap.get(row.module_id).lessons.push({
+        id: row.lesson_id, title: row.lesson_title, order: row.lesson_order,
+      });
+    }
+  }
+  const curriculumModules = Array.from(moduleMap.values());
   const { data: { user } } = await supabase.auth.getUser();
 
   // Reviews are public; the write gate lives in /api/reviews.
@@ -49,7 +68,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
     }
   }
 
-  const modules = ((course.modules as any[]) || []).sort((a, b) => a.order - b.order);
+  const modules = curriculumModules.sort((a, b) => a.order - b.order);
   const totalLessons = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
   return (
     <div className="max-w-4xl mx-auto px-6 py-14">

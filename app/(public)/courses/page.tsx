@@ -40,8 +40,7 @@ export default async function CoursesPage({
   let query = supabase
     .from("courses")
     .select(
-      `id, slug, title, description, category, thumbnail_url, avg_rating, review_count,
-       modules (id, lessons!lessons_module_id_fkey (id))`,
+      "id, slug, title, description, category, thumbnail_url, avg_rating, review_count",
       { count: "exact" }
     )
     .eq("published", true);
@@ -56,6 +55,21 @@ export default async function CoursesPage({
 
   const from = (currentPage - 1) * PAGE_SIZE;
   const { data: courses, count } = await query.range(from, from + PAGE_SIZE - 1);
+
+  // Lesson counts come from the public view: the lessons table itself is only
+  // readable by enrolled learners and staff.
+  const courseIds = (courses || []).map((c: any) => c.id);
+  const { data: curriculum } = courseIds.length
+    ? await supabase.from("public_curriculum").select("course_id, module_id, lesson_id").in("course_id", courseIds)
+    : { data: [] as any[] };
+
+  const counts = new Map<string, { modules: Set<string>; lessons: number }>();
+  for (const row of (curriculum as any[]) || []) {
+    if (!counts.has(row.course_id)) counts.set(row.course_id, { modules: new Set(), lessons: 0 });
+    const entry = counts.get(row.course_id)!;
+    entry.modules.add(row.module_id);
+    if (row.lesson_id) entry.lessons += 1;
+  }
 
   const total = count ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -94,8 +108,9 @@ export default async function CoursesPage({
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger">
             {courses.map((course: any) => {
-              const modules = (course.modules as any[]) || [];
-              const lessonCount = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
+              const tally = counts.get(course.id);
+              const moduleCount = tally?.modules.size ?? 0;
+              const lessonCount = tally?.lessons ?? 0;
               const accent = accentFor(course.category);
 
               return (
@@ -152,7 +167,7 @@ export default async function CoursesPage({
                       <span className="inline-flex items-center gap-3" style={{ color: "var(--foreground-muted)" }}>
                         <span className="inline-flex items-center gap-1">
                           <Stack size={14} />
-                          <span className="font-mono">{modules.length}</span>
+                          <span className="font-mono">{moduleCount}</span>
                         </span>
                         <span className="inline-flex items-center gap-1">
                           <PlayCircle size={14} />
