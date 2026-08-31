@@ -21,11 +21,14 @@ export default function PersonRow({
   onChanged,
   actorRole,
   actorId,
+  authoredCourses,
 }: {
   person: Person;
   onChanged: () => void;
   actorRole: string;
   actorId: string;
+  /** Courses this person authored. Their name is the credit on that work. */
+  authoredCourses: number;
 }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(person.name ?? "");
@@ -41,6 +44,9 @@ export default function PersonRow({
     background: "var(--background)",
     color: "var(--foreground)",
   };
+
+  // An admin renaming an instructor would re-credit their published work.
+  const nameLocked = person.role === "instructor" && authoredCourses > 0;
 
   const saveProfile = async () => {
     setBusy(true);
@@ -64,7 +70,7 @@ export default function PersonRow({
     const res = await fetch(`/api/patients/${person.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, access_type: accessType }),
+      body: JSON.stringify({ name: nameLocked ? undefined : name, email, access_type: accessType }),
     });
     setBusy(false);
 
@@ -151,8 +157,20 @@ export default function PersonRow({
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--foreground)" }}>Name</label>
-                  <input value={name} maxLength={100} onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border text-sm" style={inputStyle} />
+                  <input
+                    value={name}
+                    maxLength={100}
+                    disabled={nameLocked}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                    style={inputStyle}
+                  />
+                  {nameLocked && (
+                    <p className="text-[11px] mt-1" style={{ color: "var(--foreground-muted)" }}>
+                      Credited on {authoredCourses} course{authoredCourses === 1 ? "" : "s"} they wrote, so only they can
+                      change it, from their own profile.
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--foreground)" }}>Sign-in email</label>

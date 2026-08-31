@@ -17,6 +17,7 @@ export default function AdminPeoplePage() {
   const [accessType, setAccessType] = useState("single_course");
 
   const [actor, setActor] = useState<{ id: string; role: string } | null>(null);
+  const [authored, setAuthored] = useState<Record<string, number>>({});
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
@@ -29,6 +30,14 @@ export default function AdminPeoplePage() {
       .in("role", ["patient", "instructor"])
       .order("created_at", { ascending: false });
     setPeople((data as Person[]) || []);
+
+    // How many courses each person wrote, so their credit can be protected.
+    const { data: courseRows } = await supabase.from("courses").select("created_by");
+    const counts: Record<string, number> = {};
+    for (const row of (courseRows as any[]) || []) {
+      if (row.created_by) counts[row.created_by] = (counts[row.created_by] ?? 0) + 1;
+    }
+    setAuthored(counts);
     setLoading(false);
   };
 
@@ -170,7 +179,7 @@ export default function AdminPeoplePage() {
           </p>
           <div className="space-y-3 stagger">
             {people.map((person) => (
-              <PersonRow key={person.id} person={person} onChanged={fetchPeople} actorRole={actor?.role ?? "admin"} actorId={actor?.id ?? ""} />
+              <PersonRow key={person.id} person={person} onChanged={fetchPeople} actorRole={actor?.role ?? "admin"} actorId={actor?.id ?? ""} authoredCourses={authored[person.id] ?? 0} />
             ))}
           </div>
         </>

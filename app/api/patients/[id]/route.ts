@@ -15,7 +15,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const admin = await createAdminClient();
 
   const { data: target } = await admin
-    .from("patients").select("id, role, auth_user_id, email").eq("id", id).maybeSingle();
+    .from("patients").select("id, role, auth_user_id, email, name").eq("id", id).maybeSingle();
   if (!target) return NextResponse.json({ message: "User not found" }, { status: 404 });
 
   // Another admin's account is not editable from here, so one admin cannot lock
@@ -30,6 +30,24 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const trimmed = String(name).trim();
     if (!trimmed) return NextResponse.json({ message: "Name cannot be empty" }, { status: 400 });
     if (trimmed.length > 100) return NextResponse.json({ message: "Name must be under 100 characters" }, { status: 400 });
+
+    // An instructor's name is the attribution on every course they wrote. Once
+    // they have authored something, only they can change it - an admin renaming
+    // them would silently re-credit their work to a different person.
+    if (trimmed !== (target.name ?? "") && target.role === "instructor") {
+      const { count } = await admin
+        .from("courses").select("*", { count: "exact", head: true }).eq("created_by", id);
+      if ((count ?? 0) > 0) {
+        return NextResponse.json(
+          {
+            code: "AUTHORED_COURSES",
+            message: `${target.name || "This instructor"} has authored ${count} course${count === 1 ? "" : "s"}. Their name is the credit on that work, so only they can change it, from their own profile.`,
+          },
+          { status: 403 }
+        );
+      }
+    }
+
     update.name = trimmed;
   }
 
