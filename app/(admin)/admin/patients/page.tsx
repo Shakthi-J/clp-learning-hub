@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Users, UserPlus } from "@phosphor-icons/react";
+import { Users, UserPlus, MagnifyingGlass, X } from "@phosphor-icons/react";
 import PersonRow, { type Person } from "./PersonRow";
 
 export default function AdminPeoplePage() {
@@ -19,6 +19,7 @@ export default function AdminPeoplePage() {
   const [actor, setActor] = useState<{ id: string; role: string } | null>(null);
   const [authored, setAuthored] = useState<Record<string, number>>({});
   const [roleFilter, setRoleFilter] = useState<"all" | "patient" | "instructor">("all");
+  const [search, setSearch] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
@@ -81,7 +82,13 @@ export default function AdminPeoplePage() {
   const instructors = people.filter((p) => p.role === "instructor").length;
   const learners = people.length - instructors;
 
-  const visible = roleFilter === "all" ? people : people.filter((p) => p.role === roleFilter);
+  const term = search.trim().toLowerCase();
+  const byRole = roleFilter === "all" ? people : people.filter((p) => p.role === roleFilter);
+  const visible = term
+    ? byRole.filter((p) =>
+        `${p.name ?? ""} ${p.email ?? ""}`.toLowerCase().includes(term)
+      )
+    : byRole;
 
   const FILTERS: { value: typeof roleFilter; label: string; count: number }[] = [
     { value: "all", label: "Everyone", count: people.length },
@@ -183,6 +190,32 @@ export default function AdminPeoplePage() {
         </div>
       ) : (
         <>
+          <div className="relative mb-4 max-w-sm">
+            <MagnifyingGlass
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ color: "var(--foreground-muted)" }}
+            />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by name or email"
+              aria-label="Search people"
+              className="w-full pl-10 pr-9 py-2.5 rounded-xl text-sm border"
+              style={{ background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground)" }}
+            />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-0.5"
+                style={{ color: "var(--foreground-muted)" }}
+              >
+                <X size={14} weight="bold" />
+              </button>
+            )}
+          </div>
+
           <div className="flex items-center gap-2 flex-wrap mb-5">
             {FILTERS.map((f) => {
               const active = roleFilter === f.value;
@@ -207,7 +240,9 @@ export default function AdminPeoplePage() {
 
           {visible.length === 0 ? (
             <p className="text-sm py-8 text-center" style={{ color: "var(--foreground-muted)" }}>
-              No {roleFilter === "instructor" ? "instructors" : "learners"} yet.
+              {term
+                ? `Nobody matches "${search.trim()}"${roleFilter === "all" ? "" : roleFilter === "instructor" ? " among instructors" : " among learners"}.`
+                : `No ${roleFilter === "instructor" ? "instructors" : "learners"} yet.`}
             </p>
           ) : (
           <div className="space-y-3 stagger">
