@@ -14,6 +14,7 @@
 
 -- 1. Lesson rows: enrolled learners and staff only.
 drop policy if exists "read lessons of visible courses" on lessons;
+drop policy if exists "read lessons when entitled" on lessons;
 create policy "read lessons when entitled" on lessons
   for select using (
     is_staff()

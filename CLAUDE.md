@@ -30,8 +30,8 @@ There are no payments, no subscriptions, no public signups that bypass staff con
 
 ## Supabase
 
-Project URL: https://nltjgkntylttdzgszjev.supabase.co
-Anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdGpna250eWx0dGR6Z3N6amV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3MjQ5NTksImV4cCI6MjEwMzMwMDk1OX0.6nbiow4zTlZAEZmKZGerhhNpIKuhAuOZQurhN4uJQh4
+Project URL: https://dsoamvitlcgbomhiboug.supabase.co
+Anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzb2Ftdml0bGNnYm9taGlib3VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MzA3MDUsImV4cCI6MjEwNDAwNjcwNX0.WqufUZrLsI1csJCJsQLFsLbMf182J0m4CIo897CrJHA
 
 Service role key: stored in .env.local as SUPABASE_SERVICE_ROLE_KEY
 Never expose to client. Only use in api/ routes and server-only files.
@@ -40,8 +40,8 @@ Never expose to client. Only use in api/ routes and server-only files.
 
 ## Environment Variables (.env.local)
 
-NEXT_PUBLIC_SUPABASE_URL=https://nltjgkntylttdzgszjev.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdGpna250eWx0dGR6Z3N6amV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3MjQ5NTksImV4cCI6MjEwMzMwMDk1OX0.6nbiow4zTlZAEZmKZGerhhNpIKuhAuOZQurhN4uJQh4
+NEXT_PUBLIC_SUPABASE_URL=https://dsoamvitlcgbomhiboug.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzb2Ftdml0bGNnYm9taGlib3VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MzA3MDUsImV4cCI6MjEwNDAwNjcwNX0.WqufUZrLsI1csJCJsQLFsLbMf182J0m4CIo897CrJHA
 SUPABASE_SERVICE_ROLE_KEY=<paste from Supabase dashboard>
 RESEND_API_KEY=<paste from Resend dashboard>
 NEXT_PUBLIC_SITE_URL=https://learn.cliniclivingplus.com
