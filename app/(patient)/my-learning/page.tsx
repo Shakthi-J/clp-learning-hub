@@ -109,7 +109,7 @@ export default async function MyLearningPage() {
   };
 
   return (
-    <div className="p-6 md:p-10 max-w-4xl">
+    <div className="p-5 sm:p-6 md:p-10 max-w-4xl">
       <header className="mb-8">
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight" style={{ color: "var(--foreground)" }}>
           {firstName ? `Welcome back, ${firstName}` : "Welcome back"}

@@ -44,7 +44,7 @@ export default function NewCoursePage() {
   const categories = ["Gut Health","Sleep Health","Stress Management","Nutrition","Hormonal Health","Weight Management","Autoimmune","Longevity","Mental Health"];
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-5 sm:p-8 max-w-2xl">
       <div className="flex items-center gap-3 mb-8">
         <Link href={`${base}/courses`} className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>

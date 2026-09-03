@@ -77,7 +77,7 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
     .order("created_at", { ascending: true });
 
   return (
-    <div className="p-6 max-w-4xl">
+    <div className="p-5 sm:p-6 max-w-4xl">
       <div className="flex items-center gap-2 text-xs mb-6" style={{ color: "var(--foreground-muted)" }}>
         <Link href="/my-learning" style={{ color: "var(--foreground-secondary)" }}>My Learning</Link>
         <span>/</span>

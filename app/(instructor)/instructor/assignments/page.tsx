@@ -43,7 +43,7 @@ export default async function InstructorGradingPage({
   }
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-5 sm:p-8 max-w-4xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>Grading</h1>
         <p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>

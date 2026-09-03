@@ -12,7 +12,7 @@ export default async function InstructorCoursesPage() {
   const courses = await getManagedCourses(actor);
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-5 sm:p-8 max-w-5xl">
       <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--foreground)" }}>My Courses</h1>

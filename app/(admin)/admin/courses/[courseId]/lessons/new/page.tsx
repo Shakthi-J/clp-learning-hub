@@ -69,7 +69,7 @@ export default function NewLessonPage({ params }: { params: Promise<{ courseId: 
   const videoPreviewId = youtubeId ? extractYoutubeId(youtubeId) : "";
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-5 sm:p-8 max-w-3xl">
       <div className="flex items-center gap-3 mb-8">
         <Link href={`${base}/courses`} className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> Courses</Link>
         <span style={{ color: "var(--foreground-muted)" }}>/</span>

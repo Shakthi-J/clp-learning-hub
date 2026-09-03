@@ -9,7 +9,7 @@ export default async function AdminProfilePage() {
   if (!actor) redirect("/login");
 
   return (
-    <div className="p-6 md:p-10 max-w-5xl">
+    <div className="p-5 sm:p-6 md:p-10 max-w-5xl">
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--foreground)" }}>Profile</h1>
         <p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>

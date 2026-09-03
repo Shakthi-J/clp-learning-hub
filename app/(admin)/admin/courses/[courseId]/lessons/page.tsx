@@ -96,7 +96,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
 
   if (loading) {
     return (
-      <div className="p-8 max-w-3xl space-y-4">
+      <div className="p-5 sm:p-8 max-w-3xl space-y-4">
         <div className="skeleton h-6 w-48 rounded-lg" />
         <div className="skeleton h-24 rounded-2xl" />
         <div className="skeleton h-24 rounded-2xl" />
@@ -105,7 +105,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-5 sm:p-8 max-w-3xl">
       <div className="flex items-center gap-3 mb-4">
         <Link href={`${base}/courses`} className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}>
           <ArrowLeft size={14} weight="bold" /> Courses

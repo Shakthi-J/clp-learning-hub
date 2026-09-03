@@ -47,7 +47,7 @@ export default async function ProfilePage() {
   ];
 
   return (
-    <div className="p-6 md:p-10 max-w-5xl">
+    <div className="p-5 sm:p-6 md:p-10 max-w-5xl">
       <header className="mb-8">
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight" style={{ color: "var(--foreground)" }}>
           Profile

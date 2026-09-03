@@ -54,7 +54,7 @@ export default async function InstructorDashboardPage() {
   ];
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-5 sm:p-8 max-w-5xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>
           Welcome{actor.name ? `, ${actor.name.split(" ")[0]}` : ""}

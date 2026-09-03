@@ -27,10 +27,13 @@ export default function CertificateDocument({
 }) {
   const accent = template.accent_color || DEFAULT_TEMPLATE.accent_color;
 
+  // A4 landscape is far too short to hold this much text at phone width, so
+  // below sm the height follows the content instead of the ratio. Print
+  // restores the ratio - see the print block in globals.css.
   return (
     <div
       id="certificate-document"
-      className="relative w-full aspect-[1.414/1] p-10 md:p-14 flex flex-col items-center justify-center text-center"
+      className="relative w-full sm:aspect-[1.414/1] py-10 px-6 sm:p-10 md:p-14 flex flex-col items-center justify-center text-center"
       style={{
         background: "var(--card)",
         border: "1px solid var(--border)",

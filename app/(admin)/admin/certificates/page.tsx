@@ -33,7 +33,7 @@ export default async function AdminCertificatesPage({
   });
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-5 sm:p-8 max-w-5xl">
       <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
         <div>
         <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--foreground)" }}>

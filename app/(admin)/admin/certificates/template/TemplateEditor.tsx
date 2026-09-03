@@ -73,7 +73,7 @@ export default function TemplateEditor({ initial }: { initial: CertificateTempla
   };
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-5 sm:p-8 max-w-6xl">
       <Link href="/admin/certificates" className="text-sm mb-6 inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}>
         <ArrowLeft size={14} weight="bold" /> Certificates
       </Link>

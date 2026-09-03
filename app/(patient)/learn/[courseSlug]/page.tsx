@@ -70,7 +70,7 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
     .order("attempted_at", { ascending: false });
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-5 sm:p-8 max-w-3xl">
       <Link href="/my-learning" className="text-sm mb-6 inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}><ArrowLeft size={14} weight="bold" /> My Learning</Link>
       {isReviewing && (
         <div

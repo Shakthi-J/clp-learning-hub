@@ -31,7 +31,7 @@ export default async function AdminCertificatePage({
   const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/verify/${certificate.id}`;
 
   return (
-    <div className="p-8 max-w-4xl print-area">
+    <div className="p-5 sm:p-8 max-w-4xl print-area">
       <div className="mb-6 flex items-center justify-between gap-4 flex-wrap print-hidden">
         <Link href="/admin/certificates" className="text-sm inline-flex items-center gap-1.5" style={{ color: "var(--foreground-secondary)" }}>
           <ArrowLeft size={14} weight="bold" /> All certificates

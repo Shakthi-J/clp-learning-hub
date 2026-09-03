@@ -17,7 +17,7 @@ export default async function AdminDashboardPage() {
     { label: "Active Enrollments", value: activeEnrollments ?? 0, icon: <GraduationCap size={18} weight="duotone" />, accent: "teal" as const },
   ];
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-5 sm:p-8 max-w-5xl">
       <div className="mb-8"><h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>Dashboard</h1><p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>CLP Learning Hub overview</p></div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 stagger">
         {stats.map((stat) => (

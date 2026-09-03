@@ -18,19 +18,23 @@ export default async function PublicLayout({ children }: { children: React.React
   return (
     <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <nav className="sticky top-0 z-50 border-b" style={{ background: "var(--card)", borderColor: "var(--border)", boxShadow: "var(--shadow-sm)" }}>
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center  text-sm font-bold" style={{ background: "var(--primary)", color: "var(--on-primary)" }}>CL</div>
-            <span className="font-semibold text-base" style={{ color: "var(--foreground)" }}>CLP Learning Hub</span>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+          <Link href="/" className="flex items-center gap-2 min-w-0">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: "var(--primary)", color: "var(--on-primary)" }}>CL</div>
+            {/* The full name does not fit beside the links on a phone, and
+                wrapping it to three lines looks broken - drop to the short
+                form instead. */}
+            <span className="font-semibold text-base whitespace-nowrap hidden sm:inline" style={{ color: "var(--foreground)" }}>CLP Learning Hub</span>
+            <span className="font-semibold text-base whitespace-nowrap sm:hidden" style={{ color: "var(--foreground)" }}>CLP Hub</span>
           </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/courses" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>Courses</Link>
-            <Link href="/about" className="text-sm" style={{ color: "var(--foreground-secondary)" }}>About</Link>
+          <div className="flex items-center gap-3 sm:gap-6 flex-shrink-0">
+            <Link href="/courses" className="text-sm whitespace-nowrap" style={{ color: "var(--foreground-secondary)" }}>Courses</Link>
+            <Link href="/about" className="text-sm whitespace-nowrap" style={{ color: "var(--foreground-secondary)" }}>About</Link>
 
             {patient ? (
               <Link
                 href={patient.role === "admin" ? "/admin" : "/my-learning"}
-                className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg"
+                className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg whitespace-nowrap"
                 style={{ background: "var(--primary-light)", color: "var(--primary)" }}
               >
                 <div
@@ -46,7 +50,7 @@ export default async function PublicLayout({ children }: { children: React.React
             ) : (
               <Link
                 href="/login"
-                className="text-sm px-4 py-2 rounded-lg"
+                className="text-sm px-4 py-2 rounded-lg whitespace-nowrap"
                 style={{ color: "var(--primary)", background: "var(--primary-light)" }}
               >
                 Sign In
@@ -56,8 +60,8 @@ export default async function PublicLayout({ children }: { children: React.React
         </div>
       </nav>
       <main>{children}</main>
-      <footer className="border-t mt-20 py-8" style={{ borderColor: "var(--border)" }}>
-        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+      <footer className="border-t mt-12 sm:mt-20 py-8" style={{ borderColor: "var(--border)" }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
           <p className="text-sm" style={{ color: "var(--foreground-muted)" }}>© {new Date().getFullYear()} Clinic Living Plus. All rights reserved.</p>
           <p className="text-sm" style={{ color: "var(--foreground-muted)" }}>learn.cliniclivingplus.com</p>
         </div>

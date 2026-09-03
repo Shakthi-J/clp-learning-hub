@@ -48,7 +48,7 @@ export default function AdminAssignmentsPage() {
   };
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-5 sm:p-8 max-w-5xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>Assignment Submissions</h1>
         <p className="text-sm mt-1" style={{ color: "var(--foreground-secondary)" }}>Review and give feedback on patient assignment submissions</p>
