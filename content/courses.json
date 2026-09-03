@@ -1,0 +1,117 @@
+[
+  {
+    "title": "Holistic Healing Protocol for PCOS Management.",
+    "slug": "holistic-healing-protocol-for-pcos-management",
+    "category": "Hormonal Health",
+    "instructor": "cliniclivingplus.ai@gmail.com",
+    "modules": [
+      {
+        "title": "Understanding PCOS",
+        "lessons": [
+          { "title": "Pillars of PCOS Management", "video": "Pillars of PCOS management..mp4" },
+          { "title": "Management versus Reversal", "video": "Management VS Reversal.mp4" }
+        ]
+      },
+      {
+        "title": "Hormones, Sleep and Thyroid",
+        "lessons": [
+          { "title": "Does Your Sleep Cycle Exaggerate PCOS Symptoms?", "video": "Does your sleep cycle exaggerate PCOS symptoms" },
+          { "title": "Thyroid and PCOS", "video": "Class 26- Thyroid.mp4" }
+        ]
+      },
+      {
+        "title": "Endocrine Disruptors",
+        "lessons": [
+          { "title": "What Endocrine Disruptors Are", "video": "Endocrine Disrupters- What are they.mp4" },
+          { "title": "How They Contribute to Weight Gain", "video": "Endocrine disrupters- How does this cause weight gain" }
+        ]
+      },
+      {
+        "title": "Movement",
+        "lessons": [
+          { "title": "Exercise for PCOS", "video": "Class 32- Exercise.mp4" },
+          { "title": "Pump Up Your NEAT", "video": "Pump up your NEAT..mp4" },
+          { "title": "Make Fitness Your Lifestyle", "video": "Make fitness your lifestyle!.mp4" }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "gut issues",
+    "slug": "gut-issues",
+    "category": "Gut Health",
+    "instructor": "cliniclivingplus.ai@gmail.com",
+    "modules": [
+      {
+        "title": "Fibre and Whole Foods",
+        "lessons": [
+          { "title": "Fibre Up", "video": "Fiber Up.mp4" },
+          { "title": "Eating Whole Grains", "video": "Eating Whole- Grains..mp4" }
+        ]
+      },
+      {
+        "title": "Foods That Trigger Symptoms",
+        "lessons": [
+          { "title": "FODMAPs and Polyols", "video": "FODMAP POLYOPS.mp4" },
+          { "title": "Discarding Artificial Sweeteners", "video": "Discard artificial sweeteners..mp4" }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "The Plant-Forward Kitchen",
+    "slug": "plant-forward-kitchen",
+    "category": "Lifestyle",
+    "description": "Practical kitchen workshops: cooking without oil, replacing dairy and flour, and the meal patterns that support the protocol.",
+    "instructor": "cliniclivingplus.ai@gmail.com",
+    "modules": [
+      {
+        "title": "Cooking Without Oil",
+        "lessons": [
+          { "title": "Oil-Free Cooking Workshop", "video": "Oil- Free Cooking Workshop..mp4" },
+          { "title": "Limiting the Oils You Use", "video": "Limit the consumption of Oil's..mp4" },
+          { "title": "Exploring Oil-Free Cooking", "video": "Explore Oil- Free cooking..mp4" }
+        ]
+      },
+      {
+        "title": "Dairy and Flour",
+        "lessons": [
+          { "title": "Ditch Dairy", "video": "Ditch Dairy.mp4" },
+          { "title": "Dairy Alternatives Workshop", "video": "Dairy alternatives workshop.mp4" },
+          { "title": "De-Flour", "video": "De- Flour.mp4" }
+        ]
+      },
+      {
+        "title": "Meal Patterns",
+        "lessons": [
+          { "title": "One Raw Meal a Day", "video": "One Raw Meal A Day.mp4" },
+          { "title": "Eat Before the Sun Sets", "video": "Eat before the sun- sets.mp4" },
+          { "title": "How to Incorporate Fasting", "video": "How to incorporate fasting.mp4" },
+          { "title": "A Low AGE Diet Plan", "video": "Low AGE diet plan..mp4" }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Functional Medicine Foundations",
+    "slug": "functional-medicine-foundations",
+    "category": "Longevity",
+    "description": "How the functional medicine approach works, what the programme involves, and how testing fits in.",
+    "instructor": "cliniclivingplus.ai@gmail.com",
+    "modules": [
+      {
+        "title": "The Approach",
+        "lessons": [
+          { "title": "Introduction to Functional Medicine", "video": "Intro to Functional Medicine.mp4" },
+          { "title": "Format of the Programme", "video": "Format of the program..mp4" }
+        ]
+      },
+      {
+        "title": "Testing",
+        "lessons": [
+          { "title": "How Often Should You Be Testing?", "video": "How often should you be testing.mp4" }
+        ]
+      }
+    ]
+  }
+]
