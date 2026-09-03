@@ -15,6 +15,8 @@ interface LessonPlayerProps {
   enrollmentId: string;
   patientId: string;
   youtubeVideoId: string | null;
+  /** When set, the video comes from Drive through our own route and wins over YouTube. */
+  driveFileId: string | null;
   notes: string | null;
   isCompleted: boolean;
   prevLesson: { slug: string; title: string } | null;
@@ -34,7 +36,7 @@ declare global {
 }
 
 export default function LessonPlayer({
-  lessonId, enrollmentId, patientId, youtubeVideoId, notes, isCompleted,
+  lessonId, enrollmentId, patientId, youtubeVideoId, driveFileId, notes, isCompleted,
   prevLesson, nextLesson, courseSlug, totalLessons, currentIndex,
   quiz, assignment, existingSubmission, isReviewing = false,
 }: LessonPlayerProps) {
@@ -49,7 +51,7 @@ export default function LessonPlayer({
   useEffect(() => { setCompleted(isCompleted); }, [lessonId, isCompleted]);
 
   useEffect(() => {
-    if (!youtubeVideoId) return;
+    if (driveFileId || !youtubeVideoId) return;
     const initPlayer = () => {
       if (!containerRef.current) return;
       playerRef.current = new window.YT.Player(containerRef.current, {
@@ -68,7 +70,7 @@ export default function LessonPlayer({
       }
     }
     return () => { if (playerRef.current?.destroy) playerRef.current.destroy(); };
-  }, [youtubeVideoId, lessonId]);
+  }, [youtubeVideoId, driveFileId, lessonId]);
 
   const handleMarkComplete = async () => {
     if (completed || marking) return;
@@ -102,7 +104,22 @@ export default function LessonPlayer({
           <span>You have completed this course. Revisit any lesson as often as you like.</span>
         </div>
       )}
-      {youtubeVideoId ? (
+      {driveFileId ? (
+        // Served from our own route, which checks the enrollment on every
+        // request. controlsList hides the browser's download button - a
+        // courtesy, not a control; the route is the actual gate.
+        <div className="rounded-2xl overflow-hidden mb-6" style={{ aspectRatio: "16/9", background: "#000" }}>
+          <video
+            key={lessonId}
+            src={`/api/lessons/${lessonId}/video`}
+            controls
+            controlsList="nodownload"
+            onContextMenu={(e) => e.preventDefault()}
+            onEnded={handleMarkComplete}
+            className="w-full h-full"
+          />
+        </div>
+      ) : youtubeVideoId ? (
         <div className="rounded-2xl overflow-hidden mb-6" style={{ aspectRatio: "16/9", background: "#000" }}>
           <div ref={containerRef} className="w-full h-full" />
         </div>

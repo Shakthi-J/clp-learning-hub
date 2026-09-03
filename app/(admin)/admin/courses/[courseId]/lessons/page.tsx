@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import AssessmentBuilder from "@/components/AssessmentBuilder";
 
-type Lesson = { id: string; title: string; slug: string; order: number; youtube_video_id: string };
+type Lesson = { id: string; title: string; slug: string; order: number; youtube_video_id: string; drive_file_id: string | null };
 type Module = { id: string; title: string; order: number; lessons: Lesson[] };
 
 export default function LessonsPage({ params }: { params: Promise<{ courseId: string }> }) {
@@ -33,7 +33,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
     setCourse(courseData);
     const { data: modulesData } = await supabase
       .from("modules")
-      .select("id, title, order, lessons(id, title, slug, order, youtube_video_id)")
+      .select("id, title, order, lessons(id, title, slug, order, youtube_video_id, drive_file_id)")
       .eq("course_id", courseId).order("order");
     const sorted = (modulesData || []).map((m: any) => ({
       ...m,
@@ -236,7 +236,7 @@ export default function LessonsPage({ params }: { params: Promise<{ courseId: st
                             <span className="text-sm font-medium truncate" style={{ color: "var(--foreground)" }}>
                               {lesson.title}
                             </span>
-                            {lesson.youtube_video_id ? (
+                            {lesson.drive_file_id || lesson.youtube_video_id ? (
                               <span
                                 className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 inline-flex items-center gap-1"
                                 style={{ background: "var(--success-light)", color: "var(--success)" }}
