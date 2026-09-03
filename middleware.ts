@@ -1,11 +1,33 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+/** Routes that require a signed-in user, whatever their role. */
+const PATIENT_ROUTES = ["/my-learning", "/learn", "/certificates", "/profile"];
+
+const isProtected = (pathname: string) =>
+  pathname.startsWith("/admin") ||
+  pathname.startsWith("/instructor") ||
+  PATIENT_ROUTES.some((r) => pathname.startsWith(r));
+
 export async function middleware(request: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Without these the Supabase client throws, and since the matcher covers
+  // every route that took the whole site down - public catalog included. Fail
+  // closed on anything that needs a session, and let public pages through.
+  if (!supabaseUrl || !supabaseKey) {
+    console.error("Supabase environment variables are missing; auth gating is unavailable.");
+    if (isProtected(request.nextUrl.pathname)) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() { return request.cookies.getAll(); },
@@ -44,8 +66,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const patientRoutes = ["/my-learning", "/learn", "/certificates", "/profile"];
-  if (patientRoutes.some((r) => pathname.startsWith(r))) {
+  if (PATIENT_ROUTES.some((r) => pathname.startsWith(r))) {
     if (!user) return NextResponse.redirect(new URL("/login", request.url));
   }
 
