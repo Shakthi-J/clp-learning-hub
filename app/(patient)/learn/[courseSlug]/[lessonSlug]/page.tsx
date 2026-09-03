@@ -55,7 +55,7 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
   const isCompleted = completedIds.has(lesson.id);
 
   const { data: quiz } = await adminSupabase.from("quizzes")
-    .select("id, title, quiz_questions(id, question, options, correct_answer)")
+    .select("id, title, quiz_questions(id, question, question_type, options, correct_answer)")
     .eq("lesson_id", lesson.id).maybeSingle();
 
   const { data: assignment } = await adminSupabase.from("assignments")

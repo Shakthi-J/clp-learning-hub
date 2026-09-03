@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isCorrect, type QuestionType } from "@/lib/questionTypes";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -14,11 +15,15 @@ export async function POST(request: Request) {
     .select("pass_threshold").eq("id", assessmentId).single();
 
   const { data: questions } = await supabase.from("assessment_questions")
-    .select("id, correct_answer").eq("assessment_id", assessmentId);
+    .select("id, question_type, correct_answer").eq("assessment_id", assessmentId);
 
   if (!questions || !assessment) return NextResponse.json({ message: "Assessment not found" }, { status: 404 });
 
-  const score = questions.reduce((acc, q) => answers[q.id] === q.correct_answer ? acc + 1 : acc, 0);
+  // Scored server-side with the same rules the learner's browser used.
+  const score = questions.reduce((acc, q) => {
+    const type = (q.question_type ?? "multiple_choice") as QuestionType;
+    return isCorrect(type, q.correct_answer, answers?.[q.id]) ? acc + 1 : acc;
+  }, 0);
   const pct = Math.round((score / questions.length) * 100);
   const passed = pct >= assessment.pass_threshold;
 

@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Target } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
+import { QUESTION_TYPES, type QuestionType, encodeChoices, decodeChoices } from "@/lib/questionTypes";
 
 interface AssessmentBuilderProps {
   moduleId: string;
@@ -21,6 +22,8 @@ export default function AssessmentBuilder({ moduleId, moduleTitle }: AssessmentB
   const [newQ, setNewQ] = useState("");
   const [newOpts, setNewOpts] = useState(["", "", "", ""]);
   const [newCorrect, setNewCorrect] = useState("");
+  const [newType, setNewType] = useState<QuestionType>("multiple_choice");
+  const [newChecked, setNewChecked] = useState<string[]>([]);
   const [addingQ, setAddingQ] = useState(false);
 
   useEffect(() => { fetchAssessment(); }, [moduleId]);
@@ -28,7 +31,7 @@ export default function AssessmentBuilder({ moduleId, moduleTitle }: AssessmentB
   const fetchAssessment = async () => {
     setLoading(true);
     const { data } = await supabase.from("assessments")
-      .select("id, title, instructions, pass_threshold, assessment_questions(id, question, options, correct_answer, order)")
+      .select("id, title, instructions, pass_threshold, assessment_questions(id, question, question_type, options, correct_answer, order)")
       .eq("module_id", moduleId).maybeSingle();
     if (data) {
       setAssessment(data);
@@ -50,19 +53,51 @@ export default function AssessmentBuilder({ moduleId, moduleTitle }: AssessmentB
     setCreating(false);
   };
 
+  const filledOptions = newOpts.map(o => o.trim()).filter(Boolean);
+
+  const canAddQuestion = (() => {
+    if (!newQ.trim()) return false;
+    if (newType === "short_answer") return !!newCorrect.trim();
+    if (filledOptions.length < 2) return false;
+    if (newType === "checkboxes") return newChecked.length > 0;
+    return !!newCorrect;
+  })();
+
+  const changeType = (type: QuestionType) => {
+    setNewType(type);
+    setNewCorrect("");
+    setNewChecked([]);
+  };
+
+  const toggleChecked = (opt: string) => {
+    setNewChecked(prev => prev.includes(opt) ? prev.filter(o => o !== opt) : [...prev, opt]);
+  };
+
+  const updateOption = (index: number, value: string) => {
+    const previous = newOpts[index];
+    const updated = [...newOpts];
+    updated[index] = value;
+    setNewOpts(updated);
+    if (newCorrect === previous) setNewCorrect(value);
+    setNewChecked(prev => prev.map(o => (o === previous ? value : o)));
+  };
+
   const handleAddQuestion = async () => {
-    if (!newQ.trim() || newOpts.some(o => !o.trim()) || !newCorrect) return;
+    if (!canAddQuestion) return;
     setAddingQ(true);
-    const { data } = await supabase.from("assessment_questions").insert({
+    const correct = newType === "checkboxes" ? encodeChoices(newChecked) : newCorrect.trim();
+    const { data, error } = await supabase.from("assessment_questions").insert({
       assessment_id: assessment.id,
       question: newQ.trim(),
-      options: newOpts.map(o => o.trim()),
-      correct_answer: newCorrect,
+      question_type: newType,
+      options: newType === "short_answer" ? [] : filledOptions,
+      correct_answer: correct,
       order: questions.length + 1,
-    }).select("id, question, options, correct_answer, order").single();
-    setQuestions([...questions, data]);
-    setNewQ(""); setNewOpts(["", "", "", ""]); setNewCorrect(""); setShowQuestionForm(false);
+    }).select("id, question, question_type, options, correct_answer, order").single();
     setAddingQ(false);
+    if (error) { alert("Could not add the question: " + error.message); return; }
+    setQuestions([...questions, data]);
+    setNewQ(""); setNewOpts(["", "", "", ""]); setNewCorrect(""); setNewChecked([]); setShowQuestionForm(false);
   };
 
   const handleDeleteQuestion = async (qid: string) => {
@@ -126,7 +161,14 @@ export default function AssessmentBuilder({ moduleId, moduleTitle }: AssessmentB
               <div className="flex-1">
                 <p className="text-sm font-medium" style={{ color: "var(--foreground)" }}>{i + 1}. {q.question}</p>
                 <p className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>
-                  Correct: <strong>{q.correct_answer}</strong>
+                  <span className="mr-1">
+                    {QUESTION_TYPES.find(t => t.value === (q.question_type ?? "multiple_choice"))?.label}
+                  </span>
+                  · Correct: <strong>
+                    {(q.question_type ?? "multiple_choice") === "checkboxes"
+                      ? decodeChoices(q.correct_answer).join(", ")
+                      : q.correct_answer}
+                  </strong>
                 </p>
               </div>
               <button onClick={() => handleDeleteQuestion(q.id)} className="text-xs flex-shrink-0" style={{ color: "var(--danger)" }}>Delete</button>
@@ -147,27 +189,66 @@ export default function AssessmentBuilder({ moduleId, moduleTitle }: AssessmentB
                   className="w-full px-3 py-2 rounded-lg border text-sm"
                   style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground)" }} />
               </div>
-              <div className="mb-3 space-y-2">
-                {newOpts.map((opt, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <input type="radio" name="qcorrect" value={opt}
-                      checked={newCorrect === opt && !!opt}
-                      onChange={() => opt && setNewCorrect(opt)} />
-                    <input type="text" value={opt} onChange={e => {
-                      const u = [...newOpts]; u[i] = e.target.value; setNewOpts(u);
-                      if (newCorrect === opt) setNewCorrect(e.target.value);
-                    }}
-                      placeholder={`Option ${i + 1}`}
-                      className="flex-1 px-3 py-1.5 rounded-lg border text-sm"
-                      style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground)" }} />
-                  </div>
-                ))}
-                <p className="text-xs" style={{ color: "var(--foreground-muted)" }}>
-                  Select the radio button next to the correct answer
+              <div className="mb-3">
+                <label className="block text-xs font-medium mb-1" style={{ color: "var(--foreground)" }}>Answer type</label>
+                <select value={newType} onChange={e => changeType(e.target.value as QuestionType)}
+                  className="w-full px-3 py-2 rounded-lg border text-sm"
+                  style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground)" }}>
+                  {QUESTION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                </select>
+                <p className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>
+                  {QUESTION_TYPES.find(t => t.value === newType)?.hint}
                 </p>
               </div>
+
+              {newType === "short_answer" ? (
+                <div className="mb-3">
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--foreground)" }}>Expected answer</label>
+                  <input type="text" value={newCorrect} onChange={e => setNewCorrect(e.target.value)}
+                    placeholder="e.g. fibre"
+                    className="w-full px-3 py-2 rounded-lg border text-sm"
+                    style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground)" }} />
+                  <p className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>
+                    Keep it to a word or two - anything longer is hard to match exactly.
+                  </p>
+                </div>
+              ) : (
+                <div className="mb-3 space-y-2">
+                  {newOpts.map((opt, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input
+                        type={newType === "checkboxes" ? "checkbox" : "radio"}
+                        name="qcorrect"
+                        disabled={!opt.trim()}
+                        checked={newType === "checkboxes"
+                          ? newChecked.includes(opt) && !!opt
+                          : newCorrect === opt && !!opt}
+                        onChange={() => {
+                          if (!opt.trim()) return;
+                          if (newType === "checkboxes") toggleChecked(opt);
+                          else setNewCorrect(opt);
+                        }} />
+                      <input type="text" value={opt} onChange={e => updateOption(i, e.target.value)}
+                        placeholder={`Option ${i + 1}`}
+                        className="flex-1 px-3 py-1.5 rounded-lg border text-sm"
+                        style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground)" }} />
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <p className="text-xs" style={{ color: "var(--foreground-muted)" }}>
+                      {newType === "checkboxes"
+                        ? "Tick every option that counts as correct. Blank options are ignored."
+                        : "Select the correct answer. Blank options are ignored."}
+                    </p>
+                    <button type="button" onClick={() => setNewOpts([...newOpts, ""])}
+                      className="text-xs font-semibold" style={{ color: "var(--primary)" }}>
+                      + Add option
+                    </button>
+                  </div>
+                </div>
+              )}
               <button onClick={handleAddQuestion}
-                disabled={addingQ || !newQ || newOpts.some(o => !o) || !newCorrect}
+                disabled={addingQ || !canAddQuestion}
                 className="px-4 py-2 rounded-lg text-white text-xs font-semibold primary-gradient disabled:opacity-60">
                 {addingQ ? "Adding..." : "Add Question"}
               </button>
