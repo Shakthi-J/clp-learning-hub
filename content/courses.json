@@ -698,5 +698,168 @@
         ]
       }
     ]
+  },
+  {
+    "title": "Holistic Healing Protocol for Diabetes Management",
+    "slug": "holistic-healing-protocol-for-diabetes-management",
+    "category": "Metabolic Health",
+    "description": "A six-week step-by-step guided protocol for understanding the root cause of diabetes and helping manage it with lifestyle modifications and nutritional changes.",
+    "instructor": "cliniclivingplus.ai@gmail.com",
+    "modules": [
+      {
+        "title": "Introduction",
+        "lessons": [
+          {
+            "title": "Welcome on-board!",
+            "video": "Welcome on- board!.mp4"
+          },
+          {
+            "title": "Understanding Diabetes",
+            "video": "Understanding diabetes.mp4"
+          },
+          {
+            "title": "Type 1 VS Type 2 Diabetes",
+            "video": "Type 1 VS Type 2 Diabetes..mp4"
+          },
+          {
+            "title": "Management VS Reversal",
+            "video": "Management VS Reversal.mp4"
+          },
+          {
+            "title": "Traditional Diet VS a Plant-Based Approach",
+            "video": "Traditional Diet VS a Plant- Based approach..mp4",
+            "notes": "Please find the diabetes management cookbook attached under the 'download' section. PLACEHOLDER - attach the cookbook and other referenced resources."
+          },
+          {
+            "title": "How Often Should You Be Testing?",
+            "video": "How often should you be testing.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 1",
+        "lessons": [
+          {
+            "title": "Eat Before the Sun Sets",
+            "video": "Eat before the sun- sets.mp4",
+            "notes": "Resource study and a Buddha bowl purchase link were shared. PLACEHOLDER - attach the links Roshni referenced."
+          },
+          {
+            "title": "Meal Time Tracker",
+            "notes": "Use the tracker below to stay consistent with your dinner time. PLACEHOLDER - attach the tracker."
+          },
+          {
+            "title": "Say NO to Animal Protein and Animal Fats",
+            "video": "Say NO to animal protein and animal fats..mp4",
+            "notes": "Diabetes management sources include: M. Kaushik, D. Mozaffarian, D. Spiegelman, et al. PLACEHOLDER - complete the citation list, the paste was cut off."
+          },
+          {
+            "title": "What About Fish Consumption?",
+            "notes": "From The Longevity Diet: a serving of fish per day is linked to more than a 20% increase in diabetes risk. PLACEHOLDER - complete this note, the paste was cut off."
+          },
+          {
+            "title": "What About Eggs?"
+          },
+          {
+            "title": "Dairy Free Cooking Workshop",
+            "video": "Dairy free cooking workshop..mp4"
+          },
+          {
+            "title": "Amla - The Indian Gooseberry",
+            "video": "Why Is Amla Important.mp4",
+            "notes": "Research study mentioned: https://pubmed.ncbi.nlm.nih.gov/21495900/"
+          }
+        ]
+      },
+      {
+        "title": "Week 2",
+        "lessons": [
+          {
+            "title": "Fiber Up!",
+            "video": "Fiber Up.mp4"
+          },
+          {
+            "title": "Make the Shift to Organic Foods"
+          },
+          {
+            "title": "Salad Dressing and Salad Making Workshop",
+            "video": "Salad dressing and Salad making workshop.mp4",
+            "notes": "Fun ideas to include more vegetables in your diet. PLACEHOLDER - complete this note."
+          },
+          {
+            "title": "De-Flour",
+            "video": "De- Flour.mp4"
+          },
+          {
+            "title": "Black Cumin Seeds",
+            "video": "What Is Kalongi.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 3",
+        "lessons": [
+          {
+            "title": "Schedule a Stress-Free Hour",
+            "video": "Schedule a stress- free hour..mp4"
+          },
+          {
+            "title": "How to Incorporate Fasting?",
+            "video": "How to incorporate fasting.mp4"
+          },
+          {
+            "title": "Superfood of the Week - Fenugreek",
+            "notes": "Resources: https://pubmed.ncbi.nlm.nih.gov/27496582/"
+          },
+          {
+            "title": "Varsha's Experience with Lifestyle Modification and Diabetes Management",
+            "video": "Varsha's experience with lifestyle modification and diabetes.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 4",
+        "lessons": [
+          {
+            "title": "Add Resistance Training",
+            "video": "Add Resistance Training..mp4"
+          },
+          {
+            "title": "Discard Artificial Sweeteners",
+            "video": "Discard artificial sweeteners..mp4"
+          },
+          {
+            "title": "Superfood of the Week - Vinegar",
+            "notes": "Study mentioned: https://pubmed.ncbi.nlm.nih.gov/19661687/"
+          }
+        ]
+      },
+      {
+        "title": "Week 5",
+        "lessons": [
+          {
+            "title": "Sunlight Exposure",
+            "video": "Sunlight Exposure..mp4"
+          },
+          {
+            "title": "Should I Explore Supplements?",
+            "video": "Should I explore supplements.mp4",
+            "notes": "Attached below is a PDF of fermented recipes you can try at home. PLACEHOLDER - this note may belong to a different lesson (it reads as mismatched with the supplements topic); verify against the source and attach the PDF."
+          },
+          {
+            "title": "Superfood of the Week - Flaxseeds",
+            "notes": "Research: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3112403/ PLACEHOLDER - complete the citation list, the paste was cut off."
+          }
+        ]
+      },
+      {
+        "title": "Week 6",
+        "lessons": [
+          {
+            "title": "Superfood of the Week - Psyllium Husk (Pre-biotic Fiber)"
+          }
+        ]
+      }
+    ]
   }
 ]
