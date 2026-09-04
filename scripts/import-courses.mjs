@@ -72,6 +72,13 @@ async function driveToken() {
 }
 
 /** filename -> file id for every video the service account can reach. */
+// The video folder's id, not a global search. Drive's general files.list
+// search index lags noticeably behind reality - a file can be confirmed
+// present by querying its parent directly while the same file is invisible
+// to an unscoped "trashed = false" search for several minutes. Querying by
+// parent avoids that index entirely and reflects the folder's real contents.
+const VIDEO_FOLDER_ID = process.env.GOOGLE_DRIVE_VIDEO_FOLDER_ID || "1boFXbSm6VvaH0vq65ASN3f2uhtJnmmpI";
+
 async function driveIndex() {
   const token = await driveToken();
   if (!token) return new Map();
@@ -82,7 +89,7 @@ async function driveIndex() {
     const url = new URL("https://www.googleapis.com/drive/v3/files");
     url.searchParams.set("fields", "nextPageToken,files(id,name,mimeType)");
     url.searchParams.set("pageSize", "200");
-    url.searchParams.set("q", "trashed = false");
+    url.searchParams.set("q", `'${VIDEO_FOLDER_ID}' in parents and trashed = false`);
     url.searchParams.set("includeItemsFromAllDrives", "true");
     url.searchParams.set("supportsAllDrives", "true");
     if (pageToken) url.searchParams.set("pageToken", pageToken);

@@ -542,5 +542,161 @@
         ]
       }
     ]
+  },
+  {
+    "title": "Holistic Healing Protocol for Cholesterol Management",
+    "slug": "holistic-healing-protocol-for-cholesterol-management",
+    "category": "Heart Health",
+    "description": "Dive into a transformative journey with Roshni Sanghvi's self-guided four-week cholesterol management program! Every week unveils a fresh palette of lifestyle modifications tailored to empower you on your health odyssey. Each week is meticulously designed, introducing unique targets and tantalizing recipes that not only tantalize your taste buds but also champion heart health. With Roshni's expertise lighting the path, you'll embrace a revitalized lifestyle, harmonizing wellness and culinary delight. Elevate your health, one delectable recipe and target at a time!",
+    "instructor": "cliniclivingplus.ai@gmail.com",
+    "modules": [
+      {
+        "title": "Introduction",
+        "lessons": [
+          {
+            "title": "Welcome to the Course",
+            "video": "Welcome to the Course.mp4",
+            "notes": "Hi All! This is Roshni and I am super-pumped to welcome you to your transformation journey! PLACEHOLDER - complete this welcome message."
+          },
+          {
+            "title": "What Should I Eat?",
+            "video": "What Should I Eat.mp4",
+            "notes": "Please find the cholesterol management cookbook and guidelines attached below. PLACEHOLDER - attach the cookbook/guidelines document here."
+          },
+          {
+            "title": "Where Do We Get Cholesterol In Our Food From?",
+            "video": "Where Do We Get Cholesterol In Our Food From.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 1 - Getting the Fundamentals Right",
+        "lessons": [
+          {
+            "title": "Time-Restricted Window",
+            "video": "Time- Restricted Window..mp4",
+            "notes": "If you select recipes from the cookbook, they have been curated considering your heavier meal falling within your eating window. PLACEHOLDER - complete this note."
+          },
+          {
+            "title": "Importance of Sunlight Exposure",
+            "video": "Sunlight Exposure..mp4"
+          },
+          {
+            "title": "Should I Consider A Water-Only Fast?"
+          },
+          {
+            "title": "One Raw Meal A Day",
+            "video": "One Raw Meal A Day.mp4"
+          },
+          {
+            "title": "Raw Salad Making Workshop",
+            "video": "Raw Salad Making Workshop..mp4"
+          },
+          {
+            "title": "Do Nuts Cause a Rise in Cholesterol?"
+          },
+          {
+            "title": "Does Smoking Raise Cholesterol?"
+          },
+          {
+            "title": "Why Is Amla Important?",
+            "video": "Why Is Amla Important.mp4",
+            "notes": "Please find attached the PDF with a few ways to use Amla. - Roshni. PLACEHOLDER - attach the PDF."
+          }
+        ]
+      },
+      {
+        "title": "Week 2 - One Step Beyond",
+        "lessons": [
+          {
+            "title": "Explore Oil-Free Cooking",
+            "video": "Explore Oil- Free cooking..mp4",
+            "notes": "Correction: no more than 1 tbsp of oil used in cooking PER DAY. PLACEHOLDER - complete this note."
+          },
+          {
+            "title": "Oil-Free Cooking Workshop",
+            "video": "Oil- Free Cooking Workshop..mp4"
+          },
+          {
+            "title": "What are Phytosterols?",
+            "notes": "But what about the wax on apple skin and pesticides in berries? Can you still eat them whole? PLACEHOLDER - complete this note."
+          },
+          {
+            "title": "Are Cold-Pressed Oils Also Bad?"
+          },
+          {
+            "title": "Eating Whole-Grains (Beta-Glucan)",
+            "video": "Eating Whole- Grains..mp4"
+          },
+          {
+            "title": "Does Coffee Raise Cholesterol Levels?"
+          },
+          {
+            "title": "Brown Rice VS White Rice"
+          }
+        ]
+      },
+      {
+        "title": "Week 3 - Let's Make This More Challenging",
+        "lessons": [
+          {
+            "title": "Make Fitness Your Lifestyle!",
+            "video": "Make fitness your lifestyle!.mp4"
+          },
+          {
+            "title": "Is Walking Enough to Lose Weight?"
+          },
+          {
+            "title": "How to Boost HDL?"
+          },
+          {
+            "title": "Chronobiology - What is it?",
+            "video": "Chronobiology- What is it"
+          },
+          {
+            "title": "Tips On Resetting Your Circadian Rhythm"
+          },
+          {
+            "title": "Importance of Breathwork"
+          },
+          {
+            "title": "What Is Kalongi?",
+            "video": "What Is Kalongi.mp4",
+            "notes": "More benefits of Kalongi: https://www.healthline.com/nutrition/kalonji-nigella-seeds"
+          }
+        ]
+      },
+      {
+        "title": "Week 4 - The Last Leg Of The Race",
+        "lessons": [
+          {
+            "title": "What Supplements Might Help?",
+            "video": "What Supplements Might Help.mp4"
+          },
+          {
+            "title": "Are Cholesterol Lowering Drugs Safe?",
+            "notes": "Weigh the pros and cons of using statins. PLACEHOLDER - attach the reference link Roshni shared."
+          },
+          {
+            "title": "Is Red Yeast Rice Helpful for Cholesterol?"
+          },
+          {
+            "title": "Tips To Stay Consistent",
+            "video": "Tips To Stay Consistent..mp4"
+          },
+          {
+            "title": "Should You Only Shop Organic?",
+            "notes": "A quick guide to which veggies/fruits you must always get organic. PLACEHOLDER - attach the reference link Roshni shared."
+          },
+          {
+            "title": "The Right Sweetener To Use"
+          },
+          {
+            "title": "Bread and Soup Making Workshop",
+            "video": "Bread and Soup Making Workshop..mp4"
+          }
+        ]
+      }
+    ]
   }
 ]

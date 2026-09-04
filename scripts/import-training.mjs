@@ -66,6 +66,11 @@ async function driveToken() {
   return (await res.json()).access_token;
 }
 
+// The video folder's id, not a global search - see import-courses.mjs for why:
+// Drive's general search index lags behind reality by several minutes; a
+// direct parent-folder query does not.
+const VIDEO_FOLDER_ID = process.env.GOOGLE_DRIVE_VIDEO_FOLDER_ID || "1boFXbSm6VvaH0vq65ASN3f2uhtJnmmpI";
+
 async function driveIndex() {
   const token = await driveToken();
   if (!token) return new Map();
@@ -75,7 +80,7 @@ async function driveIndex() {
     const url = new URL("https://www.googleapis.com/drive/v3/files");
     url.searchParams.set("fields", "nextPageToken,files(id,name,mimeType)");
     url.searchParams.set("pageSize", "200");
-    url.searchParams.set("q", "trashed = false");
+    url.searchParams.set("q", `'${VIDEO_FOLDER_ID}' in parents and trashed = false`);
     url.searchParams.set("includeItemsFromAllDrives", "true");
     url.searchParams.set("supportsAllDrives", "true");
     if (pageToken) url.searchParams.set("pageToken", pageToken);
