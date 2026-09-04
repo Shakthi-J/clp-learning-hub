@@ -30,6 +30,21 @@ export default function TrainingPage() {
   const [newLessonVideo, setNewLessonVideo] = useState("");
   const [addingLesson, setAddingLesson] = useState(false);
 
+  // Delete asks for a second click rather than a native confirm() dialog -
+  // some browsers and embedded webviews block or auto-dismiss those, which
+  // looks indistinguishable from the button doing nothing. Arming resets on
+  // its own after a few seconds so a stray click cannot delete anything.
+  const [armedForDelete, setArmedForDelete] = useState<string | null>(null);
+  const askToDelete = (id: string) => {
+    if (armedForDelete === id) {
+      setArmedForDelete(null);
+      return true;
+    }
+    setArmedForDelete(id);
+    setTimeout(() => setArmedForDelete((current) => (current === id ? null : current)), 4000);
+    return false;
+  };
+
   const fetchData = async () => {
     const { data: mods } = await supabase
       .from("training_modules")
@@ -79,7 +94,7 @@ export default function TrainingPage() {
   };
 
   const handleDeleteModule = async (id: string) => {
-    if (!confirm("Delete this module and every lesson in it?")) return;
+    if (!askToDelete("module:" + id)) return;
     await fetch(`/api/training/modules/${id}`, { method: "DELETE" });
     fetchData();
   };
@@ -104,7 +119,7 @@ export default function TrainingPage() {
   };
 
   const handleDeleteLesson = async (id: string) => {
-    if (!confirm("Delete this lesson?")) return;
+    if (!askToDelete("lesson:" + id)) return;
     await fetch(`/api/training/lessons/${id}`, { method: "DELETE" });
     fetchData();
   };
@@ -138,29 +153,36 @@ export default function TrainingPage() {
           const isOpen = expanded.has(mod.id);
           return (
             <div key={mod.id} className="card overflow-hidden">
-              <button
-                onClick={() => toggleExpanded(mod.id)}
-                className="w-full flex items-center justify-between gap-3 p-4"
-              >
-                <span className="flex items-center gap-2.5 text-left">
+              {/* Two sibling buttons, not one nested in the other - a button
+                  inside a button is invalid HTML and browsers deliver its
+                  clicks inconsistently, which is exactly the kind of thing
+                  that looks like "delete does nothing" without ever erroring. */}
+              <div className="w-full flex items-center justify-between gap-3 p-4">
+                <button
+                  onClick={() => toggleExpanded(mod.id)}
+                  className="flex items-center gap-2.5 text-left flex-1 min-w-0"
+                >
                   {isOpen ? <CaretDown size={16} /> : <CaretRight size={16} />}
                   <Stack size={16} weight="duotone" style={{ color: "var(--foreground-muted)" }} />
                   <span className="font-semibold text-sm" style={{ color: "var(--foreground)" }}>{mod.title}</span>
                   <span className="text-xs" style={{ color: "var(--foreground-muted)" }}>
                     {mod.lessons.length} lesson{mod.lessons.length !== 1 ? "s" : ""}
                   </span>
-                </span>
-                <span
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => { e.stopPropagation(); handleDeleteModule(mod.id); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleDeleteModule(mod.id)}
-                  className="text-xs flex-shrink-0"
-                  style={{ color: "var(--danger)" }}
+                </button>
+                <button
+                  onClick={() => handleDeleteModule(mod.id)}
+                  className="text-xs font-semibold flex-shrink-0 px-1.5 py-1 rounded-lg"
+                  style={
+                    armedForDelete === "module:" + mod.id
+                      ? { background: "var(--danger-light)", color: "var(--danger)" }
+                      : { color: "var(--danger)" }
+                  }
                 >
-                  <Trash size={15} />
-                </span>
-              </button>
+                  {armedForDelete === "module:" + mod.id
+                    ? <span className="inline-flex items-center gap-1"><Trash size={15} /> Confirm?</span>
+                    : <Trash size={15} />}
+                </button>
+              </div>
 
               {isOpen && (
                 <div style={{ borderTop: "1px solid var(--border)" }}>
@@ -183,8 +205,18 @@ export default function TrainingPage() {
                           </span>
                         )}
                       </Link>
-                      <button onClick={() => handleDeleteLesson(lesson.id)} className="text-xs flex-shrink-0" style={{ color: "var(--danger)" }}>
-                        <Trash size={14} />
+                      <button
+                        onClick={() => handleDeleteLesson(lesson.id)}
+                        className="text-xs font-semibold flex-shrink-0 px-1.5 py-1 rounded-lg"
+                        style={
+                          armedForDelete === "lesson:" + lesson.id
+                            ? { background: "var(--danger-light)", color: "var(--danger)" }
+                            : { color: "var(--danger)" }
+                        }
+                      >
+                        {armedForDelete === "lesson:" + lesson.id
+                          ? <span className="inline-flex items-center gap-1"><Trash size={14} /> Confirm?</span>
+                          : <Trash size={14} />}
                       </button>
                     </div>
                   ))}
