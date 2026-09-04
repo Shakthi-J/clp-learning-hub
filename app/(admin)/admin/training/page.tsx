@@ -5,7 +5,7 @@ import { useStaffBasePath } from "@/lib/useStaffBasePath";
 import { createClient } from "@/lib/supabase/client";
 import { parseDriveFileId } from "@/lib/driveFileId";
 import {
-  ChalkboardTeacher, Plus, Stack, PlayCircle, CaretDown, CaretRight, Trash, CheckCircle,
+  ChalkboardTeacher, Plus, Stack, PlayCircle, CaretDown, CaretRight, Trash, CheckCircle, PencilSimple,
 } from "@phosphor-icons/react";
 
 type Lesson = { id: string; title: string; order: number; drive_file_id: string | null };
@@ -29,6 +29,13 @@ export default function TrainingPage() {
   const [newLessonTitle, setNewLessonTitle] = useState("");
   const [newLessonVideo, setNewLessonVideo] = useState("");
   const [addingLesson, setAddingLesson] = useState(false);
+
+  // Which existing lesson is being edited - the only way to attach a video
+  // to a lesson that was created before its Drive upload had finished.
+  const [editingLesson, setEditingLesson] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editVideo, setEditVideo] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
 
   // Delete asks for a second click rather than a native confirm() dialog -
   // some browsers and embedded webviews block or auto-dismiss those, which
@@ -124,6 +131,30 @@ export default function TrainingPage() {
     fetchData();
   };
 
+  const startEditingLesson = (lesson: Lesson) => {
+    setEditingLesson(lesson.id);
+    setEditTitle(lesson.title);
+    // Shown as the bare id - a staff member replacing it can paste either a
+    // fresh id or a full Drive link, since parseDriveFileId accepts both.
+    setEditVideo(lesson.drive_file_id ?? "");
+  };
+
+  const handleSaveLesson = async (id: string) => {
+    if (!editTitle.trim()) return;
+    setSavingEdit(true);
+    await fetch(`/api/training/lessons/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: editTitle.trim(),
+        drive_file_id: parseDriveFileId(editVideo),
+      }),
+    });
+    setSavingEdit(false);
+    setEditingLesson(null);
+    fetchData();
+  };
+
   const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
   const totalDone = modules.reduce((acc, m) => acc + m.lessons.filter((l) => completedIds.has(l.id)).length, 0);
 
@@ -186,40 +217,91 @@ export default function TrainingPage() {
 
               {isOpen && (
                 <div style={{ borderTop: "1px solid var(--border)" }}>
-                  {mod.lessons.map((lesson) => (
-                    <div
-                      key={lesson.id}
-                      className="flex items-center justify-between gap-3 px-4 py-3"
-                      style={{ borderBottom: "1px solid var(--border-light, var(--border))" }}
-                    >
-                      <Link href={`${base}/training/${lesson.id}`} className="flex items-center gap-2.5 min-w-0 flex-1">
-                        {completedIds.has(lesson.id) ? (
-                          <CheckCircle size={16} weight="fill" style={{ color: "var(--success)" }} />
-                        ) : (
-                          <PlayCircle size={16} style={{ color: "var(--foreground-muted)" }} />
-                        )}
-                        <span className="text-sm truncate" style={{ color: "var(--foreground)" }}>{lesson.title}</span>
-                        {!lesson.drive_file_id && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: "var(--card-secondary)", color: "var(--foreground-muted)" }}>
-                            No video
-                          </span>
-                        )}
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteLesson(lesson.id)}
-                        className="text-xs font-semibold flex-shrink-0 px-1.5 py-1 rounded-lg"
-                        style={
-                          armedForDelete === "lesson:" + lesson.id
-                            ? { background: "var(--danger-light)", color: "var(--danger)" }
-                            : { color: "var(--danger)" }
-                        }
+                  {mod.lessons.map((lesson) =>
+                    editingLesson === lesson.id ? (
+                      <div
+                        key={lesson.id}
+                        className="px-4 py-3"
+                        style={{ borderBottom: "1px solid var(--border-light, var(--border))", background: "var(--card-secondary)" }}
                       >
-                        {armedForDelete === "lesson:" + lesson.id
-                          ? <span className="inline-flex items-center gap-1"><Trash size={14} /> Confirm?</span>
-                          : <Trash size={14} />}
-                      </button>
-                    </div>
-                  ))}
+                        <input
+                          type="text"
+                          value={editTitle}
+                          onChange={(e) => setEditTitle(e.target.value)}
+                          placeholder="Lesson title"
+                          className="w-full px-3 py-2 rounded-lg border text-sm mb-2"
+                          style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground)" }}
+                        />
+                        <input
+                          type="text"
+                          value={editVideo}
+                          onChange={(e) => setEditVideo(e.target.value)}
+                          placeholder="Drive video link or file id (leave blank to remove)"
+                          className="w-full px-3 py-2 rounded-lg border text-sm mb-2"
+                          style={{ borderColor: "var(--border)", background: "var(--card)", color: "var(--foreground)" }}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleSaveLesson(lesson.id)}
+                            disabled={savingEdit || !editTitle.trim()}
+                            className="px-3 py-1.5 rounded-lg text-white text-xs font-semibold primary-gradient disabled:opacity-60"
+                          >
+                            {savingEdit ? "Saving..." : "Save"}
+                          </button>
+                          <button
+                            onClick={() => setEditingLesson(null)}
+                            className="px-3 py-1.5 rounded-lg text-xs border"
+                            style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        key={lesson.id}
+                        className="flex items-center justify-between gap-3 px-4 py-3"
+                        style={{ borderBottom: "1px solid var(--border-light, var(--border))" }}
+                      >
+                        <Link href={`${base}/training/${lesson.id}`} className="flex items-center gap-2.5 min-w-0 flex-1">
+                          {completedIds.has(lesson.id) ? (
+                            <CheckCircle size={16} weight="fill" style={{ color: "var(--success)" }} />
+                          ) : (
+                            <PlayCircle size={16} style={{ color: "var(--foreground-muted)" }} />
+                          )}
+                          <span className="text-sm truncate" style={{ color: "var(--foreground)" }}>{lesson.title}</span>
+                          {!lesson.drive_file_id && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: "var(--card-secondary)", color: "var(--foreground-muted)" }}>
+                              No video
+                            </span>
+                          )}
+                        </Link>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <button
+                            onClick={() => startEditingLesson(lesson)}
+                            className="p-1.5 rounded-lg"
+                            style={{ color: "var(--foreground-muted)" }}
+                            aria-label="Edit lesson"
+                          >
+                            <PencilSimple size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteLesson(lesson.id)}
+                            className="text-xs font-semibold px-1.5 py-1 rounded-lg"
+                            style={
+                              armedForDelete === "lesson:" + lesson.id
+                                ? { background: "var(--danger-light)", color: "var(--danger)" }
+                                : { color: "var(--danger)" }
+                            }
+                          >
+                            {armedForDelete === "lesson:" + lesson.id
+                              ? <span className="inline-flex items-center gap-1"><Trash size={14} /> Confirm?</span>
+                              : <Trash size={14} />}
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  )}
 
                   <div className="p-3">
                     {lessonFormFor === mod.id ? (
