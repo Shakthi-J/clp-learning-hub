@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getActor, isStaff } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "@phosphor-icons/react/ssr";
+import { ArrowLeft, PencilSimple } from "@phosphor-icons/react/ssr";
 import TrainingPlayer from "@/components/TrainingPlayer";
 
 export const metadata = { title: "Staff Training" };
@@ -52,13 +52,22 @@ export default async function TrainingLessonPage({
 
   return (
     <div className="p-5 sm:p-8 max-w-4xl">
-      <Link
-        href={`${basePath}/training`}
-        className="inline-flex items-center gap-1.5 text-sm font-semibold mb-4"
-        style={{ color: "var(--foreground-secondary)" }}
-      >
-        <ArrowLeft size={14} weight="bold" /> All training
-      </Link>
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <Link
+          href={`${basePath}/training`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold"
+          style={{ color: "var(--foreground-secondary)" }}
+        >
+          <ArrowLeft size={14} weight="bold" /> All training
+        </Link>
+        <Link
+          href={`${basePath}/training/${lesson.id}/edit`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold"
+          style={{ color: "var(--primary)" }}
+        >
+          <PencilSimple size={14} weight="bold" /> Edit
+        </Link>
+      </div>
 
       <h1 className="text-xl font-bold mb-6" style={{ color: "var(--foreground)" }}>{lesson.title}</h1>
 
