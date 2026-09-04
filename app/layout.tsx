@@ -6,7 +6,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: { default: "CLP Learning Hub", template: "%s | CLP Learning Hub" },
-  description: "Patient education from the Clinic Living Plus care team.",
+  description: "Course-based education from the Clinic Living Plus care team.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://learn.cliniclivingplus.com"),
 };
 

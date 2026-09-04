@@ -12,7 +12,7 @@ export default async function AdminDashboardPage() {
   ]);
   const stats = [
     { label: "Published Courses", value: totalCourses ?? 0, icon: <BookOpen size={18} weight="duotone" />, accent: "blue" as const },
-    { label: "Total Patients", value: totalPatients ?? 0, icon: <Users size={18} weight="duotone" />, accent: "purple" as const },
+    { label: "Total Learners", value: totalPatients ?? 0, icon: <Users size={18} weight="duotone" />, accent: "purple" as const },
     { label: "Pending Requests", value: pendingRequests ?? 0, icon: <ClipboardText size={18} weight="duotone" />, accent: "warning" as const, highlight: (pendingRequests ?? 0) > 0 },
     { label: "Active Enrollments", value: activeEnrollments ?? 0, icon: <GraduationCap size={18} weight="duotone" />, accent: "teal" as const },
   ];

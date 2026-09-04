@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   const { courseId } = await request.json();
   if (!courseId) return NextResponse.json({ message: "courseId is required" }, { status: 400 });
   const { data: patient } = await supabase.from("patients").select("id, access_type, role").eq("auth_user_id", user.id).single();
-  if (!patient) return NextResponse.json({ message: "Patient not found" }, { status: 404 });
+  if (!patient) return NextResponse.json({ message: "Learner not found" }, { status: 404 });
   if (patient.role === "admin") return NextResponse.json({ message: "Admins cannot enroll" }, { status: 403 });
   // Learners on the selected tier take the courses staff assigned them, so
   // there is nothing to request - a course they were not given is not theirs

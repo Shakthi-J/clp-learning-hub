@@ -50,7 +50,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ ce
           certificate={{
             certificateNumber: certificate.certificate_number,
             issuedAt: certificate.issued_at,
-            recipientName: patient?.name || patient?.email || "Patient",
+            recipientName: patient?.name || patient?.email || "Learner",
             courseTitle: enrollment?.courses?.title ?? "Course",
             courseCategory: enrollment?.courses?.category,
           }}

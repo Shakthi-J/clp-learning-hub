@@ -148,7 +148,7 @@ export default function NewLessonPage({ params }: { params: Promise<{ courseId: 
         <div className="card p-6">
           <label className="block text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>Lesson Notes</label>
           <p className="text-xs mb-3" style={{ color: "var(--foreground-muted)" }}>
-            Use the toolbar to format content. Patients see this below the video.
+            Use the toolbar to format content. Learners see this below the video.
           </p>
           <RichTextEditor value={notes} onChange={setNotes} placeholder="Type your lesson notes here. Use the toolbar above to add headings, bullet points, and more..." />
         </div>

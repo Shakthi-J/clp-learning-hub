@@ -70,7 +70,7 @@ export default async function ProfilePage() {
             </div>
             <div className="min-w-0">
               <p className="font-semibold" style={{ color: "var(--foreground)" }}>
-                {patient?.name || "Patient"}
+                {patient?.name || "Learner"}
               </p>
               <p className="text-sm truncate" style={{ color: "var(--foreground-secondary)" }}>
                 {patient?.email}

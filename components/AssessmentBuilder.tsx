@@ -123,7 +123,7 @@ export default function AssessmentBuilder({ moduleId, moduleTitle }: AssessmentB
       {!assessment ? (
         <div>
           <p className="text-xs mb-3" style={{ color: "var(--foreground-muted)" }}>
-            Create a module quiz with a pass mark. Patients must pass to complete this module.
+            Create a module quiz with a pass mark. Learners must pass to complete this module.
           </p>
           <div className="space-y-3">
             <div>

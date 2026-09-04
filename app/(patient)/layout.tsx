@@ -24,7 +24,7 @@ export default async function PatientLayout({ children }: { children: React.Reac
       brandHref="/my-learning"
       roleLabel="Learner"
       navItems={navItems}
-      userName={patient?.name || "Patient"}
+      userName={patient?.name || "Learner"}
       userEmail={patient?.email || ""}
     >
       {children}

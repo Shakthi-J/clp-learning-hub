@@ -125,7 +125,7 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
 
         <div className="card p-6">
           <label className="block text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>Lesson Notes</label>
-          <p className="text-xs mb-3" style={{ color: "var(--foreground-muted)" }}>Patients will see this below the video.</p>
+          <p className="text-xs mb-3" style={{ color: "var(--foreground-muted)" }}>Learners will see this below the video.</p>
           <RichTextEditor value={notes} onChange={setNotes} placeholder="Type your lesson notes here..." />
         </div>
 
@@ -147,7 +147,7 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
         <div className="border-t pt-6" style={{ borderColor: "var(--border)" }}>
           <h2 className="font-semibold mb-1" style={{ color: "var(--foreground)" }}>Lesson Activities</h2>
           <p className="text-xs mb-4" style={{ color: "var(--foreground-muted)" }}>
-            Add a quiz and/or assignment for this lesson. Patients will see these after the video and notes.
+            Add a quiz and/or assignment for this lesson. Learners will see these after the video and notes.
           </p>
           <QuizBuilder lessonId={lessonId} label="Lesson" />
           <AssignmentBuilder lessonId={lessonId} />

@@ -64,7 +64,7 @@ export default async function AdminCertificatePage({
         certificate={{
           certificateNumber: certificate.certificate_number,
           issuedAt: certificate.issued_at,
-          recipientName: enrollment?.patients?.name || enrollment?.patients?.email || "Patient",
+          recipientName: enrollment?.patients?.name || enrollment?.patients?.email || "Learner",
           courseTitle: enrollment?.courses?.title ?? "Course",
           courseCategory: enrollment?.courses?.category,
         }}

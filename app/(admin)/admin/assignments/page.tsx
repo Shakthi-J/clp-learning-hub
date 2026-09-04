@@ -104,7 +104,7 @@ export default function AdminAssignmentsPage() {
                 </div>
 
                 <div className="rounded-xl p-4 mb-3" style={{ background: "var(--background)", border: "1px solid var(--border)" }}>
-                  <p className="text-xs font-medium mb-1" style={{ color: "var(--foreground-secondary)" }}>Patient Response:</p>
+                  <p className="text-xs font-medium mb-1" style={{ color: "var(--foreground-secondary)" }}>Learner Response:</p>
                   <p className="text-sm whitespace-pre-wrap" style={{ color: "var(--foreground)" }}>{sub.response}</p>
                 </div>
 
