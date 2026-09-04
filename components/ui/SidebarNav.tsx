@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ChartPieSlice, BookOpen, GraduationCap, Certificate, UserCircle,
-  ClipboardText, Users, PencilLine, Globe,
+  ClipboardText, Users, PencilLine, Globe, ChalkboardTeacher,
 } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
 
@@ -17,6 +17,7 @@ const ICONS: Record<string, Icon> = {
   people: Users,
   grading: PencilLine,
   published: Globe,
+  training: ChalkboardTeacher,
 };
 
 export type NavItem = { href: string; label: string; icon: keyof typeof ICONS };

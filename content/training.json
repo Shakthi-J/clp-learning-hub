@@ -1,0 +1,90 @@
+[
+  {
+    "title": "Using PTD - Software",
+    "lessons": [
+      { "title": "Client Induction", "notes": "Contact the team lead directly for the PTD ID and password." },
+      { "title": "Adding a new client", "video": "Adding a new client..mp4" },
+      { "title": "Log Minutes of Meeting after every call", "video": "Log Minutes of Meeting after every call..mp4" },
+      { "title": "Sending pre-created recipes to clients", "video": "Sending pre- created recipes to clients..mp4" },
+      { "title": "How to upload a PDF for a client?", "video": "How to upload a PDF for a client.mp4" },
+      { "title": "Weekly food-diary feedbacks", "video": "Weekly food- diary feedbacks..mp4" },
+      { "title": "Checking Client Progress", "video": "Checking Client Progress..mp4" },
+      { "title": "Adding new lifestyle changes to the client", "video": "Adding new lifestyle changes to the client.mp4" },
+      { "title": "What to do when a client is refusing to fill the food diary?" }
+    ]
+  },
+  {
+    "title": "Trainer Profile",
+    "lessons": [
+      { "title": "Adding Trainer", "video": "Adding Trainer.mp4" },
+      { "title": "Adding clients to Trainer", "video": "Adding clients to Trainer.mp4" },
+      { "title": "Adding Groups to Trainer", "video": "Adding Groups to Trainer.mp4" },
+      { "title": "Trainer activating the groups", "video": "Trainer activating the groups.mp4" }
+    ]
+  },
+  {
+    "title": "Understanding Nutritional Guidelines",
+    "lessons": [
+      { "title": "Breakfast - Example 1" },
+      { "title": "Breakfast - Sample 2", "video": "Breakfast- Sample 2.mp4" }
+    ]
+  },
+  {
+    "title": "Using Calendly",
+    "lessons": [
+      { "title": "Creating events - Second Consultation", "video": "Creating events - Second Consultation.mp4" },
+      { "title": "Creating events - Weekly call", "video": "Creating events - Weekly call.mp4" },
+      { "title": "Scheduling calls", "video": "Scheduling calls.mp4" },
+      { "title": "Cancelling and rescheduling calls", "video": "Cancelling and rescheduling calls.mp4" },
+      { "title": "Checking team member's availability", "video": "Checking team member’s availability.mp4" },
+      { "title": "Scheduling one off meetings", "video": "Scheduling one off meetings.mp4" },
+      { "title": "One-Off Meetings for Team Members", "video": "One-Off Meetings for Team Members.mp4" }
+    ]
+  },
+  {
+    "title": "Using Canva",
+    "lessons": []
+  },
+  {
+    "title": "Doctor's Consultation",
+    "lessons": [
+      { "title": "Booking consultation", "video": "Booking consultation.mp4" },
+      { "title": "Setting up slots with Dr Anish and Team", "notes": "For booking a client consultation, refer to the registration process the team uses." }
+    ]
+  },
+  {
+    "title": "Misc",
+    "lessons": [
+      { "title": "Compressing PDF" }
+    ]
+  },
+  {
+    "title": "Second Consultation Calls",
+    "lessons": [
+      { "title": "Sonam / Vinshu" },
+      { "title": "Vinamra / Amisha", "video": "Vinamra Amisha.mp4" },
+      { "title": "Akshay / Vinshu and Janani" },
+      { "title": "Kaenat / Masoomi", "video": "Kaenat Masoomi.mp4" },
+      { "title": "Madhusudhan / Vinshu", "video": "Madhusudhan Vinshu.mp4" },
+      { "title": "Vaishnavi / Vinshu and Janani", "video": "Vaishnavi Vinshu and Janani.mp4" },
+      { "title": "Renuka with Vinshu", "video": "Renuka with Vinshu.mp4" },
+      { "title": "Amisha with Krishna" },
+      { "title": "Kajal - Post Cancer Care", "video": "Kajal- Post Cancer Care.mp4" }
+    ]
+  },
+  {
+    "title": "Follow-up Calls",
+    "lessons": [
+      { "title": "FODMAP / POLYOPS", "video": "FODMAP POLYOPS.mp4" },
+      { "title": "Couple Plans", "video": "Couple Plans.mp4" },
+      { "title": "Body Image", "video": "Body Image.mp4" }
+    ]
+  },
+  {
+    "title": "Free Consultation",
+    "lessons": [
+      { "title": "Garima / Depression and Body Image + Thyroid", "video": "Garima Depression and Body Image+ Thyroid.mp4" },
+      { "title": "RameshBabu" }
+    ]
+  }
+]

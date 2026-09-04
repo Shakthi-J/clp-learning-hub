@@ -13,6 +13,7 @@ export default async function InstructorLayout({ children }: { children: React.R
     { href: "/instructor/courses", label: "My Courses", icon: "courses" },
     { href: "/instructor/learners", label: "Learners", icon: "people" },
     { href: "/instructor/assignments", label: "Grading", icon: "grading" },
+    { href: "/instructor/training", label: "Staff Training", icon: "training" },
     { href: "/instructor/profile", label: "Profile", icon: "profile" },
   ];
 
