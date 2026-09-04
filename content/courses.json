@@ -1,115 +1,544 @@
 [
   {
-    "title": "Holistic Healing Protocol for PCOS Management.",
-    "slug": "holistic-healing-protocol-for-pcos-management",
-    "category": "Hormonal Health",
-    "instructor": "cliniclivingplus.ai@gmail.com",
-    "modules": [
-      {
-        "title": "Understanding PCOS",
-        "lessons": [
-          { "title": "Pillars of PCOS Management", "video": "Pillars of PCOS management..mp4" },
-          { "title": "Management versus Reversal", "video": "Management VS Reversal.mp4" }
-        ]
-      },
-      {
-        "title": "Hormones, Sleep and Thyroid",
-        "lessons": [
-          { "title": "Does Your Sleep Cycle Exaggerate PCOS Symptoms?", "video": "Does your sleep cycle exaggerate PCOS symptoms" },
-          { "title": "Thyroid and PCOS", "video": "Class 26- Thyroid.mp4" }
-        ]
-      },
-      {
-        "title": "Endocrine Disruptors",
-        "lessons": [
-          { "title": "What Endocrine Disruptors Are", "video": "Endocrine Disrupters- What are they.mp4" },
-          { "title": "How They Contribute to Weight Gain", "video": "Endocrine disrupters- How does this cause weight gain" }
-        ]
-      },
-      {
-        "title": "Movement",
-        "lessons": [
-          { "title": "Exercise for PCOS", "video": "Class 32- Exercise.mp4" },
-          { "title": "Pump Up Your NEAT", "video": "Pump up your NEAT..mp4" },
-          { "title": "Make Fitness Your Lifestyle", "video": "Make fitness your lifestyle!.mp4" }
-        ]
-      }
-    ]
-  },
-  {
-    "title": "gut issues",
-    "slug": "gut-issues",
-    "category": "Gut Health",
-    "instructor": "cliniclivingplus.ai@gmail.com",
-    "modules": [
-      {
-        "title": "Fibre and Whole Foods",
-        "lessons": [
-          { "title": "Fibre Up", "video": "Fiber Up.mp4" },
-          { "title": "Eating Whole Grains", "video": "Eating Whole- Grains..mp4" }
-        ]
-      },
-      {
-        "title": "Foods That Trigger Symptoms",
-        "lessons": [
-          { "title": "FODMAPs and Polyols", "video": "FODMAP POLYOPS.mp4" },
-          { "title": "Discarding Artificial Sweeteners", "video": "Discard artificial sweeteners..mp4" }
-        ]
-      }
-    ]
-  },
-  {
-    "title": "The Plant-Forward Kitchen",
-    "slug": "plant-forward-kitchen",
-    "category": "Lifestyle",
-    "description": "Practical kitchen workshops: cooking without oil, replacing dairy and flour, and the meal patterns that support the protocol.",
-    "instructor": "cliniclivingplus.ai@gmail.com",
-    "modules": [
-      {
-        "title": "Cooking Without Oil",
-        "lessons": [
-          { "title": "Oil-Free Cooking Workshop", "video": "Oil- Free Cooking Workshop..mp4" },
-          { "title": "Limiting the Oils You Use", "video": "Limit the consumption of Oil's..mp4" },
-          { "title": "Exploring Oil-Free Cooking", "video": "Explore Oil- Free cooking..mp4" }
-        ]
-      },
-      {
-        "title": "Dairy and Flour",
-        "lessons": [
-          { "title": "Ditch Dairy", "video": "Ditch Dairy.mp4" },
-          { "title": "Dairy Alternatives Workshop", "video": "Dairy alternatives workshop.mp4" },
-          { "title": "De-Flour", "video": "De- Flour.mp4" }
-        ]
-      },
-      {
-        "title": "Meal Patterns",
-        "lessons": [
-          { "title": "One Raw Meal a Day", "video": "One Raw Meal A Day.mp4" },
-          { "title": "Eat Before the Sun Sets", "video": "Eat before the sun- sets.mp4" },
-          { "title": "How to Incorporate Fasting", "video": "How to incorporate fasting.mp4" },
-          { "title": "A Low AGE Diet Plan", "video": "Low AGE diet plan..mp4" }
-        ]
-      }
-    ]
-  },
-  {
-    "title": "Functional Medicine Foundations",
-    "slug": "functional-medicine-foundations",
+    "title": "Plant-Based Nutrition Certification Program",
+    "slug": "plant-based-nutrition-certification-program",
     "category": "Longevity",
-    "description": "How the functional medicine approach works, what the programme involves, and how testing fits in.",
+    "description": "This course specifically focuses on the holistic healing protocol principles for disease management and longevity. The course gives you an introduction to plant-based nutrition and guidelines to help customise the ideal meal plan for clients from various walks of life.",
     "instructor": "cliniclivingplus.ai@gmail.com",
     "modules": [
       {
-        "title": "The Approach",
+        "title": "Week 1",
         "lessons": [
-          { "title": "Introduction to Functional Medicine", "video": "Intro to Functional Medicine.mp4" },
-          { "title": "Format of the Programme", "video": "Format of the program..mp4" }
+          {
+            "title": "Assignment 1.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 1.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 1.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 1.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 1.3 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 1.3 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Learning Schedule",
+            "notes": "Please find attached the learning schedule for the week."
+          },
+          {
+            "title": "Class 1",
+            "video": "Class 1.mp4"
+          },
+          {
+            "title": "Class 2",
+            "video": "Class 2.mp4"
+          },
+          {
+            "title": "Class 3",
+            "video": "Class 3.mp4"
+          }
         ]
       },
       {
-        "title": "Testing",
+        "title": "Week 2",
         "lessons": [
-          { "title": "How Often Should You Be Testing?", "video": "How often should you be testing.mp4" }
+          {
+            "title": "Assignment 2.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 2.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 2.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 2.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Learning Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Class 4",
+            "video": "Class 4.mp4"
+          },
+          {
+            "title": "Class 5",
+            "video": "Class 5.mp4"
+          },
+          {
+            "title": "Class 6",
+            "video": "Class 6.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 3",
+        "lessons": [
+          {
+            "title": "Assignment 3.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 3.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 3.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 3.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Learning Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Class 7",
+            "video": "Class 7.mp4"
+          },
+          {
+            "title": "Class 8",
+            "video": "Class 8.mp4"
+          },
+          {
+            "title": "Class 9",
+            "video": "Class 9.mp4"
+          },
+          {
+            "title": "Case Study - Pragya",
+            "notes": "PLACEHOLDER - this case study's recording has not been uploaded to Drive yet."
+          }
+        ]
+      },
+      {
+        "title": "Week 4",
+        "lessons": [
+          {
+            "title": "Assignment 4.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 4.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 4.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Learning Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Case Study - Yogita",
+            "notes": "PLACEHOLDER - this case study's recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 10",
+            "video": "Class 10.mp4"
+          },
+          {
+            "title": "Class 11",
+            "video": "Class 11.mp4"
+          },
+          {
+            "title": "Class 12",
+            "video": "Class 12.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 5",
+        "lessons": [
+          {
+            "title": "Assignment 5.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 5.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 5.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 5.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Learning Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Case Study - Jonas",
+            "video": "Jonas- Case Study.mp4"
+          },
+          {
+            "title": "Class 13",
+            "video": "Class 13.mp4"
+          },
+          {
+            "title": "Class 14",
+            "video": "Class 14.mp4"
+          },
+          {
+            "title": "Class 15",
+            "video": "Class 15.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 6",
+        "lessons": [
+          {
+            "title": "Assignment 6.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 6.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 6.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 6.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Learning Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Case Study of the Week",
+            "notes": "PLACEHOLDER - this case study's recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 16",
+            "video": "Class 16.mp4"
+          },
+          {
+            "title": "Class 17",
+            "video": "Class 17.mp4"
+          },
+          {
+            "title": "Class 18",
+            "video": "Class 18.mp4"
+          },
+          {
+            "title": "Class 19 (extra class)",
+            "video": "Class 19 (extra class).mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 7",
+        "lessons": [
+          {
+            "title": "Assignment 7.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 7.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 7.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 7.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Learning Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Class 20",
+            "video": "Class 20.mp4"
+          },
+          {
+            "title": "Class 21",
+            "video": "Class 21.mp4"
+          },
+          {
+            "title": "Class 22",
+            "video": "Class 22.mp4"
+          },
+          {
+            "title": "Case Study of the Week",
+            "notes": "PLACEHOLDER - this case study's recording has not been uploaded to Drive yet."
+          }
+        ]
+      },
+      {
+        "title": "Week 8",
+        "lessons": [
+          {
+            "title": "Assignment 8.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 8.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 8.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 8.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Weekly Learning Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Class 23",
+            "notes": "PLACEHOLDER - this class recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 24",
+            "notes": "PLACEHOLDER - this class recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 25",
+            "notes": "PLACEHOLDER - this class recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Case Study for the Week",
+            "video": "Case Study for the week.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 9",
+        "lessons": [
+          {
+            "title": "Assignment 9.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 9.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 9.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 9.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Reading Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Class 26 - Thyroid",
+            "video": "Class 26- Thyroid.mp4"
+          },
+          {
+            "title": "Class 27 - PCOS",
+            "notes": "PLACEHOLDER - this class recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 28 - Auto Immune Diseases + Case Study Discussion",
+            "video": "Class 28- Auto Immune Diseases+ Case Study Discussion.mp4"
+          },
+          {
+            "title": "Case Study of the Week - Vani",
+            "video": "Case Study of the Week- Vani.mp4"
+          }
+        ]
+      },
+      {
+        "title": "Week 10",
+        "lessons": [
+          {
+            "title": "Assignment 10.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 10.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 10.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 10.2 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Reading Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Class 29 - Pregnancy",
+            "video": "Class 29- Pregnancy.mp4"
+          },
+          {
+            "title": "Class 30 - Infancy and Lactation",
+            "notes": "PLACEHOLDER - this class recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 31 - Adolescence",
+            "notes": "PLACEHOLDER - this class recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Weekly Case Study",
+            "notes": "PLACEHOLDER - this case study's recording has not been uploaded to Drive yet."
+          }
+        ]
+      },
+      {
+        "title": "Week 11",
+        "lessons": [
+          {
+            "title": "Assignment 11.1 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 11.1 (B)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Assignment 11.2 (A)",
+            "notes": "PLACEHOLDER - the CLP curriculum team should write the real assignment prompt here, then attach it as this lesson's Assignment."
+          },
+          {
+            "title": "Class 32 - Exercise",
+            "video": "Class 32- Exercise.mp4"
+          },
+          {
+            "title": "Class 33 - Exercise",
+            "video": "Class 33- Exercise.mp4"
+          },
+          {
+            "title": "Class 34 - Case Study",
+            "video": "Class 34- Case Study.mp4"
+          },
+          {
+            "title": "Reading Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Case Study of the Week",
+            "notes": "PLACEHOLDER - this case study's recording has not been uploaded to Drive yet."
+          }
+        ]
+      },
+      {
+        "title": "Week 12",
+        "lessons": [
+          {
+            "title": "Learning Schedule",
+            "notes": "PLACEHOLDER - attach this week's schedule document or text here."
+          },
+          {
+            "title": "Case Study of the Week",
+            "notes": "PLACEHOLDER - this case study's recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 35",
+            "notes": "PLACEHOLDER - this class recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 36",
+            "notes": "PLACEHOLDER - this class recording has not been uploaded to Drive yet."
+          },
+          {
+            "title": "Class 37 - Case Study Discussion",
+            "video": "Class 37- Case Study Discussion..mp4"
+          }
+        ]
+      },
+      {
+        "title": "Final Exam",
+        "lessons": [
+          {
+            "title": "Final Exam - Part 1 (MCQs)",
+            "notes": "PLACEHOLDER - add the exam questions through this lesson's Quiz section (multiple choice fits the MCQ format)."
+          }
+        ]
+      },
+      {
+        "title": "Case History Reviews",
+        "lessons": [
+          {
+            "title": "Case History Review - October 2023",
+            "video": "Case History Review October 2023.mp4"
+          }
+        ]
+      },
+      {
+        "title": "November - Marketing (1)",
+        "lessons": [
+          {
+            "title": "20th November 2023",
+            "notes": "PLACEHOLDER - marketing session recording not yet matched in Drive."
+          }
+        ]
+      },
+      {
+        "title": "Jan - Marketing (2)",
+        "lessons": [
+          {
+            "title": "Marketing - Personal Branding",
+            "notes": "PLACEHOLDER - marketing session recording not yet matched in Drive."
+          }
+        ]
+      },
+      {
+        "title": "Feb 2024 - Longevity",
+        "lessons": [
+          {
+            "title": "Anti-Ageing Pathways",
+            "video": "Anti- Ageing Pathways.mp4"
+          }
+        ]
+      },
+      {
+        "title": "March 2024 - Longevity",
+        "lessons": [
+          {
+            "title": "March 2024",
+            "video": "March 2024.mp4"
+          }
+        ]
+      },
+      {
+        "title": "IFM",
+        "lessons": [
+          {
+            "title": "Intro to Functional Medicine",
+            "video": "Intro to Functional Medicine.mp4"
+          }
         ]
       }
     ]
