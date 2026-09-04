@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Notebook } from "@phosphor-icons/react";
+import { Notebook, Image as ImageIcon, X } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import {
   QUESTION_TYPES,
@@ -8,6 +8,7 @@ import {
   encodeChoices,
   decodeChoices,
 } from "@/lib/questionTypes";
+import { describeImageError, uploadQuizImage, quizImageUrl } from "@/lib/quizImages";
 
 interface Question {
   id?: string;
@@ -15,6 +16,7 @@ interface Question {
   question_type: QuestionType;
   options: string[];
   correct_answer: string;
+  image_path?: string | null;
 }
 
 interface QuizBuilderProps {
@@ -49,6 +51,8 @@ export default function QuizBuilder({ lessonId, moduleId, label }: QuizBuilderPr
   const [newChecked, setNewChecked] = useState<string[]>([]); // checkboxes
   const [adding, setAdding] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [newImage, setNewImage] = useState<File | null>(null);
+  const [imageError, setImageError] = useState("");
 
   useEffect(() => { fetchQuiz(); }, []);
 
@@ -56,7 +60,7 @@ export default function QuizBuilder({ lessonId, moduleId, label }: QuizBuilderPr
     setLoading(true);
     let query = supabase
       .from("quizzes")
-      .select("id, title, quiz_questions(id, question, question_type, options, correct_answer)");
+      .select("id, title, quiz_questions(id, question, question_type, options, correct_answer, image_path)");
     if (lessonId) query = query.eq("lesson_id", lessonId);
     if (moduleId) query = query.eq("module_id", moduleId);
     const { data } = await query.maybeSingle();
@@ -83,7 +87,17 @@ export default function QuizBuilder({ lessonId, moduleId, label }: QuizBuilderPr
     setNewOpts(["", "", "", ""]);
     setNewCorrect("");
     setNewChecked([]);
+    setNewImage(null);
+    setImageError("");
     setShowForm(false);
+  };
+
+  const handleChooseImage = (file: File | null) => {
+    setImageError("");
+    if (!file) { setNewImage(null); return; }
+    const problem = describeImageError(file);
+    if (problem) { setImageError(problem); return; }
+    setNewImage(file);
   };
 
   // Changing type mid-edit keeps the question text but clears answers, which
@@ -107,6 +121,18 @@ export default function QuizBuilder({ lessonId, moduleId, label }: QuizBuilderPr
   const handleAddQuestion = async () => {
     if (!canAdd) return;
     setAdding(true);
+
+    let imagePath: string | null = null;
+    if (newImage) {
+      try {
+        imagePath = await uploadQuizImage(supabase, newImage);
+      } catch (e: any) {
+        setAdding(false);
+        setImageError(e?.message || "Could not upload the image.");
+        return;
+      }
+    }
+
     const qid = await ensureQuiz();
 
     const correct =
@@ -118,7 +144,8 @@ export default function QuizBuilder({ lessonId, moduleId, label }: QuizBuilderPr
       question_type: newType,
       options: newType === "short_answer" ? [] : filledOptions,
       correct_answer: correct,
-    }).select("id, question, question_type, options, correct_answer").single();
+      image_path: imagePath,
+    }).select("id, question, question_type, options, correct_answer, image_path").single();
 
     setAdding(false);
     if (error) { alert("Could not add the question: " + error.message); return; }
@@ -185,6 +212,14 @@ export default function QuizBuilder({ lessonId, moduleId, label }: QuizBuilderPr
               style={{ background: "var(--card-secondary)", border: "1px solid var(--border)" }}
             >
               <div className="flex-1 min-w-0">
+                {q.image_path && (
+                  <img
+                    src={quizImageUrl(q.image_path)}
+                    alt=""
+                    className="max-w-[220px] rounded-lg mb-2 border"
+                    style={{ borderColor: "var(--border)" }}
+                  />
+                )}
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-sm font-medium" style={{ color: "var(--foreground)" }}>
                     {i + 1}. {q.question}
@@ -227,6 +262,30 @@ export default function QuizBuilder({ lessonId, moduleId, label }: QuizBuilderPr
               className="w-full px-3 py-2 rounded-lg border text-sm"
               style={inputStyle}
             />
+          </div>
+
+          <div className="mb-3">
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--foreground)" }}>
+              Image <span className="font-normal" style={{ color: "var(--foreground-muted)" }}>(optional)</span>
+            </label>
+            {newImage ? (
+              <div className="flex items-center gap-2">
+                <img src={URL.createObjectURL(newImage)} alt="" className="max-w-[160px] rounded-lg border" style={{ borderColor: "var(--border)" }} />
+                <button type="button" onClick={() => handleChooseImage(null)} aria-label="Remove image" style={{ color: "var(--foreground-muted)" }}>
+                  <X size={16} weight="bold" />
+                </button>
+              </div>
+            ) : (
+              <label
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm cursor-pointer"
+                style={{ background: "var(--card)", border: "1px dashed var(--border)", color: "var(--foreground-secondary)" }}
+              >
+                <ImageIcon size={15} weight="bold" />
+                Attach an image
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => handleChooseImage(e.target.files?.[0] ?? null)} />
+              </label>
+            )}
+            {imageError && <p className="text-xs mt-1" style={{ color: "var(--danger)" }}>{imageError}</p>}
           </div>
 
           <div className="mb-3">

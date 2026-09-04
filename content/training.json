@@ -10,7 +10,7 @@
       { "title": "Weekly food-diary feedbacks", "video": "Weekly food- diary feedbacks..mp4" },
       { "title": "Checking Client Progress", "video": "Checking Client Progress..mp4" },
       { "title": "Adding new lifestyle changes to the client", "video": "Adding new lifestyle changes to the client.mp4" },
-      { "title": "What to do when a client is refusing to fill the food diary?", "video": "Copy of What to do when a client is refusing to fill the food diary.mp4" }
+      { "title": "What to do when a client is refusing to fill the food diary?", "video": "What to do when a client is refusing to fill the food diary.mp4" }
     ]
   },
   {
@@ -50,8 +50,8 @@
     "lessons": [
       { "title": "Booking consultation", "video": "Booking consultation.mp4" },
       { "title": "Setting up slots with Dr Anish and Team", "notes": "For booking a client consultation, refer to the registration process the team uses." },
-      { "title": "Saachi Consultation / Recurring Yeast Infection" },
-      { "title": "Sonia / Hashimoto's and Lymphatic Drainage" }
+      { "title": "Saachi Consultation / Recurring Yeast Infection", "video": "Saachi Consultation Recurring Yeast Infection.wmv" },
+      { "title": "Sonia / Hashimoto's and Lymphatic Drainage", "video": "Sonia Hashimoto's and Lymphatic Drainage.wmv" }
     ]
   },
   {
@@ -63,9 +63,9 @@
   {
     "title": "Second Consultation Calls",
     "lessons": [
-      { "title": "Sonam / Vinshu" },
+      { "title": "Sonam / Vinshu", "video": "Sonam Vinshu.mp4" },
       { "title": "Vinamra / Amisha", "video": "Vinamra Amisha.mp4" },
-      { "title": "Akshay / Vinshu and Janani" },
+      { "title": "Akshay / Vinshu and Janani", "video": "Akshay Vinshu and Janani.mp4" },
       { "title": "Kaenat / Masoomi", "video": "Kaenat Masoomi.mp4" },
       { "title": "Madhusudhan / Vinshu", "video": "Madhusudhan Vinshu.mp4" },
       { "title": "Vaishnavi / Vinshu and Janani", "video": "Vaishnavi Vinshu and Janani.mp4" },
@@ -86,7 +86,7 @@
     "title": "Free Consultation",
     "lessons": [
       { "title": "Garima / Depression and Body Image + Thyroid", "video": "Garima Depression and Body Image+ Thyroid.mp4" },
-      { "title": "RameshBabu" }
+      { "title": "RameshBabu", "video": "RameshBabu.mp4" }
     ]
   }
 ]

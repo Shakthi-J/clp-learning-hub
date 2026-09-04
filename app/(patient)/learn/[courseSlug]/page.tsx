@@ -57,7 +57,7 @@ export default async function LearnCoursePage({ params }: { params: Promise<{ co
   // Fetch module quizzes and assessments
   const moduleIds = modules.map(m => m.id);
   const { data: moduleQuizzes } = await supabase.from("quizzes")
-    .select("id, title, module_id, quiz_questions(id, question, question_type, options, correct_answer)")
+    .select("id, title, module_id, quiz_questions(id, question, question_type, options, correct_answer, image_path)")
     .in("module_id", moduleIds);
 
   const { data: assessments } = await supabase.from("assessments")

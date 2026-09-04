@@ -7,6 +7,7 @@ import {
   isAnswered,
   isCorrect,
 } from "@/lib/questionTypes";
+import { quizImageUrl } from "@/lib/quizImages";
 
 interface Question {
   id: string;
@@ -14,6 +15,7 @@ interface Question {
   question_type: QuestionType;
   options: string[];
   correct_answer: string;
+  image_path?: string | null;
 }
 
 interface QuizBlockProps {
@@ -104,6 +106,9 @@ export default function QuizBlock({ quizId, title, questions }: QuizBlockProps) 
 
             return (
               <div key={q.id} className="mb-4">
+                {q.image_path && (
+                  <img src={quizImageUrl(q.image_path)} alt="" className="max-w-full sm:max-w-sm rounded-xl mb-2 border" style={{ borderColor: "var(--border)" }} />
+                )}
                 <p className="text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>{q.question}</p>
 
                 {type === "short_answer" ? (
@@ -182,6 +187,9 @@ export default function QuizBlock({ quizId, title, questions }: QuizBlockProps) 
 
             return (
               <div key={q.id} className="mb-5">
+                {q.image_path && (
+                  <img src={quizImageUrl(q.image_path)} alt="" className="max-w-full sm:max-w-sm rounded-xl mb-2 border" style={{ borderColor: "var(--border)" }} />
+                )}
                 <p className="text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
                   {qi + 1}. {q.question}
                   {type === "checkboxes" && (
