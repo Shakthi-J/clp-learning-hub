@@ -22,6 +22,7 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
   const [slug, setSlug] = useState("");
   const [youtubeId, setYoutubeId] = useState("");
   const [driveInput, setDriveInput] = useState("");
+  const [audioDriveInput, setAudioDriveInput] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -39,7 +40,8 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
     supabase.from("lessons").select("*").eq("id", lessonId).single().then(({ data }) => {
       if (data) {
         setTitle(data.title); setSlug(data.slug);
-        setYoutubeId(data.youtube_video_id || ""); setDriveInput(data.drive_file_id || ""); setNotes(data.notes || "");
+        setYoutubeId(data.youtube_video_id || ""); setDriveInput(data.drive_file_id || "");
+        setAudioDriveInput(data.audio_file_id || ""); setNotes(data.notes || "");
       }
       setLoading(false);
     });
@@ -50,7 +52,12 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
     const res = await fetch(`/api/lessons/${lessonId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, slug, youtube_video_id: extractYoutubeId(youtubeId), drive_file_id: parseDriveFileId(driveInput), notes }),
+      body: JSON.stringify({
+        title, slug, youtube_video_id: extractYoutubeId(youtubeId),
+        drive_file_id: parseDriveFileId(driveInput),
+        audio_file_id: parseDriveFileId(audioDriveInput),
+        notes,
+      }),
     });
     const data = await res.json();
     setSaving(false);
@@ -118,6 +125,25 @@ export default function EditLessonPage({ params }: { params: Promise<{ courseId:
             <p className="text-xs mt-2" style={{ color: parseDriveFileId(driveInput) ? "var(--success)" : "var(--danger)" }}>
               {parseDriveFileId(driveInput)
                 ? `File id: ${parseDriveFileId(driveInput)}`
+                : "That does not look like a Drive link or file id."}
+            </p>
+          )}
+        </div>
+
+        <div className="card p-6">
+          <label className="block text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>Google Drive audio</label>
+          <p className="text-xs mb-3" style={{ color: "var(--foreground-muted)" }}>
+            For lessons that are an audio recording instead of a video. Same private Drive proxy.
+            Only shown to learners when there is no YouTube or Drive video set above.
+          </p>
+          <input type="text" value={audioDriveInput} onChange={(e) => setAudioDriveInput(e.target.value)}
+            placeholder="https://drive.google.com/file/d/.../view"
+            className="w-full px-4 py-2.5 rounded-xl border text-sm"
+            style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
+          {audioDriveInput.trim() && (
+            <p className="text-xs mt-2" style={{ color: parseDriveFileId(audioDriveInput) ? "var(--success)" : "var(--danger)" }}>
+              {parseDriveFileId(audioDriveInput)
+                ? `File id: ${parseDriveFileId(audioDriveInput)}`
                 : "That does not look like a Drive link or file id."}
             </p>
           )}

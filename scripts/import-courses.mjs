@@ -79,11 +79,13 @@ async function driveToken() {
 // parent avoids that index entirely and reflects the folder's real contents.
 const VIDEO_FOLDER_ID = process.env.GOOGLE_DRIVE_VIDEO_FOLDER_ID || "1boFXbSm6VvaH0vq65ASN3f2uhtJnmmpI";
 
+/** filename -> file id, one map per media kind, both built from a single folder listing. */
 async function driveIndex() {
   const token = await driveToken();
-  if (!token) return new Map();
+  if (!token) return { video: new Map(), audio: new Map() };
 
-  const index = new Map();
+  const video = new Map();
+  const audio = new Map();
   let pageToken;
   do {
     const url = new URL("https://www.googleapis.com/drive/v3/files");
@@ -98,12 +100,13 @@ async function driveIndex() {
     const data = await res.json();
     if (!res.ok) throw new Error("Drive list failed: " + JSON.stringify(data));
     for (const f of data.files || []) {
-      if (f.mimeType?.startsWith("video/")) index.set(f.name.toLowerCase(), f.id);
+      if (f.mimeType?.startsWith("video/")) video.set(f.name.toLowerCase(), f.id);
+      if (f.mimeType?.startsWith("audio/")) audio.set(f.name.toLowerCase(), f.id);
     }
     pageToken = data.nextPageToken;
   } while (pageToken);
 
-  return index;
+  return { video, audio };
 }
 
 // ---------- helpers ----------
@@ -117,22 +120,24 @@ const slugify = (s) =>
 
 const definition = JSON.parse(readFileSync(definitionPath, "utf8"));
 const drive = await driveIndex();
-console.log("Drive videos visible: " + drive.size);
+console.log("Drive videos visible: " + drive.video.size + ", audio: " + drive.audio.size);
 
-// Resolve every video reference first. Nothing is written until they all pass.
+// Resolve every video/audio reference first. Nothing is written until they all pass.
 const missing = [];
 for (const course of definition) {
   for (const mod of course.modules || []) {
     for (const lesson of mod.lessons || []) {
-      if (!lesson.video) continue;
-      if (!drive.has(lesson.video.toLowerCase())) {
+      if (lesson.video && !drive.video.has(lesson.video.toLowerCase())) {
         missing.push(course.title + " / " + mod.title + " / " + lesson.title + " -> " + lesson.video);
+      }
+      if (lesson.audio && !drive.audio.has(lesson.audio.toLowerCase())) {
+        missing.push(course.title + " / " + mod.title + " / " + lesson.title + " -> " + lesson.audio + " (audio)");
       }
     }
   }
 }
 if (missing.length) {
-  console.error("\nThese videos are not in Drive (or not shared with the service account):");
+  console.error("\nThese files are not in Drive (or not shared with the service account):");
   for (const m of missing) console.error("  " + m);
   console.error("\nNothing was written. Fix the filenames or the sharing, then re-run.");
   process.exit(1);
@@ -230,7 +235,8 @@ for (const course of definition) {
     for (const lesson of mod.lessons || []) {
       lessonOrder++;
       const lessonSlug = lesson.slug || slugify(lesson.title);
-      const driveFileId = lesson.video ? drive.get(lesson.video.toLowerCase()) : null;
+      const driveFileId = lesson.video ? drive.video.get(lesson.video.toLowerCase()) : null;
+      const audioFileId = lesson.audio ? drive.audio.get(lesson.audio.toLowerCase()) : null;
 
       let exists = false;
       if (moduleId) {
@@ -245,7 +251,8 @@ for (const course of definition) {
         continue;
       }
 
-      console.log("    + lesson: " + lesson.title + (lesson.video ? "  [" + lesson.video + "]" : "  [no video]"));
+      const mediaLabel = lesson.video ? "  [" + lesson.video + "]" : lesson.audio ? "  [audio: " + lesson.audio + "]" : "  [no media]";
+      console.log("    + lesson: " + lesson.title + mediaLabel);
       created.lessons++;
       if (APPLY) {
         const { error } = await db.from("lessons").insert({
@@ -254,6 +261,7 @@ for (const course of definition) {
           slug: lessonSlug,
           order: lessonOrder,
           drive_file_id: driveFileId,
+          audio_file_id: audioFileId,
           notes: lesson.notes ?? null,
         });
         if (error) { console.error("      failed: " + error.message); process.exit(1); }

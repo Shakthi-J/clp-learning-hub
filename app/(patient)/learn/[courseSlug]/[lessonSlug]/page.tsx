@@ -15,7 +15,7 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
   const { data: patient } = await supabase.from("patients").select("id, name").eq("auth_user_id", user.id).single();
 
   const { data: course } = await supabase.from("courses")
-    .select(`id, title, slug, modules (id, title, order, lessons!lessons_module_id_fkey (id, title, slug, order, youtube_video_id, drive_file_id, notes))`)
+    .select(`id, title, slug, modules (id, title, order, lessons!lessons_module_id_fkey (id, title, slug, order, youtube_video_id, drive_file_id, audio_file_id, notes))`)
     .eq("slug", courseSlug).eq("published", true).single();
 
   if (!course) notFound();
@@ -93,6 +93,7 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
         patientId={patient?.id || ""}
         youtubeVideoId={lesson.youtube_video_id}
         driveFileId={lesson.drive_file_id}
+        audioFileId={lesson.audio_file_id}
         notes={lesson.notes}
         isCompleted={isCompleted}
         prevLesson={prevLesson ? { slug: prevLesson.slug, title: prevLesson.title } : null}

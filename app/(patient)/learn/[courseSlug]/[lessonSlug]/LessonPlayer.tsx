@@ -17,6 +17,8 @@ interface LessonPlayerProps {
   youtubeVideoId: string | null;
   /** When set, the video comes from Drive through our own route and wins over YouTube. */
   driveFileId: string | null;
+  /** An audio-only recording, served the same way. Shown only when there is no video. */
+  audioFileId: string | null;
   notes: string | null;
   isCompleted: boolean;
   prevLesson: { slug: string; title: string } | null;
@@ -36,7 +38,7 @@ declare global {
 }
 
 export default function LessonPlayer({
-  lessonId, enrollmentId, patientId, youtubeVideoId, driveFileId, notes, isCompleted,
+  lessonId, enrollmentId, patientId, youtubeVideoId, driveFileId, audioFileId, notes, isCompleted,
   prevLesson, nextLesson, courseSlug, totalLessons, currentIndex,
   quiz, assignment, existingSubmission, isReviewing = false,
 }: LessonPlayerProps) {
@@ -122,6 +124,22 @@ export default function LessonPlayer({
       ) : youtubeVideoId ? (
         <div className="rounded-2xl overflow-hidden mb-6" style={{ aspectRatio: "16/9", background: "#000" }}>
           <div ref={containerRef} className="w-full h-full" />
+        </div>
+      ) : audioFileId ? (
+        // This lesson is an audio recording rather than a video - same private
+        // Drive proxy, just an <audio> element instead of <video>.
+        <div className="rounded-2xl mb-6 p-6 flex flex-col items-center justify-center gap-3"
+          style={{ background: "var(--card-secondary)", border: "1px solid var(--border)" }}>
+          <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--foreground-muted)" }}>Audio Lesson</p>
+          <audio
+            key={lessonId}
+            src={`/api/lessons/${lessonId}/audio`}
+            controls
+            controlsList="nodownload"
+            onContextMenu={(e) => e.preventDefault()}
+            onEnded={handleMarkComplete}
+            className="w-full"
+          />
         </div>
       ) : (
         <div className="rounded-2xl mb-6 flex items-center justify-center" style={{ aspectRatio: "16/9", background: "var(--card-secondary)", border: "1px solid var(--border)" }}>
