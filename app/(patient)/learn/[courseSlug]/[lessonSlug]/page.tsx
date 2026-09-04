@@ -64,7 +64,7 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
   let existingSubmission = null;
   if (assignment) {
     const { data: sub } = await adminSupabase.from("assignment_submissions")
-      .select("id, response, status, feedback, submitted_at")
+      .select("id, response, status, feedback, submitted_at, file_path, file_name, file_size")
       .eq("patient_id", patient?.id).eq("assignment_id", assignment.id).maybeSingle();
     existingSubmission = sub;
   }

@@ -32,7 +32,7 @@ export default async function InstructorGradingPage({
     if (assignmentIds.length > 0) {
       const { data } = await supabase
         .from("assignment_submissions")
-        .select(`id, response, status, submitted_at, feedback,
+        .select(`id, response, status, submitted_at, feedback, file_path, file_name, file_size,
                  patients!assignment_submissions_patient_id_fkey (name, email),
                  assignments (title, prompt)`)
         .in("assignment_id", assignmentIds)

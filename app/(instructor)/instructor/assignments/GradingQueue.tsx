@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { PencilLine } from "@phosphor-icons/react";
+import AssignmentFileLink from "@/components/AssignmentFileLink";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 type Submission = {
@@ -9,6 +10,9 @@ type Submission = {
   status: string;
   submitted_at: string;
   feedback: string | null;
+  file_path: string | null;
+  file_name: string | null;
+  file_size: number | null;
   patients: { name: string; email: string } | null;
   assignments: { title: string; prompt: string } | null;
 };
@@ -113,6 +117,12 @@ export default function GradingQueue({
               <p className="text-sm whitespace-pre-wrap mb-4" style={{ color: "var(--foreground)" }}>
                 {submission.response}
               </p>
+
+              {submission.file_path && submission.file_name && (
+                <div className="mb-4">
+                  <AssignmentFileLink path={submission.file_path} name={submission.file_name} size={submission.file_size} />
+                </div>
+              )}
 
               {submission.feedback && (
                 <p className="text-xs mb-4 p-3 rounded-xl" style={{ background: "var(--beige-light)", color: "var(--foreground-secondary)" }}>

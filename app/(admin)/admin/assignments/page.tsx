@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { ClipboardText } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
+import AssignmentFileLink from "@/components/AssignmentFileLink";
 
 type Submission = {
   id: string;
@@ -9,6 +10,9 @@ type Submission = {
   status: string;
   submitted_at: string;
   feedback: string | null;
+  file_path: string | null;
+  file_name: string | null;
+  file_size: number | null;
   patients: { name: string; email: string } | null;
   assignments: { title: string; prompt: string } | null;
 };
@@ -25,7 +29,7 @@ export default function AdminAssignmentsPage() {
   const fetchSubmissions = async () => {
     setLoading(true);
     const { data } = await supabase.from("assignment_submissions")
-      .select(`id, response, status, submitted_at, feedback,
+      .select(`id, response, status, submitted_at, feedback, file_path, file_name, file_size,
         patients!assignment_submissions_patient_id_fkey (name, email),
         assignments (title, prompt)`)
       .eq("status", filter)
@@ -103,6 +107,12 @@ export default function AdminAssignmentsPage() {
                   <p className="text-xs font-medium mb-1" style={{ color: "var(--foreground-secondary)" }}>Patient Response:</p>
                   <p className="text-sm whitespace-pre-wrap" style={{ color: "var(--foreground)" }}>{sub.response}</p>
                 </div>
+
+                {sub.file_path && sub.file_name && (
+                  <div className="mb-3">
+                    <AssignmentFileLink path={sub.file_path} name={sub.file_name} size={sub.file_size} />
+                  </div>
+                )}
 
                 {sub.feedback && (
                   <div className="rounded-xl p-3 mb-3" style={{ background: "var(--warning-light)", border: "1px solid var(--warning-light)" }}>
