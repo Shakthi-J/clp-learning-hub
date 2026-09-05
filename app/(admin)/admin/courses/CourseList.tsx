@@ -2,7 +2,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MagnifyingGlass, X } from "@phosphor-icons/react";
-import AssignInstructor from "./AssignInstructor";
 import EditCategory from "./EditCategory";
 import { categoryPillStyle } from "@/lib/categoryColor";
 
@@ -176,17 +175,20 @@ export default function CourseList({
                   </h3>
                   <p className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>
                     <span className="font-mono">{modules.length}</span> module{modules.length !== 1 ? "s" : ""} · /{course.slug}
-                    {course.creator && <> · created by {course.creator.name || course.creator.email}</>}
                   </p>
 
-                  <div className="mt-2.5 flex items-center gap-2">
-                    <span className="text-xs" style={{ color: "var(--foreground-muted)" }}>Instructor:</span>
-                    <AssignInstructor
-                      courseId={course.id}
-                      instructorId={course.instructor_id ?? null}
-                      instructors={instructors}
-                    />
-                  </div>
+                  {(() => {
+                    // The course belongs to whoever made it - created_by when
+                    // it's set, otherwise the assigned instructor (how every
+                    // course made before that column was tracked is credited).
+                    const author =
+                      course.creator?.name || course.creator?.email ||
+                      instructors.find((i) => i.id === course.instructor_id)?.name ||
+                      instructors.find((i) => i.id === course.instructor_id)?.email;
+                    return author ? (
+                      <p className="text-xs mt-1" style={{ color: "var(--foreground-muted)" }}>Written by {author}</p>
+                    ) : null;
+                  })()}
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
