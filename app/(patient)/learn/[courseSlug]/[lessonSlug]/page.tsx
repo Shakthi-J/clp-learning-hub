@@ -12,28 +12,43 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: patient } = await supabase.from("patients").select("id, name").eq("auth_user_id", user.id).single();
+  const { data: patient } = await supabase.from("patients").select("id, name, access_type").eq("auth_user_id", user.id).single();
 
-  const { data: course } = await supabase.from("courses")
-    .select(`id, title, slug, modules (id, title, order, lessons!lessons_module_id_fkey (id, title, slug, order, youtube_video_id, drive_file_id, audio_file_id, notes))`)
-    .eq("slug", courseSlug).eq("published", true).single();
-
-  if (!course) notFound();
+  // Lightweight lookup first - modules/lessons are gated by RLS on having an
+  // enrollment, so they can't be fetched in the same query as resolving one.
+  const { data: courseRef } = await supabase.from("courses")
+    .select("id").eq("slug", courseSlug).eq("published", true).single();
+  if (!courseRef) notFound();
 
   // Active or completed: finishing a course must not lock a learner out of the
   // material they worked through. An active enrollment wins when both exist, so
   // progress keeps landing on the one still in flight.
   const { data: enrollments } = await supabase.from("enrollments")
     .select("id, status")
-    .eq("patient_id", patient?.id).eq("course_id", course.id)
+    .eq("patient_id", patient?.id).eq("course_id", courseRef.id)
     .in("status", ["active", "completed"])
     .order("enrolled_at", { ascending: true });
 
-  const enrollment =
+  let enrollment: { id: string; status: string } | null =
     (enrollments || []).find((e) => e.status === "active") ?? (enrollments || [])[0] ?? null;
+
+  // Same as the course overview page: all_access needs its enrollment row
+  // created on first visit, since nothing else ever creates one for them. It
+  // has to exist before the modules/lessons query below, or RLS hides them.
+  if (!enrollment && patient?.access_type === "all_access") {
+    const { data: created } = await adminSupabase
+      .from("enrollments").insert({ patient_id: patient!.id, course_id: courseRef.id, status: "active" })
+      .select("id, status").single();
+    enrollment = created ?? null;
+  }
 
   if (!enrollment) redirect("/my-learning");
   const isReviewing = enrollment.status === "completed";
+
+  const { data: course } = await supabase.from("courses")
+    .select(`id, title, slug, modules (id, title, order, lessons!lessons_module_id_fkey (id, title, slug, order, youtube_video_id, drive_file_id, audio_file_id, notes))`)
+    .eq("id", courseRef.id).single();
+  if (!course) notFound();
 
   const modules = ((course.modules as any[]) || []).sort((a, b) => a.order - b.order);
   const allLessons: any[] = [];
