@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { MagnifyingGlass, X } from "@phosphor-icons/react";
 import AssignInstructor from "./AssignInstructor";
+import EditCategory from "./EditCategory";
 import { categoryPillStyle } from "@/lib/categoryColor";
 
 type Course = {
@@ -28,6 +29,7 @@ export default function CourseList({
   instructors: Instructor[];
 }) {
   const [status, setStatus] = useState<Status>("all");
+  const [category, setCategory] = useState<string>("all");
   const [search, setSearch] = useState("");
 
   const published = courses.filter((c) => c.published).length;
@@ -38,19 +40,25 @@ export default function CourseList({
     { value: "draft", label: "Drafts", count: courses.length - published },
   ];
 
-  // Status first so the pill counts describe the whole catalog, then the term.
+  // Whatever categories actually exist right now, so the filter and the
+  // datalist offered when editing a category never drift from reality.
+  const categories = Array.from(new Set(courses.map((c) => c.category).filter((c): c is string => !!c))).sort();
+
+  // Status and category narrow first so the search term's matches (and the
+  // pill counts) describe what's actually on screen, not the whole catalog.
   const term = search.trim().toLowerCase();
   const byStatus =
     status === "all" ? courses : courses.filter((c) => (status === "published" ? c.published : !c.published));
+  const byCategory = category === "all" ? byStatus : byStatus.filter((c) => c.category === category);
   const visible = term
-    ? byStatus.filter((c) =>
+    ? byCategory.filter((c) =>
         [c.title, c.slug, c.category, c.creator?.name, c.creator?.email]
           .filter(Boolean)
           .join(" ")
           .toLowerCase()
           .includes(term)
       )
-    : byStatus;
+    : byCategory;
 
   return (
     <>
@@ -80,7 +88,7 @@ export default function CourseList({
         )}
       </div>
 
-      <div className="flex items-center gap-2 flex-wrap mb-5">
+      <div className="flex items-center gap-2 flex-wrap mb-3">
         {FILTERS.map((f) => {
           const active = status === f.value;
           return (
@@ -101,6 +109,38 @@ export default function CourseList({
           );
         })}
       </div>
+
+      {categories.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap mb-5">
+          <button
+            onClick={() => setCategory("all")}
+            aria-pressed={category === "all"}
+            className="text-[11px] font-semibold px-2.5 py-1 rounded-full border"
+            style={
+              category === "all"
+                ? { background: "var(--foreground)", borderColor: "var(--foreground)", color: "var(--background)" }
+                : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-muted)" }
+            }
+          >
+            All categories
+          </button>
+          {categories.map((c) => {
+            const active = category === c;
+            const pill = categoryPillStyle(c);
+            return (
+              <button
+                key={c}
+                onClick={() => setCategory(active ? "all" : c)}
+                aria-pressed={active}
+                className="text-[11px] font-semibold px-2.5 py-1 rounded-full border"
+                style={active ? { ...pill, borderColor: "transparent" } : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-muted)" }}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {visible.length === 0 ? (
         <p className="text-sm py-8 text-center" style={{ color: "var(--foreground-muted)" }}>
@@ -128,14 +168,7 @@ export default function CourseList({
                     >
                       {course.published ? "Published" : "Draft"}
                     </span>
-                    {course.category && (
-                      <span
-                        className="text-[11px] font-semibold px-2 py-1 rounded-full leading-none"
-                        style={categoryPillStyle(course.category)}
-                      >
-                        {course.category}
-                      </span>
-                    )}
+                    <EditCategory courseId={course.id} category={course.category} existingCategories={categories} />
                   </div>
 
                   <h3 className="font-semibold truncate tracking-tight" style={{ color: "var(--foreground)" }}>

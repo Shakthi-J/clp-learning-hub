@@ -1,21 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStaffBasePath } from "@/lib/useStaffBasePath";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
 export default function NewCoursePage() {
   const base = useStaffBasePath();
   const router = useRouter();
+  const supabase = createClient();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [existingCategories, setExistingCategories] = useState<string[]>([]);
   const [published, setPublished] = useState(false);
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Whatever categories are actually in use, not a hardcoded guess that
+  // drifts from reality the moment someone types a new one elsewhere.
+  useEffect(() => {
+    supabase.from("courses").select("category").not("category", "is", null).then(({ data }) => {
+      const unique = Array.from(new Set((data || []).map((c) => c.category as string))).sort();
+      setExistingCategories(unique);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const generateSlug = (text: string) =>
     text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -40,8 +53,6 @@ export default function NewCoursePage() {
     router.push(`${base}/courses/${data.id}/lessons`);
     router.refresh();
   };
-
-  const categories = ["Gut Health","Sleep Health","Stress Management","Nutrition","Hormonal Health","Weight Management","Autoimmune","Longevity","Mental Health"];
 
   return (
     <div className="p-5 sm:p-8 max-w-2xl">
@@ -79,12 +90,16 @@ export default function NewCoursePage() {
         </div>
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>Category</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value)}
+          <p className="text-xs mb-2" style={{ color: "var(--foreground-muted)" }}>
+            Pick an existing one or type a new category - it gets its own colour automatically.
+          </p>
+          <input list="new-course-categories" value={category} onChange={(e) => setCategory(e.target.value)}
+            placeholder="e.g. Heart Health"
             className="w-full px-4 py-2.5 rounded-xl border text-sm"
-            style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }}>
-            <option value="">Select a category</option>
-            {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+            style={{ borderColor: "var(--border)", background: "var(--background)", color: "var(--foreground)" }} />
+          <datalist id="new-course-categories">
+            {existingCategories.map((c) => <option key={c} value={c} />)}
+          </datalist>
         </div>
         <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: "var(--card-secondary)", border: "1px solid var(--border)" }}>
           <div>
