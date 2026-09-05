@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Users, UserPlus, MagnifyingGlass, X } from "@phosphor-icons/react";
 import PersonRow, { type Person } from "./PersonRow";
+import { isValidEmail } from "@/lib/validateEmail";
 
 export default function AdminPeoplePage() {
   const supabase = createClient();
@@ -55,7 +56,7 @@ export default function AdminPeoplePage() {
   }, []);
 
   const handleCreate = async () => {
-    if (!name || !email || !password) return;
+    if (!name || !email || !password || !isValidEmail(email)) return;
     setSubmitting(true);
     setFormError("");
     setFormSuccess("");
@@ -133,6 +134,12 @@ export default function AdminPeoplePage() {
               <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>Email address</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="priya@example.com"
                 className="w-full px-4 py-2.5 rounded-xl border text-sm" style={inputStyle} />
+              <p className="text-[11px] mt-1" style={{ color: "var(--foreground-muted)" }}>
+                Must be an email address the person actually reads - they'll use "Forgot your password?" to confirm it and set their own password.
+              </p>
+              {email.trim() && !isValidEmail(email) && (
+                <p className="text-[11px] mt-1" style={{ color: "var(--danger)" }}>That doesn't look like a valid email address.</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>Password</label>
@@ -140,7 +147,7 @@ export default function AdminPeoplePage() {
                 placeholder="At least 8 characters" autoComplete="off"
                 className="w-full px-4 py-2.5 rounded-xl border text-sm font-mono" style={inputStyle} />
               <p className="text-[11px] mt-1" style={{ color: "var(--foreground-muted)" }}>
-                You choose it and pass it on. They can change it later from their profile.
+                A temporary password to hand over directly. They should reset it via the emailed link on first sign-in.
               </p>
             </div>
             <div>
@@ -166,7 +173,7 @@ export default function AdminPeoplePage() {
 
           {formError && <p className="text-xs mb-3" style={{ color: "var(--danger)" }}>{formError}</p>}
 
-          <button onClick={handleCreate} disabled={submitting || !name || !email || password.length < 8}
+          <button onClick={handleCreate} disabled={submitting || !name || !email || !isValidEmail(email) || password.length < 8}
             className="px-6 py-2.5 rounded-xl text-sm font-semibold primary-gradient disabled:opacity-60">
             {submitting ? "Creating…" : "Create account"}
           </button>

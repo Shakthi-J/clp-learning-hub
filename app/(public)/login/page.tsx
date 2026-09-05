@@ -72,6 +72,7 @@ export default function LoginPage() {
             className="w-full py-2.5 rounded-xl text-white font-semibold text-sm primary-gradient disabled:opacity-60 disabled:cursor-not-allowed">
             {loading ? "Signing in..." : "Sign In"}
           </button>
+          <Link href="/forgot-password" className="block text-center text-xs mt-4" style={{ color: "var(--primary)" }}>Forgot your password?</Link>
         </div>
         <p className="text-center text-xs mt-6" style={{ color: "var(--foreground-muted)" }}>Don&apos;t have credentials? Contact your CLP care team.</p>
       </div>

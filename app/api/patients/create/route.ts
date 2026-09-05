@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import { getActor } from "@/lib/auth";
+import { isValidEmail } from "@/lib/validateEmail";
 import { NextResponse } from "next/server";
 
 const CREATABLE_ROLES = ["patient", "instructor"];
@@ -13,6 +14,9 @@ export async function POST(request: Request) {
 
   if (!name || !email || !password) {
     return NextResponse.json({ message: "Name, email and password are required" }, { status: 400 });
+  }
+  if (!isValidEmail(email)) {
+    return NextResponse.json({ message: "That doesn't look like a valid email address." }, { status: 400 });
   }
   if (password.length < MIN_PASSWORD) {
     return NextResponse.json({ message: `Password must be at least ${MIN_PASSWORD} characters` }, { status: 400 });

@@ -98,7 +98,7 @@ export default async function ProfilePage() {
           </div>
 
           <DisplayNameCard currentName={patient?.name || ""} />
-          <PasswordCard recoveryHint="If you forget it, your care team can set a new one for you." />
+          <PasswordCard recoveryHint="Forgot your current password? Sign out and use “Forgot your password?” on the sign-in page." />
         </div>
 
         <aside className="space-y-6">

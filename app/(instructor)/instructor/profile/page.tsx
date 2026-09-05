@@ -58,7 +58,7 @@ export default async function InstructorProfilePage() {
                 : undefined
             }
           />
-          <PasswordCard />
+          <PasswordCard recoveryHint="Forgot your current password? Sign out and use “Forgot your password?” on the sign-in page." />
         </div>
 
         <aside className="space-y-6">
