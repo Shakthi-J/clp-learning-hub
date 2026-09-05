@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { getActor } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-const ACCESS_TYPES = ["single_course", "all_access"];
+const ACCESS_TYPES = ["single_course", "selected_courses", "all_access"];
 
 /** Admin edits another person's profile: display name, sign-in email, access tier. */
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -53,7 +53,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   if (access_type !== undefined) {
     if (!ACCESS_TYPES.includes(access_type)) {
-      return NextResponse.json({ message: "Access type must be single_course or all_access" }, { status: 400 });
+      return NextResponse.json({ message: `Access type must be one of: ${ACCESS_TYPES.join(", ")}` }, { status: 400 });
     }
     update.access_type = access_type;
   }

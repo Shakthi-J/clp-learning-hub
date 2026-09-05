@@ -1,13 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Check, Plus, Spinner } from "@phosphor-icons/react";
+import { Check, Plus } from "@phosphor-icons/react";
 
 type Course = { id: string; title: string; category: string | null; instructor_id: string | null };
 
 /**
  * Which courses a learner has been given. Admins see every course; instructors
  * see only their own, matching what the API will actually let them assign.
+ *
+ * Selections are local until "Save changes" is pressed - picking three
+ * courses used to mean three separate round trips with no way to review
+ * before committing; now it's one batch, applied together, with the
+ * confirmation button in the same place regardless of tier.
  */
 export default function CourseAccessPicker({
   patientId,
@@ -18,7 +23,7 @@ export default function CourseAccessPicker({
   patientId: string;
   actorRole: string;
   actorId: string;
-  /** Caps how many courses can be granted at once - the Single Course tier
+  /** Caps how many courses can be selected at once - the Single Course tier
    *  passes 1 here so it stays a single pass rather than turning into
    *  Selected Courses by accident. Omit for no cap. */
   maxSelectable?: number;
@@ -26,8 +31,9 @@ export default function CourseAccessPicker({
   const supabase = createClient();
   const [courses, setCourses] = useState<Course[]>([]);
   const [granted, setGranted] = useState<Set<string>>(new Set());
+  const [pending, setPending] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [busyId, setBusyId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
   const load = async () => {
@@ -38,44 +44,61 @@ export default function CourseAccessPicker({
       supabase.from("patient_course_access").select("course_id").eq("patient_id", patientId),
     ]);
     setCourses((courseRows as Course[]) || []);
-    setGranted(new Set(((accessRows as any[]) || []).map((r) => r.course_id)));
+    const current = new Set(((accessRows as any[]) || []).map((r) => r.course_id));
+    setGranted(current);
+    setPending(new Set(current));
     setLoading(false);
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [patientId]);
 
-  const toggle = async (course: Course) => {
-    const isGranted = granted.has(course.id);
-    setBusyId(course.id);
+  const toggle = (courseId: string) => {
+    setMessage(null);
+    setPending((prev) => {
+      const next = new Set(prev);
+      if (next.has(courseId)) {
+        next.delete(courseId);
+      } else {
+        if (maxSelectable != null && next.size >= maxSelectable) return prev.has(courseId) ? prev : next; // capped, no-op
+        next.add(courseId);
+      }
+      return next;
+    });
+  };
+
+  const dirty = pending.size !== granted.size || Array.from(pending).some((id) => !granted.has(id));
+
+  const save = async () => {
+    setSaving(true);
     setMessage(null);
 
-    const res = isGranted
-      ? await fetch(`/api/patients/${patientId}/courses?courseId=${course.id}`, { method: "DELETE" })
-      : await fetch(`/api/patients/${patientId}/courses`, {
+    const toGrant = Array.from(pending).filter((id) => !granted.has(id));
+    const toRevoke = Array.from(granted).filter((id) => !pending.has(id));
+
+    const results = await Promise.all([
+      ...toGrant.map((courseId) =>
+        fetch(`/api/patients/${patientId}/courses`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ courseId: course.id }),
-        });
+          body: JSON.stringify({ courseId }),
+        })
+      ),
+      ...toRevoke.map((courseId) =>
+        fetch(`/api/patients/${patientId}/courses?courseId=${courseId}`, { method: "DELETE" })
+      ),
+    ]);
 
-    const data = await res.json().catch(() => ({}));
-    setBusyId(null);
+    setSaving(false);
+    const failures = results.filter((r) => !r.ok).length;
 
-    if (!res.ok) {
-      setMessage({ type: "err", text: data.message || "Could not update access" });
+    if (failures > 0) {
+      setMessage({ type: "err", text: `${failures} change${failures === 1 ? "" : "s"} failed. Try again.` });
+      await load();
       return;
     }
 
-    setGranted((prev) => {
-      const next = new Set(prev);
-      isGranted ? next.delete(course.id) : next.add(course.id);
-      return next;
-    });
-    setMessage({
-      type: "ok",
-      text: isGranted
-        ? (data.message ?? "Access removed.")
-        : `${course.title} assigned. It is in their My Learning now.`,
-    });
+    setGranted(new Set(pending));
+    setMessage({ type: "ok", text: "Saved. It's in their My Learning now." });
   };
 
   if (loading) {
@@ -90,29 +113,29 @@ export default function CourseAccessPicker({
     );
   }
 
-  const atCap = maxSelectable != null && granted.size >= maxSelectable;
+  const atCap = maxSelectable != null && pending.size >= maxSelectable;
 
   return (
     <div>
       {atCap && (
         <p className="text-[11px] mb-2" style={{ color: "var(--foreground-muted)" }}>
-          {maxSelectable === 1 ? "One course pass already given. Remove it to pick a different course." : `Limit of ${maxSelectable} reached. Remove one to pick another.`}
+          {maxSelectable === 1 ? "One course picked. Remove it to pick a different course." : `Limit of ${maxSelectable} reached. Remove one to pick another.`}
         </p>
       )}
       <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
         {courses.map((course) => {
-          const isGranted = granted.has(course.id);
-          const disabled = busyId === course.id || (!isGranted && atCap);
+          const isSelected = pending.has(course.id);
+          const disabled = !isSelected && atCap;
           return (
             <button
               key={course.id}
-              onClick={() => toggle(course)}
+              onClick={() => toggle(course.id)}
               disabled={disabled}
               className="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg border text-left text-sm disabled:opacity-60"
               style={{
-                borderColor: isGranted ? "var(--primary)" : "var(--border)",
-                background: isGranted ? "var(--primary-light)" : "var(--card)",
-                color: isGranted ? "var(--primary)" : "var(--foreground-secondary)",
+                borderColor: isSelected ? "var(--primary)" : "var(--border)",
+                background: isSelected ? "var(--primary-light)" : "var(--card)",
+                color: isSelected ? "var(--primary)" : "var(--foreground-secondary)",
               }}
             >
               <span className="min-w-0 truncate">
@@ -123,9 +146,7 @@ export default function CourseAccessPicker({
                   </span>
                 )}
               </span>
-              {busyId === course.id ? (
-                <Spinner size={14} className="animate-spin flex-shrink-0" />
-              ) : isGranted ? (
+              {isSelected ? (
                 <Check size={14} weight="bold" className="flex-shrink-0" />
               ) : (
                 <Plus size={14} weight="bold" className="flex-shrink-0" style={{ color: "var(--foreground-muted)" }} />
@@ -134,6 +155,14 @@ export default function CourseAccessPicker({
           );
         })}
       </div>
+      <button
+        onClick={save}
+        disabled={saving || !dirty}
+        className="mt-3 text-xs font-semibold px-4 py-2 rounded-lg disabled:opacity-60"
+        style={{ background: "var(--primary)", color: "var(--on-primary)" }}
+      >
+        {saving ? "Saving..." : "Save changes"}
+      </button>
       {message && (
         <p className="text-[11px] mt-2" style={{ color: message.type === "ok" ? "var(--success)" : "var(--danger)" }}>
           {message.text}
