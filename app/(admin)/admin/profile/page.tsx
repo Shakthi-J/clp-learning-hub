@@ -39,7 +39,7 @@ export default async function AdminProfilePage() {
       </div>
 
           <DisplayNameCard currentName={actor.name || ""} />
-          <PasswordCard recoveryHint="Forgot your current password? Sign out and use “Forgot your password?” on the sign-in page." />
+          <PasswordCard />
         </div>
 
         <aside className="space-y-6">
