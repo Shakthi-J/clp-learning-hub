@@ -89,14 +89,14 @@ export default function PersonRow({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: nameLocked ? undefined : name, email, access_type: accessType }),
     });
+    const data = await res.json().catch(() => ({}));
     setBusy(false);
 
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
       setMessage({ type: "err", text: data.message || "Could not save" });
       return;
     }
-    setMessage({ type: "ok", text: "Saved." });
+    setMessage({ type: "ok", text: data.message || "Saved." });
     onChanged();
   };
 

@@ -9,3 +9,5 @@ tsconfig.tsbuildinfo
 # Data exports and migration targets - contain patient emails and keys
 backup*.json
 .env.migration
+
+.vercel

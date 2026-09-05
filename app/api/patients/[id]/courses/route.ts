@@ -63,8 +63,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 }
 
 /**
- * Removes an assignment. The enrolment goes too, but only when it holds no
- * learner work - progress and certificates are never destroyed by unassigning.
+ * Removes an assignment. An enrolment with no learner work on it is deleted
+ * outright; one that already holds progress is revoked instead - the row
+ * (and every lesson_progress/certificate on it) stays for the record, but
+ * 'revoked' is not 'active' or 'completed', so the lesson page and the
+ * video/audio proxies stop the learner cold. Access removed has to mean
+ * access removed, not "still active until they happen to finish."
  */
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -87,7 +91,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     .eq("patient_id", id).eq("course_id", courseId).eq("status", "active")
     .maybeSingle();
 
-  let keptEnrollment = false;
+  let revokedEnrollment = false;
   if (enrollment) {
     const { count: progress } = await admin
       .from("lesson_progress").select("*", { count: "exact", head: true })
@@ -99,15 +103,16 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     if ((progress ?? 0) === 0 && (certs ?? 0) === 0) {
       await admin.from("enrollments").delete().eq("id", enrollment.id);
     } else {
-      keptEnrollment = true;
+      await admin.from("enrollments").update({ status: "revoked" }).eq("id", enrollment.id);
+      revokedEnrollment = true;
     }
   }
 
   return NextResponse.json({
     success: true,
-    keptEnrollment,
-    message: keptEnrollment
-      ? "Access removed. Their enrolment was kept because it holds work they have already done."
+    revokedEnrollment,
+    message: revokedEnrollment
+      ? "Access removed. They can no longer continue this course - their progress so far is kept on record, not deleted."
       : "Access removed.",
   });
 }

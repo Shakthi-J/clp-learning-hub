@@ -15,7 +15,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const admin = await createAdminClient();
 
   const { data: target } = await admin
-    .from("patients").select("id, role, auth_user_id, email, name").eq("id", id).maybeSingle();
+    .from("patients").select("id, role, auth_user_id, email, name, access_type").eq("id", id).maybeSingle();
   if (!target) return NextResponse.json({ message: "User not found" }, { status: 404 });
 
   // Another admin's account is not editable from here, so one admin cannot lock
@@ -88,7 +88,48 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const { error } = await admin.from("patients").update(update).eq("id", id);
   if (error) return NextResponse.json({ message: error.message }, { status: 500 });
 
-  return NextResponse.json({ success: true });
+  // Moving onto a tier that isn't all_access means access is now supposed to
+  // be limited to specific granted courses - anything active they still hold
+  // outside that list is access the new tier doesn't grant, so it stops here.
+  // Completed courses (and their certificates) are never touched by this.
+  let revokedCount = 0;
+  if (
+    target.role === "patient" &&
+    access_type !== undefined &&
+    access_type !== target.access_type &&
+    access_type !== "all_access"
+  ) {
+    const { data: grants } = await admin
+      .from("patient_course_access").select("course_id, granted_at").eq("patient_id", id)
+      .order("granted_at", { ascending: false });
+
+    // Single Course allows exactly one governed course. If more than one
+    // survived from a previous tier, keep only the most recently granted and
+    // drop the rest - their access stops along with everyone else's below.
+    let governedIds = new Set((grants || []).map((g) => g.course_id));
+    if (access_type === "single_course" && governedIds.size > 1) {
+      const toDrop = (grants || []).slice(1).map((g) => g.course_id);
+      await admin.from("patient_course_access").delete().eq("patient_id", id).in("course_id", toDrop);
+      governedIds = new Set([grants![0].course_id]);
+    }
+
+    const { data: activeEnrollments } = await admin
+      .from("enrollments").select("id, course_id").eq("patient_id", id).eq("status", "active");
+    const toRevoke = (activeEnrollments || []).filter((e) => !governedIds.has(e.course_id));
+    if (toRevoke.length > 0) {
+      const { error: revokeError } = await admin
+        .from("enrollments").update({ status: "revoked" }).in("id", toRevoke.map((e) => e.id));
+      if (!revokeError) revokedCount = toRevoke.length;
+    }
+  }
+
+  return NextResponse.json({
+    success: true,
+    revokedCount,
+    message: revokedCount > 0
+      ? `Saved. ${revokedCount} in-progress course${revokedCount === 1 ? "" : "s"} outside their new tier ${revokedCount === 1 ? "was" : "were"} stopped - progress is kept, not deleted.`
+      : undefined,
+  });
 }
 
 /**
