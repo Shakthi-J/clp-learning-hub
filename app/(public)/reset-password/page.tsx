@@ -20,16 +20,35 @@ export default function ResetPasswordPage() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const urlError = params.get("error_description") || params.get("error");
+
+    // Supabase's own error redirect (link already used, expired, or - very
+    // commonly - pre-clicked by an email provider's link-scanner before the
+    // person ever opened it, which burns the one-time code).
+    if (urlError) { setStatus("invalid"); return; }
+
     const { data: subscription } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") setStatus("ready");
     });
-    // A recovery session may already be established by the time this effect
-    // runs (the event can fire before the listener attaches), so also check
-    // directly rather than relying on the event alone.
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setStatus((s) => (s === "checking" ? "ready" : s));
-    });
-    const timeout = setTimeout(() => setStatus((s) => (s === "checking" ? "invalid" : s)), 4000);
+
+    if (code) {
+      // Current Supabase projects issue a PKCE `code`, not a hash token - it
+      // has to be exchanged for a session explicitly, the client does not do
+      // this on its own.
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        setStatus((s) => (s === "checking" ? (error ? "invalid" : "ready") : s));
+      });
+    } else {
+      // Older/implicit-flow links land the session directly, sometimes before
+      // this effect even attaches its listener - check for it directly too.
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session) setStatus((s) => (s === "checking" ? "ready" : s));
+      });
+    }
+
+    const timeout = setTimeout(() => setStatus((s) => (s === "checking" ? "invalid" : s)), 6000);
     return () => { subscription.subscription.unsubscribe(); clearTimeout(timeout); };
   }, [supabase]);
 
@@ -57,7 +76,13 @@ export default function ResetPasswordPage() {
             <p className="text-sm" style={{ color: "var(--foreground-secondary)" }}>Verifying your reset link...</p>
           )}
           {status === "invalid" && (
-            <p className="text-sm" style={{ color: "var(--danger)" }}>This reset link is invalid or has expired. Request a new one from the sign-in page.</p>
+            <div>
+              <p className="text-sm mb-2" style={{ color: "var(--danger)" }}>This reset link is invalid or has expired.</p>
+              <p className="text-xs" style={{ color: "var(--foreground-secondary)" }}>
+                Reset links only work once. If your email app previews or scans links automatically, it may have
+                used this one before you clicked it - request a new one from the sign-in page and open it directly.
+              </p>
+            </div>
           )}
           {status === "ready" && !done && (
             <>
