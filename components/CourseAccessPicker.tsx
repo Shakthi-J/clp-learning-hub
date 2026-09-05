@@ -13,10 +13,15 @@ export default function CourseAccessPicker({
   patientId,
   actorRole,
   actorId,
+  maxSelectable,
 }: {
   patientId: string;
   actorRole: string;
   actorId: string;
+  /** Caps how many courses can be granted at once - the Single Course tier
+   *  passes 1 here so it stays a single pass rather than turning into
+   *  Selected Courses by accident. Omit for no cap. */
+  maxSelectable?: number;
 }) {
   const supabase = createClient();
   const [courses, setCourses] = useState<Course[]>([]);
@@ -85,16 +90,24 @@ export default function CourseAccessPicker({
     );
   }
 
+  const atCap = maxSelectable != null && granted.size >= maxSelectable;
+
   return (
     <div>
+      {atCap && (
+        <p className="text-[11px] mb-2" style={{ color: "var(--foreground-muted)" }}>
+          {maxSelectable === 1 ? "One course pass already given. Remove it to pick a different course." : `Limit of ${maxSelectable} reached. Remove one to pick another.`}
+        </p>
+      )}
       <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
         {courses.map((course) => {
           const isGranted = granted.has(course.id);
+          const disabled = busyId === course.id || (!isGranted && atCap);
           return (
             <button
               key={course.id}
               onClick={() => toggle(course)}
-              disabled={busyId === course.id}
+              disabled={disabled}
               className="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg border text-left text-sm disabled:opacity-60"
               style={{
                 borderColor: isGranted ? "var(--primary)" : "var(--border)",

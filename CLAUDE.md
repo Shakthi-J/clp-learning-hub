@@ -59,13 +59,23 @@ Do NOT build an Educator role in v1.
 
 ## Access Tier Logic
 
-Every patient has access_type: 'single_course' | 'all_access'
+Every patient has access_type: 'single_course' | 'selected_courses' | 'all_access'
 
-- all_access: no restriction on concurrent enrollments.
-- single_course: blocked from requesting a new enrollment while any enrollment is 'active'.
-  Once all active enrollments reach 'completed', new requests are allowed.
+- all_access: full catalog, nothing to grant.
+- single_course / selected_courses: an admin (or the course's instructor, for
+  their own courses) grants a "pass" to specific courses via the
+  patient_course_access table (app/api/patients/[id]/courses/route.ts). A
+  grant enrols the learner immediately (status 'active') — no request, no
+  approval. single_course is capped at one granted course at a time in the
+  UI (CourseAccessPicker's maxSelectable prop); selected_courses has no cap.
 
-This check MUST be enforced server-side in api/enrollments/request/route.ts.
+A pass is not a ceiling. On EITHER tier, a learner can still request any
+course they were not given a pass for, through the normal catalog flow —
+that lands in enrollment_requests for an admin to approve or reject, same
+as before. api/enrollments/request/route.ts only blocks a request when the
+learner already holds an active/completed enrollment for that exact course
+(pass-granted or previously approved) — it does not gate on access_type.
+
 Client-side gating is UX only — never rely on it as the security gate.
 
 ---

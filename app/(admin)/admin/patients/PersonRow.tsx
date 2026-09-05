@@ -205,18 +205,23 @@ export default function PersonRow({
                   {busy ? "Saving…" : "Save changes"}
                 </button>
 
-                {role === "patient" && accessType === "selected_courses" && (
+                {role === "patient" && (accessType === "selected_courses" || accessType === "single_course") && (
                   <div className="pt-4" style={{ borderTop: "1px solid var(--border-light)" }}>
                     <label className="block text-xs font-medium mb-2" style={{ color: "var(--foreground)" }}>
-                      Courses for this learner
+                      {accessType === "single_course" ? "Course pass for this learner" : "Courses for this learner"}
                     </label>
                     <p className="text-[11px] mb-2.5" style={{ color: "var(--foreground-muted)" }}>
                       {accessType !== person.access_type
-                        ? "Save the tier change first, then pick their courses."
-                        : "Assigning a course enrols them straight away."}
+                        ? "Save the tier change first, then pick their course(s)."
+                        : "Assigning a course enrols them straight away, no approval needed. They can still request any other course themselves - that goes to your Enrollments queue as usual."}
                     </p>
                     {accessType === person.access_type && (
-                      <CourseAccessPicker patientId={person.id} actorRole={actorRole} actorId={actorId} />
+                      <CourseAccessPicker
+                        patientId={person.id}
+                        actorRole={actorRole}
+                        actorId={actorId}
+                        maxSelectable={accessType === "single_course" ? 1 : undefined}
+                      />
                     )}
                   </div>
                 )}

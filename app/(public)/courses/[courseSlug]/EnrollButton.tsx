@@ -24,7 +24,7 @@ export default function EnrollButton({ courseId, isLoggedIn }: { courseId: strin
     if (res.ok) {
       setMessage({ type: "success", text: "Enrollment request sent! You will hear from us soon." });
     } else {
-      setMessage({ type: data.code === "ACTIVE_ENROLLMENT" ? "info" : "error", text: data.message || "Something went wrong." });
+      setMessage({ type: res.status === 409 ? "info" : "error", text: data.message || "Something went wrong." });
     }
   };
 
