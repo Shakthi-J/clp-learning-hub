@@ -89,13 +89,6 @@ In Vercel:
 
 ---
 
-## Step 9 — Add custom domain
-
-In Vercel → Settings → Domains → Add: learn.cliniclivingplus.com
-Add the CNAME record Vercel gives you to your DNS registrar.
-
----
-
 ## Phase 1 is complete when:
 
   ✓ npm run dev runs without errors

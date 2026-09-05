@@ -63,7 +63,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <footer className="border-t mt-12 sm:mt-20 py-8" style={{ borderColor: "var(--border)" }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
           <p className="text-sm" style={{ color: "var(--foreground-muted)" }}>© {new Date().getFullYear()} Clinic Living Plus. All rights reserved.</p>
-          <p className="text-sm" style={{ color: "var(--foreground-muted)" }}>learn.cliniclivingplus.com</p>
+          <p className="text-sm" style={{ color: "var(--foreground-muted)" }}>lp-learning-hub.vercel.app</p>
         </div>
       </footer>
     </div>

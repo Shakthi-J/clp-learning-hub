@@ -7,7 +7,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: { default: "CLP Learning Hub", template: "%s | CLP Learning Hub" },
   description: "Course-based education from the Clinic Living Plus care team.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://learn.cliniclivingplus.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://lp-learning-hub.vercel.app"),
 };
 
 // Runs before first paint so a saved theme is applied without the page flashing

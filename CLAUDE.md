@@ -23,7 +23,7 @@ There are no payments, no subscriptions, no public signups that bypass staff con
 - Backend: Supabase (Postgres + Auth + RLS)
 - Video: YouTube IFrame Player API — unlisted videos only, never stored in Supabase
 - Deployment: Vercel Hobby (free tier)
-- Domain: learn.cliniclivingplus.com
+- Domain: lp-learning-hub.vercel.app (no custom domain yet)
 - Email: Resend (transactional, free tier) wired into Supabase Auth
 
 ---
@@ -44,7 +44,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://dsoamvitlcgbomhiboug.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzb2Ftdml0bGNnYm9taGlib3VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MzA3MDUsImV4cCI6MjEwNDAwNjcwNX0.WqufUZrLsI1csJCJsQLFsLbMf182J0m4CIo897CrJHA
 SUPABASE_SERVICE_ROLE_KEY=<paste from Supabase dashboard>
 RESEND_API_KEY=<paste from Resend dashboard>
-NEXT_PUBLIC_SITE_URL=https://learn.cliniclivingplus.com
+NEXT_PUBLIC_SITE_URL=https://lp-learning-hub.vercel.app
 
 ---
 
