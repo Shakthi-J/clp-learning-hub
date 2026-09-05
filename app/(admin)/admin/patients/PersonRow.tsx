@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { PencilSimple, Key, X } from "@phosphor-icons/react";
+import { PencilSimple, Key, X, Trash } from "@phosphor-icons/react";
 import CourseAccessPicker from "@/components/CourseAccessPicker";
 import { categoryPillStyle } from "@/lib/categoryColor";
 
@@ -42,6 +42,19 @@ export default function PersonRow({
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+  const [deleted, setDeleted] = useState(false);
+
+  // A second click rather than window.confirm() - some browsers and embedded
+  // webviews block or silently auto-dismiss that dialog, which looks
+  // identical to the button doing nothing. Arming resets on its own so a
+  // stray click can never delete an account.
+  const [armedForDelete, setArmedForDelete] = useState(false);
+  const askToDelete = () => {
+    if (armedForDelete) { setArmedForDelete(false); return true; }
+    setArmedForDelete(true);
+    setTimeout(() => setArmedForDelete(false), 4000);
+    return false;
+  };
 
   const inputStyle = {
     borderColor: "var(--border)",
@@ -104,6 +117,23 @@ export default function PersonRow({
     setPassword("");
     setMessage({ type: "ok", text: `Password changed. Give it to ${person.name || person.email} directly.` });
   };
+
+  const deleteAccount = async () => {
+    if (!askToDelete()) return;
+    setBusy(true);
+    setMessage(null);
+    const res = await fetch(`/api/patients/${person.id}`, { method: "DELETE" });
+    setBusy(false);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setMessage({ type: "err", text: data.message || "Could not delete account" });
+      return;
+    }
+    setDeleted(true);
+    onChanged();
+  };
+
+  if (deleted) return null;
 
   return (
     <div className="card p-5">
@@ -259,6 +289,24 @@ export default function PersonRow({
                   style={{ borderColor: "var(--border)", color: "var(--foreground-secondary)" }}>
                   <Key size={14} weight="bold" /> Change password
                 </button>
+
+                <div className="pt-4 mt-2" style={{ borderTop: "1px solid var(--border-light)" }}>
+                  <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--danger)" }}>Danger zone</label>
+                  <p className="text-[11px] mb-2" style={{ color: "var(--foreground-muted)" }}>
+                    Deletes the sign-in and every enrollment, request and piece of progress tied to it. Courses{" "}
+                    {person.role === "instructor" ? "they wrote or were assigned to stay" : "they were enrolled in stay"}, unaffected.
+                  </p>
+                  <button onClick={deleteAccount} disabled={busy}
+                    className="text-sm font-semibold px-4 py-2 rounded-xl border inline-flex items-center gap-2 disabled:opacity-60"
+                    style={
+                      armedForDelete
+                        ? { borderColor: "var(--danger)", background: "var(--danger)", color: "white" }
+                        : { borderColor: "var(--danger)", color: "var(--danger)" }
+                    }>
+                    <Trash size={14} weight="bold" />
+                    {armedForDelete ? "Confirm delete?" : "Delete account"}
+                  </button>
+                </div>
               </div>
             </div>
 

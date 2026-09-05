@@ -90,3 +90,41 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   return NextResponse.json({ success: true });
 }
+
+/**
+ * Deletes a learner or instructor's account outright. patients.auth_user_id
+ * cascades on delete (migration 000), which in turn cascades every row keyed
+ * to that patient_id - enrollments, requests, progress, certificates,
+ * comments, course access grants. A course they wrote or were assigned to
+ * survives; instructor_id/created_by just go to null (migration 008), so
+ * the course itself is never collateral damage.
+ */
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  const actor = await getActor();
+  if (actor?.role !== "admin") return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+
+  const admin = await createAdminClient();
+  const { data: target } = await admin
+    .from("patients").select("id, role, auth_user_id, name, email").eq("id", id).maybeSingle();
+  if (!target) return NextResponse.json({ message: "User not found" }, { status: 404 });
+
+  // Admin accounts are never deletable from this UI - the same boundary as
+  // editing one, so no admin can be locked out or removed by another.
+  if (target.role === "admin") {
+    return NextResponse.json({ message: "Admin accounts cannot be deleted here." }, { status: 403 });
+  }
+
+  if (!target.auth_user_id) {
+    // No sign-in to cascade from - remove the orphaned profile row directly.
+    const { error } = await admin.from("patients").delete().eq("id", id);
+    if (error) return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
+  const { error } = await admin.auth.admin.deleteUser(target.auth_user_id);
+  if (error) return NextResponse.json({ message: error.message }, { status: 500 });
+
+  return NextResponse.json({ success: true });
+}
