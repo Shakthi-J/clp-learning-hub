@@ -31,6 +31,7 @@ const EMPTY: Record<Status, { title: string; body: string }> = {
 
 export default function RequestList({ requests }: { requests: Request[] }) {
   const [status, setStatus] = useState<Status>("requested");
+  const [category, setCategory] = useState<string>("all");
   const [search, setSearch] = useState("");
 
   const counts = {
@@ -45,18 +46,24 @@ export default function RequestList({ requests }: { requests: Request[] }) {
     { value: "rejected", label: "Rejected", count: counts.rejected },
   ];
 
-  // Status first so the pill counts describe the whole queue, then the term.
+  const categories = Array.from(
+    new Set(requests.map((r) => r.courses?.category).filter((c): c is string => !!c))
+  ).sort();
+
+  // Status and category narrow first so the pill counts and search matches
+  // describe what's actually on screen.
   const term = search.trim().toLowerCase();
   const byStatus = requests.filter((r) => r.status === status);
+  const byCategory = category === "all" ? byStatus : byStatus.filter((r) => r.courses?.category === category);
   const visible = term
-    ? byStatus.filter((r) =>
+    ? byCategory.filter((r) =>
         [r.patients?.name, r.patients?.email, r.courses?.title, r.courses?.category]
           .filter(Boolean)
           .join(" ")
           .toLowerCase()
           .includes(term)
       )
-    : byStatus;
+    : byCategory;
 
   return (
     <>
@@ -86,7 +93,7 @@ export default function RequestList({ requests }: { requests: Request[] }) {
         )}
       </div>
 
-      <div className="flex items-center gap-2 flex-wrap mb-5">
+      <div className="flex items-center gap-2 flex-wrap mb-3">
         {FILTERS.map((f) => {
           const active = status === f.value;
           return (
@@ -107,6 +114,38 @@ export default function RequestList({ requests }: { requests: Request[] }) {
           );
         })}
       </div>
+
+      {categories.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap mb-5">
+          <button
+            onClick={() => setCategory("all")}
+            aria-pressed={category === "all"}
+            className="text-[11px] font-semibold px-2.5 py-1 rounded-full border"
+            style={
+              category === "all"
+                ? { background: "var(--foreground)", borderColor: "var(--foreground)", color: "var(--background)" }
+                : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-muted)" }
+            }
+          >
+            All categories
+          </button>
+          {categories.map((c) => {
+            const active = category === c;
+            const pill = categoryPillStyle(c);
+            return (
+              <button
+                key={c}
+                onClick={() => setCategory(active ? "all" : c)}
+                aria-pressed={active}
+                className="text-[11px] font-semibold px-2.5 py-1 rounded-full border"
+                style={active ? { ...pill, borderColor: "transparent" } : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-muted)" }}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {visible.length === 0 ? (
         term ? (

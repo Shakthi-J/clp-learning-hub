@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { ClipboardText } from "@phosphor-icons/react/ssr";
 import RequestList from "./RequestList";
+import EnrollmentCounts from "./EnrollmentCounts";
 
 export const metadata = { title: "Enrollments" };
 
@@ -18,6 +19,15 @@ export default async function AdminEnrollmentsPage() {
     )
     .order("requested_at", { ascending: false });
 
+  // Actual "who's in this course right now" - separate from the request
+  // queue above, and deliberately not derived from it: a course-pass grant
+  // (single_course/selected_courses) enrols someone directly and never
+  // creates a request row, so counting requests would silently undercount.
+  const { data: enrollments } = await supabase
+    .from("enrollments")
+    .select("status, courses (title, category)")
+    .in("status", ["active", "completed"]);
+
   const total = requests?.length ?? 0;
 
   return (
@@ -30,6 +40,8 @@ export default async function AdminEnrollmentsPage() {
           Learners asking to join a course. Approving one enrols them straight away.
         </p>
       </div>
+
+      <EnrollmentCounts enrollments={(enrollments as any[]) || []} />
 
       {total > 0 ? (
         <RequestList requests={(requests as any[]) || []} />
