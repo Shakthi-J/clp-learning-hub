@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Users, UserPlus, MagnifyingGlass, X } from "@phosphor-icons/react";
 import PersonRow, { type Person } from "./PersonRow";
 import { isValidEmail } from "@/lib/validateEmail";
+import { categoryPillStyle } from "@/lib/categoryColor";
 
 export default function AdminPeoplePage() {
   const supabase = createClient();
@@ -19,7 +20,9 @@ export default function AdminPeoplePage() {
 
   const [actor, setActor] = useState<{ id: string; role: string } | null>(null);
   const [authored, setAuthored] = useState<Record<string, number>>({});
+  const [categoriesByPerson, setCategoriesByPerson] = useState<Record<string, string[]>>({});
   const [roleFilter, setRoleFilter] = useState<"all" | "patient" | "instructor">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
@@ -41,6 +44,24 @@ export default function AdminPeoplePage() {
       if (row.created_by) counts[row.created_by] = (counts[row.created_by] ?? 0) + 1;
     }
     setAuthored(counts);
+
+    // Which categories each learner is actually in right now - from real
+    // enrollments (pass-granted or approved), not access_type, since the
+    // tier alone says nothing about which subjects someone is enrolled in.
+    const { data: enrollRows } = await supabase
+      .from("enrollments")
+      .select("patient_id, courses (category)")
+      .in("status", ["active", "completed"]);
+    const byPerson: Record<string, Set<string>> = {};
+    for (const row of (enrollRows as any[]) || []) {
+      const category = row.courses?.category;
+      if (!category) continue;
+      (byPerson[row.patient_id] ??= new Set()).add(category);
+    }
+    setCategoriesByPerson(
+      Object.fromEntries(Object.entries(byPerson).map(([id, set]) => [id, Array.from(set)]))
+    );
+
     setLoading(false);
   };
 
@@ -83,13 +104,17 @@ export default function AdminPeoplePage() {
   const instructors = people.filter((p) => p.role === "instructor").length;
   const learners = people.length - instructors;
 
+  const allCategories = Array.from(new Set(Object.values(categoriesByPerson).flat())).sort();
+
   const term = search.trim().toLowerCase();
   const byRole = roleFilter === "all" ? people : people.filter((p) => p.role === roleFilter);
+  const byCategory =
+    categoryFilter === "all" ? byRole : byRole.filter((p) => (categoriesByPerson[p.id] ?? []).includes(categoryFilter));
   const visible = term
-    ? byRole.filter((p) =>
+    ? byCategory.filter((p) =>
         `${p.name ?? ""} ${p.email ?? ""}`.toLowerCase().includes(term)
       )
-    : byRole;
+    : byCategory;
 
   const FILTERS: { value: typeof roleFilter; label: string; count: number }[] = [
     { value: "all", label: "Everyone", count: people.length },
@@ -245,16 +270,58 @@ export default function AdminPeoplePage() {
             })}
           </div>
 
+          {allCategories.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap mb-5">
+              <button
+                onClick={() => setCategoryFilter("all")}
+                aria-pressed={categoryFilter === "all"}
+                className="text-[11px] font-semibold px-2.5 py-1 rounded-full border"
+                style={
+                  categoryFilter === "all"
+                    ? { background: "var(--foreground)", borderColor: "var(--foreground)", color: "var(--background)" }
+                    : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-muted)" }
+                }
+              >
+                All categories
+              </button>
+              {allCategories.map((c) => {
+                const active = categoryFilter === c;
+                const pill = categoryPillStyle(c);
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategoryFilter(active ? "all" : c)}
+                    aria-pressed={active}
+                    className="text-[11px] font-semibold px-2.5 py-1 rounded-full border"
+                    style={active ? { ...pill, borderColor: "transparent" } : { background: "var(--card)", borderColor: "var(--border)", color: "var(--foreground-muted)" }}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {visible.length === 0 ? (
             <p className="text-sm py-8 text-center" style={{ color: "var(--foreground-muted)" }}>
               {term
                 ? `Nobody matches "${search.trim()}"${roleFilter === "all" ? "" : roleFilter === "instructor" ? " among instructors" : " among learners"}.`
-                : `No ${roleFilter === "instructor" ? "instructors" : "learners"} yet.`}
+                : categoryFilter !== "all"
+                  ? `Nobody is enrolled in a ${categoryFilter} course yet.`
+                  : `No ${roleFilter === "instructor" ? "instructors" : "learners"} yet.`}
             </p>
           ) : (
           <div className="space-y-3 stagger">
             {visible.map((person) => (
-              <PersonRow key={person.id} person={person} onChanged={fetchPeople} actorRole={actor?.role ?? "admin"} actorId={actor?.id ?? ""} authoredCourses={authored[person.id] ?? 0} />
+              <PersonRow
+                key={person.id}
+                person={person}
+                onChanged={fetchPeople}
+                actorRole={actor?.role ?? "admin"}
+                actorId={actor?.id ?? ""}
+                authoredCourses={authored[person.id] ?? 0}
+                categories={categoriesByPerson[person.id] ?? []}
+              />
             ))}
           </div>
           )}

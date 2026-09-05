@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { PencilSimple, Key, X } from "@phosphor-icons/react";
 import CourseAccessPicker from "@/components/CourseAccessPicker";
+import { categoryPillStyle } from "@/lib/categoryColor";
 
 export type Person = {
   id: string;
@@ -22,6 +23,7 @@ export default function PersonRow({
   actorRole,
   actorId,
   authoredCourses,
+  categories,
 }: {
   person: Person;
   onChanged: () => void;
@@ -29,6 +31,8 @@ export default function PersonRow({
   actorId: string;
   /** Courses this person authored. Their name is the credit on that work. */
   authoredCourses: number;
+  /** Categories they hold a live (active/completed) enrollment in. */
+  categories?: string[];
 }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(person.name ?? "");
@@ -138,6 +142,11 @@ export default function PersonRow({
                   : "Single Course"}
             </span>
           )}
+          {(categories ?? []).map((c) => (
+            <span key={c} className="text-[11px] font-semibold px-2 py-1 rounded-full" style={categoryPillStyle(c)}>
+              {c}
+            </span>
+          ))}
           <span className="text-xs hidden sm:inline" style={{ color: "var(--foreground-muted)" }}>
             {new Date(person.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
           </span>
