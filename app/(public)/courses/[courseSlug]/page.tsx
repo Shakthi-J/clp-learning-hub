@@ -54,15 +54,22 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
 
   let canReview = false;
   let myReview: { rating: number; body: string | null } | null = null;
+  // Whether this viewer already has their way into the course - all_access
+  // needs no request at all, and anyone with an active enrollment (granted
+  // as a pass, or previously approved) is done requesting this one. Without
+  // this the button offered "Request Enrollment" even to someone who
+  // already had it.
+  let alreadyEnrolled = false;
   if (user) {
     const { data: viewer } = await supabase
-      .from("patients").select("id").eq("auth_user_id", user.id).maybeSingle();
+      .from("patients").select("id, access_type").eq("auth_user_id", user.id).maybeSingle();
     if (viewer) {
       const { data: enrollment } = await supabase
-        .from("enrollments").select("id")
+        .from("enrollments").select("id, status")
         .eq("course_id", course.id).eq("patient_id", viewer.id)
         .in("status", ["active", "completed"]).maybeSingle();
       canReview = Boolean(enrollment);
+      alreadyEnrolled = viewer.access_type === "all_access" || enrollment?.status === "active";
       const mine = ((reviews as any[]) || []).find((r) => r.patient_id === viewer.id);
       if (mine) myReview = { rating: mine.rating, body: mine.body };
     }
@@ -90,7 +97,9 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
               )}
             </div>
           </div>
-          <div className="flex-shrink-0 w-full md:w-auto"><EnrollButton courseId={course.id} isLoggedIn={!!user} /></div>
+          <div className="flex-shrink-0 w-full md:w-auto">
+            <EnrollButton courseId={course.id} courseSlug={course.slug} isLoggedIn={!!user} alreadyEnrolled={alreadyEnrolled} />
+          </div>
         </div>
       </div>
       {modules.length > 0 && (

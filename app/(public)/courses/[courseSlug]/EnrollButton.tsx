@@ -1,9 +1,22 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-export default function EnrollButton({ courseId, isLoggedIn }: { courseId: string; isLoggedIn: boolean }) {
+export default function EnrollButton({
+  courseId,
+  courseSlug,
+  isLoggedIn,
+  alreadyEnrolled,
+}: {
+  courseId: string;
+  courseSlug: string;
+  isLoggedIn: boolean;
+  /** True for all_access, or an active enrollment - there is nothing to
+   *  request, so the button goes straight to the course instead. */
+  alreadyEnrolled: boolean;
+}) {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
@@ -58,6 +71,17 @@ export default function EnrollButton({ courseId, isLoggedIn }: { courseId: strin
 
     await submitRequest();
   };
+
+  if (alreadyEnrolled) {
+    return (
+      <Link
+        href={`/learn/${courseSlug}`}
+        className="inline-block px-6 py-3 rounded-xl text-white font-semibold text-sm primary-gradient"
+      >
+        Go to Course
+      </Link>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3">
