@@ -45,15 +45,17 @@ export async function POST(request: Request) {
   }
 
   // A trigger creates the patients row on signup; this sets what the admin chose.
-  const { error: profileError } = await admin.from("patients").update({
+  const { data: profile, error: profileError } = await admin.from("patients").update({
     name,
     role: newRole,
     access_type: access_type || "single_course",
-  }).eq("auth_user_id", newUser.user.id);
+  }).eq("auth_user_id", newUser.user.id).select("id").single();
 
   if (profileError) {
     return NextResponse.json({ message: profileError.message }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true, userId: newUser.user.id, role: newRole }, { status: 201 });
+  // patientId is the patients.id a course-pass grant needs - distinct from
+  // userId (the auth user), which the caller has no use for by itself.
+  return NextResponse.json({ success: true, userId: newUser.user.id, patientId: profile.id, role: newRole }, { status: 201 });
 }

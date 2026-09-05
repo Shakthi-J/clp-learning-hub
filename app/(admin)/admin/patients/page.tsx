@@ -17,6 +17,8 @@ export default function AdminPeoplePage() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("patient");
   const [accessType, setAccessType] = useState("single_course");
+  const [courseOptions, setCourseOptions] = useState<{ id: string; title: string; category: string | null }[]>([]);
+  const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
 
   const [actor, setActor] = useState<{ id: string; role: string } | null>(null);
   const [authored, setAuthored] = useState<Record<string, number>>({});
@@ -73,8 +75,20 @@ export default function AdminPeoplePage() {
       const { data } = await supabase.from("patients").select("id, role").eq("auth_user_id", user.id).maybeSingle();
       if (data) setActor({ id: data.id, role: data.role });
     })();
+    supabase.from("courses").select("id, title, category").order("title").then(({ data }) => {
+      setCourseOptions((data as any[]) || []);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Single Course is a pass to exactly one course - picking a second replaces
+  // the first rather than adding to it, since the tier only allows one.
+  const toggleSelectedCourse = (courseId: string) => {
+    setSelectedCourseIds((prev) => {
+      if (prev.includes(courseId)) return prev.filter((id) => id !== courseId);
+      return accessType === "single_course" ? [courseId] : [...prev, courseId];
+    });
+  };
 
   const handleCreate = async () => {
     if (!name || !email || !password || !isValidEmail(email)) return;
@@ -88,14 +102,37 @@ export default function AdminPeoplePage() {
       body: JSON.stringify({ name, email, password, role, access_type: accessType }),
     });
     const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      setSubmitting(false);
+      setFormError(data.message || "Something went wrong.");
+      return;
+    }
+
+    // Grant any courses picked in the same form, right after the account
+    // exists - one action from the admin's side, not a separate step later.
+    let grantFailures = 0;
+    if (role === "patient" && accessType !== "all_access" && selectedCourseIds.length > 0) {
+      const results = await Promise.all(
+        selectedCourseIds.map((courseId) =>
+          fetch(`/api/patients/${data.patientId}/courses`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ courseId }),
+          })
+        )
+      );
+      grantFailures = results.filter((r) => !r.ok).length;
+    }
     setSubmitting(false);
 
-    if (!res.ok) { setFormError(data.message || "Something went wrong."); return; }
-
+    const coursesGranted = selectedCourseIds.length - grantFailures;
     setFormSuccess(
-      `${role === "instructor" ? "Instructor" : "Learner"} account created for ${name}. Pass the password on directly.`
+      `${role === "instructor" ? "Instructor" : "Learner"} account created for ${name}. Pass the password on directly.` +
+      (coursesGranted > 0 ? ` ${coursesGranted} course${coursesGranted === 1 ? "" : "s"} assigned.` : "") +
+      (grantFailures > 0 ? ` ${grantFailures} course assignment${grantFailures === 1 ? "" : "s"} failed - assign from Manage instead.` : "")
     );
-    setName(""); setEmail(""); setPassword(""); setRole("patient"); setAccessType("single_course");
+    setName(""); setEmail(""); setPassword(""); setRole("patient"); setAccessType("single_course"); setSelectedCourseIds([]);
     setShowForm(false);
     fetchPeople();
   };
@@ -186,7 +223,11 @@ export default function AdminPeoplePage() {
             {role === "patient" && (
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>Access tier</label>
-                <select value={accessType} onChange={(e) => setAccessType(e.target.value)}
+                <select value={accessType} onChange={(e) => {
+                  setAccessType(e.target.value);
+                  if (e.target.value === "single_course" && selectedCourseIds.length > 1) setSelectedCourseIds(selectedCourseIds.slice(0, 1));
+                  if (e.target.value === "all_access") setSelectedCourseIds([]);
+                }}
                   className="w-full px-4 py-2.5 rounded-xl border text-sm" style={inputStyle}>
                   <option value="single_course">Single Course</option>
                   <option value="selected_courses">Selected Courses</option>
@@ -195,6 +236,49 @@ export default function AdminPeoplePage() {
               </div>
             )}
           </div>
+
+          {role === "patient" && accessType !== "all_access" && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+                {accessType === "single_course" ? "Course pass" : "Courses"}
+              </label>
+              <p className="text-[11px] mb-2.5" style={{ color: "var(--foreground-muted)" }}>
+                {accessType === "single_course"
+                  ? "Pick the one course they'll be enrolled in straight away - optional, you can also do this later from Manage."
+                  : "Pick any number of courses to enrol them in straight away - optional, you can also do this later from Manage."}
+              </p>
+              {courseOptions.length === 0 ? (
+                <p className="text-xs" style={{ color: "var(--foreground-muted)" }}>No courses exist yet.</p>
+              ) : (
+                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                  {courseOptions.map((course) => {
+                    const isSelected = selectedCourseIds.includes(course.id);
+                    return (
+                      <button
+                        key={course.id}
+                        type="button"
+                        onClick={() => toggleSelectedCourse(course.id)}
+                        className="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg border text-left text-sm"
+                        style={{
+                          borderColor: isSelected ? "var(--primary)" : "var(--border)",
+                          background: isSelected ? "var(--primary-light)" : "var(--card)",
+                          color: isSelected ? "var(--primary)" : "var(--foreground-secondary)",
+                        }}
+                      >
+                        <span className="min-w-0 truncate">
+                          {course.title}
+                          {course.category && (
+                            <span className="text-[11px] ml-2" style={{ color: "var(--foreground-muted)" }}>{course.category}</span>
+                          )}
+                        </span>
+                        {isSelected && <span className="text-xs font-semibold flex-shrink-0">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
           {formError && <p className="text-xs mb-3" style={{ color: "var(--danger)" }}>{formError}</p>}
 
